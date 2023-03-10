@@ -24,9 +24,9 @@ class MapEngineConf(AppConf):
     # STYLES
     if not hasattr(settings, "MAP_ENGINE_STYLES_FOLDER"):
         raise RuntimeError("'MAP_ENGINE_STYLES_FOLDER' has to be set for django-mapengine.")
-    MAP_ENGINE_CHOROPLETHS = choropleth.Choropleth(settings.MAP_ENGINE_STYLES_FOLDER / "choropleths.json")
+    MAP_ENGINE_CHOROPLETHS = choropleth.Choropleth(pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / "choropleths.json")
 
-    with pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER / "layer_styles.json").open(
+    with pathlib.Path(pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / "layer_styles.json").open(
         "r", encoding="utf-8"
     ) as layer_styles_file:
         MAP_ENGINE_LAYER_STYLES = json.load(layer_styles_file)
