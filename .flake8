@@ -1,0 +1,5 @@
+[flake8]
+exclude = meta/migrations/, docs/
+max-line-length=120
+per-file-ignores =
+    test_*: S101

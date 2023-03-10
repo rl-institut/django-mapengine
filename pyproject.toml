@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "django-mapengine"
+version = "0.1.0"
+description = "Map engine for maplibre in django"
+authors = ["Hendrik Huyskens <hendrik.huyskens@rl-institut.de>"]
+readme = "README.md"
+packages = [{include = "django_mapengine"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 120
+# select = ["ALL"]
+ignore = [
+  "D203",    # 1 blank line required before class docstring
+  "D212",    # Multi-line docstring summary should start at the first line pydocstyle
+  "ANN101",  # Missing type annotation for `self` in method
+  "ANN003",  # Missing type annotation for `**kwargs`
+  "EM102",   # Exception must not use an f-string literal, assign to variable first
+  "TRY003",  # Avoid specifying long messages outside the exception class
+  "S101",    # Use of `assert` detected
+  "UP007",   # Use `X | Y` for type annotations
+  "B905",    # `zip()` without an explicit `strict=` parameter
+]
+fix = true
+show-fixes = true
+unfixable = ["UP007"]

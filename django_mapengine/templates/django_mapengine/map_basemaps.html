@@ -1,0 +1,23 @@
+{% load static i18n %}
+<button id="basemaps-control">
+  <div>
+    <svg width="16" height="16" version="1.1" fill="currentColor" viewBox="0 0 16.933 16.933" xmlns="http://www.w3.org/2000/svg">
+      <path d="m16.933 0-5.8208 3.175-5.2917-3.1497-5.8208 3.1497v13.758l5.8208-3.175 5.2917 3.175 5.8208-3.175v-13.758zm-11.642 1.617v11.112l-4.2333 2.3518v-11.112l4.2333-2.3518zm1.0583 0.023254 4.2333 2.5404v11.112l-4.2333-2.5404v-11.112zm9.525 0.47646v11.113l-4.2333 2.1167v-11.112l4.2333-2.1167z"/>
+    </svg>
+    <div class="layers-text">{% trans "maps"|title %}</div>
+  </div>
+</button>
+<div id="basemaps" class="basemaps" style="display:none">
+  <div class="basemaps__btn">
+    <button id="basemaps__default" class="btn" onclick="toggleBasemap(null);">
+      <img src="{% static 'images/layer_ctrl_default.svg' %}" alt="Default basemap view">
+      <span>{% trans "default"|title %}</span>
+    </button>
+  </div>
+  <div class="basemaps__btn">
+    <button id="basemaps__satellite" class="btn" onclick="toggleBasemap('satellite');">
+      <img src="{% static 'images/layer_ctrl_satellite.svg' %}" alt="Satellite basemap view">
+      <span>{% trans "satellite"|title %}</span>
+    </button>
+  </div>
+</div>
