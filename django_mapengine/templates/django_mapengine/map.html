@@ -2,26 +2,6 @@
 
 {% include "./map_basemaps.html" %}
 
-<div class="map__layers-btn" id="js-map-layers-btn">
-  <svg width="16" height="16" version="1.1" fill="currentColor" viewBox="0 0 16.933 16.933" xmlns="http://www.w3.org/2000/svg">
-    <path d="m8.4667 0.053743-0.23616 0.11731-8.1855 4.0933 8.4217 4.2111 8.4222-4.2111-8.4222-4.2106zm0 1.1813 6.057 3.0293-6.057 3.0277-6.0565-3.0277 6.0565-3.0293zm-8.4217 7.2404 8.4222 4.2111 8.4217-4.2111h-2.3652l-6.0565 3.0277-6.057-3.0277h-2.3652zm-5.1676e-4 4.2468 8.4222 4.2111 8.4217-4.2111h-2.3652l-6.0565 3.0277-6.057-3.0277h-2.3652z"/>
-   </svg>
-</div>
-<div class="map__layers-box" id="js-map-layers-box">
-  <div class="map__layers-close">
-    <button type="button" class="btn-close" id="js-map-layers-box-close"
-            aria-label="Close"></button>
-  </div>
-
-  {% for category, layers in area_switches.items %}
-    <p class="map__layers-heading">{{ category }}</p>
-
-    {% for layer in layers %}
-      {{ layer }}
-    {% endfor %}
-  {% endfor %}
-</div>
-
 <div id="legend" class="legend"></div>
 
 <section id="map">
