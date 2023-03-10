@@ -22,22 +22,22 @@ class MapEngineConf(AppConf):
     TILING_SERVICE_STYLE_ID = env.str("TILING_SERVICE_STYLE_ID", default=None)
 
     # STYLES
-    CHOROPLETHS = choropleth.Choropleth(settings.MAP_ENGINE_STYLES_FOLDER / "choropleths.json")
+    MAP_ENGINE_CHOROPLETHS = choropleth.Choropleth(settings.MAP_ENGINE_STYLES_FOLDER / "choropleths.json")
 
     with pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER / "layer_styles.json").open(
         "r", encoding="utf-8"
     ) as layer_styles_file:
-        LAYER_STYLES = json.load(layer_styles_file)
-    LAYER_STYLES.update(CHOROPLETHS.get_static_styles())
+        MAP_ENGINE_LAYER_STYLES = json.load(layer_styles_file)
+    MAP_ENGINE_LAYER_STYLES.update(MAP_ENGINE_CHOROPLETHS.get_static_styles())
 
     # REGIONS
-    MIN_ZOOM = getattr(settings, "MAP_ENGINE_MIN_ZOOM", 8)
-    MAX_ZOOM = getattr(settings, "MAP_ENGINE_MAX_ZOOM", 22)
-    MAX_DISTILLED_ZOOM = getattr(settings, "MAP_ENGINE_MAX_DISTILLED_ZOOM", 10)
-    DEFAULT_CLUSTER_ZOOM = getattr(settings, "MAP_ENGINE_CLUSTER_ZOOM", 11)
+    MAP_ENGINE_MIN_ZOOM = 8
+    MAP_ENGINE_MAX_ZOOM = 22
+    MAP_ENGINE_MAX_DISTILLED_ZOOM = 10
+    MAP_ENGINE_CLUSTER_ZOOM = 11
 
     # MAP
-    MAP_IMAGES = []
+    MAP_ENGINE_IMAGES = []
 
     # DISTILL
     X_AT_MIN_Z = 136
@@ -45,5 +45,5 @@ class MapEngineConf(AppConf):
     X_OFFSET = 1  # Defines how many tiles to the right are added at first level
     Y_OFFSET = 1  # Defines how many tiles to the bottom are added at first level
 
-    ZOOM_LEVELS = {}
-    REGIONS = []
+    MAP_ENGINE_ZOOM_LEVELS = {}
+    MAP_ENGINE_REGIONS = []

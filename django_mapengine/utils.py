@@ -6,11 +6,11 @@ from .conf import settings
 
 
 def get_color(source_layer):
-    if source_layer not in settings.LAYER_STYLES:
+    if source_layer not in settings.MAP_ENGINE_LAYER_STYLES:
         raise KeyError(f"Could not find layer '{source_layer}' in layer styles (static/config/layer_styles.json)")
     for color_key in ("fill-color", "line-color", "circle-color"):
         try:
-            return settings.LAYER_STYLES[source_layer]["paint"][color_key]
+            return settings.MAP_ENGINE_LAYER_STYLES[source_layer]["paint"][color_key]
         except KeyError:
             continue
     return None

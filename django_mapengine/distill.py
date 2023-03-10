@@ -1,5 +1,12 @@
-import django_mapengine.core
+import range_key_dict
+
 from .conf import settings
+
+
+def get_region_zooms():
+    return range_key_dict.RangeKeyDict(
+        {zoom: layer for layer, zoom in settings.MAP_ENGINE_ZOOM_LEVELS.items() if layer in settings.MAP_ENGINE_REGIONS}
+    )
 
 
 def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
@@ -19,6 +26,6 @@ def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
         z_factor = 2 ** (z - settings.MIN_ZOOM)
         for x in range(settings.X_AT_MIN_Z * z_factor, (settings.X_AT_MIN_Z + 1) * z_factor + settings.X_OFFSET):
             for y in range(settings.Y_AT_MIN_Z * z_factor, (settings.Y_AT_MIN_Z + 1) * z_factor + settings.Y_OFFSET):
-                if layer in settings.REGIONS and django_mapengine.core.get_region_zooms()[z] != layer:
+                if layer in settings.REGIONS and get_region_zooms()[z] != layer:
                     continue
                 yield x, y, z

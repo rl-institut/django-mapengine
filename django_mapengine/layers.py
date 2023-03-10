@@ -71,7 +71,7 @@ class StaticModelLayer(ModelLayer):
         int
             Minimal zoom
         """
-        return settings.MAX_DISTILLED_ZOOM + 1 if not distill and settings.USE_DISTILLED_MVTS else settings.MIN_ZOOM
+        return settings.MAX_DISTILLED_ZOOM + 1 if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS else settings.MAP_ENGINE_MIN_ZOOM
 
     @staticmethod
     def max_zoom(*, distill: bool = False) -> int:
@@ -91,7 +91,7 @@ class StaticModelLayer(ModelLayer):
         int
             Maximal zoom
         """
-        return settings.MAX_ZOOM if not distill else settings.MAX_DISTILLED_ZOOM + 1
+        return settings.MAP_ENGINE_MAX_ZOOM if not distill else settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
 
     def get_map_layers(self) -> Iterable[MapLayer]:
         """
@@ -109,7 +109,7 @@ class StaticModelLayer(ModelLayer):
             source_layer=self.id,
             minzoom=self.min_zoom(),
             maxzoom=self.max_zoom(),
-            style=settings.LAYER_STYLES[self.id],
+            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
         )
         if settings.USE_DISTILLED_MVTS:
             yield MapLayer(
@@ -119,7 +119,7 @@ class StaticModelLayer(ModelLayer):
                 source_layer=self.id,
                 minzoom=self.min_zoom(distill=True),
                 maxzoom=self.max_zoom(distill=True),
-                style=settings.LAYER_STYLES[self.id],
+                style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
             )
 
 
@@ -143,19 +143,19 @@ class ClusterModelLayer(ModelLayer):
             id=self.id,
             type=self.type,
             source=self.source,
-            style=settings.LAYER_STYLES[self.id],
+            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
         )
         yield MapLayer(
             id=f"{self.id}_cluster",
             type="circle",
             source=self.source,
-            style=settings.LAYER_STYLES[f"{self.id}_cluster"],
+            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster"],
         )
         yield MapLayer(
             id=f"{self.id}_cluster_count",
             type="symbol",
             source=self.source,
-            style=settings.LAYER_STYLES[f"{self.id}_cluster_count"],
+            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster_count"],
         )
 
 
@@ -180,11 +180,11 @@ def get_region_layers() -> list[MapLayer]:
                 type="line",
                 source=layer,
                 source_layer=layer,
-                minzoom=settings.ZOOM_LEVELS[layer].min,
-                maxzoom=settings.ZOOM_LEVELS[layer].max,
-                style=settings.LAYER_STYLES["region-line"],
+                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+                style=settings.MAP_ENGINE_LAYER_STYLES["region-line"],
             )
-            for layer in settings.REGIONS
+            for layer in settings.MAP_ENGINE_REGIONS
         ]
         + [
             MapLayer(
@@ -192,11 +192,11 @@ def get_region_layers() -> list[MapLayer]:
                 type="fill",
                 source=layer,
                 source_layer=layer,
-                minzoom=settings.ZOOM_LEVELS[layer].min,
-                maxzoom=settings.ZOOM_LEVELS[layer].max,
-                style=settings.LAYER_STYLES["region-fill"],
+                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+                style=settings.MAP_ENGINE_LAYER_STYLES["region-fill"],
             )
-            for layer in settings.REGIONS
+            for layer in settings.MAP_ENGINE_REGIONS
         ]
         + [
             MapLayer(
@@ -204,10 +204,10 @@ def get_region_layers() -> list[MapLayer]:
                 type="symbol",
                 source=layer,
                 source_layer=f"{layer}label",
-                maxzoom=settings.ZOOM_LEVELS[layer].max,
-                minzoom=settings.ZOOM_LEVELS[layer].min,
-                style=settings.LAYER_STYLES["region-label"],
+                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+                style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
             )
-            for layer in settings.REGIONS
+            for layer in settings.MAP_ENGINE_REGIONS
         ]
     )

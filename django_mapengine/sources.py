@@ -63,7 +63,7 @@ class MapSource:
 class ClusterMapSource(MapSource):
     """Map source for clustered layers."""
 
-    cluster_max_zoom: int = settings.DEFAULT_CLUSTER_ZOOM
+    cluster_max_zoom: int = settings.MAP_ENGINE_CLUSTER_ZOOM
 
     def get_source(self, request: HttpRequest) -> dict:
         """
