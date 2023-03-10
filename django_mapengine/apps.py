@@ -31,22 +31,22 @@ class MapEngineConf(AppConf):
     # STYLES
     if not hasattr(settings, "MAP_ENGINE_STYLES_FOLDER"):
         raise RuntimeError("'MAP_ENGINE_STYLES_FOLDER' has to be set for django-mapengine.")
-    MAP_ENGINE_CHOROPLETHS = choropleth.Choropleth(pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / "choropleths.json")
+    CHOROPLETHS = choropleth.Choropleth(pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / "choropleths.json")
 
     with pathlib.Path(pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / "layer_styles.json").open(
         "r", encoding="utf-8"
     ) as layer_styles_file:
-        MAP_ENGINE_LAYER_STYLES = json.load(layer_styles_file)
-    MAP_ENGINE_LAYER_STYLES.update(MAP_ENGINE_CHOROPLETHS.get_static_styles())
+        LAYER_STYLES = json.load(layer_styles_file)
+    LAYER_STYLES.update(CHOROPLETHS.get_static_styles())
 
     # REGIONS
-    MAP_ENGINE_MIN_ZOOM = 8
-    MAP_ENGINE_MAX_ZOOM = 22
-    MAP_ENGINE_MAX_DISTILLED_ZOOM = 10
-    MAP_ENGINE_CLUSTER_ZOOM = 11
+    MIN_ZOOM = 8
+    MAX_ZOOM = 22
+    MAX_DISTILLED_ZOOM = 10
+    CLUSTER_ZOOM = 11
 
     # MAP
-    MAP_ENGINE_IMAGES = []
+    IMAGES = []
 
     # DISTILL
     X_AT_MIN_Z = 136
@@ -54,8 +54,9 @@ class MapEngineConf(AppConf):
     X_OFFSET = 1  # Defines how many tiles to the right are added at first level
     Y_OFFSET = 1  # Defines how many tiles to the bottom are added at first level
 
-    MAP_ENGINE_ZOOM_LEVELS = {}
-    MAP_ENGINE_REGIONS = []
+    ZOOM_LEVELS = {}
+    REGIONS = []
 
     class Meta:
         proxy = True
+        prefix = 'MAP_ENGINE'
