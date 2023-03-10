@@ -49,3 +49,6 @@ class MapEngineConf(AppConf):
 
     MAP_ENGINE_ZOOM_LEVELS = {}
     MAP_ENGINE_REGIONS = []
+
+    class Meta:
+        proxy = True
