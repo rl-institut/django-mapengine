@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from .conf import settings
+from django.conf import settings
 
 if TYPE_CHECKING:
     from django.http import HttpRequest

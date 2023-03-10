@@ -5,9 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
+from django.conf import settings
 from django.contrib.gis.db.models import Model
-
-from .conf import settings
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -71,7 +70,7 @@ class StaticModelLayer(ModelLayer):
         int
             Minimal zoom
         """
-        return settings.MAX_DISTILLED_ZOOM + 1 if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS else settings.MAP_ENGINE_MIN_ZOOM
+        return settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1 if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS else settings.MAP_ENGINE_MIN_ZOOM
 
     @staticmethod
     def max_zoom(*, distill: bool = False) -> int:
@@ -111,7 +110,7 @@ class StaticModelLayer(ModelLayer):
             maxzoom=self.max_zoom(),
             style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
         )
-        if settings.USE_DISTILLED_MVTS:
+        if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
                 id=f"{self.id}_distilled",
                 type=self.type,

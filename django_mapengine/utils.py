@@ -1,8 +1,7 @@
 from itertools import product
 
+from django.conf import settings
 from django.db.models import BooleanField, IntegerField
-
-from .conf import settings
 
 
 def get_color(source_layer):
