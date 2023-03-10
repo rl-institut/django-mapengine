@@ -22,6 +22,8 @@ class MapEngineConf(AppConf):
     TILING_SERVICE_STYLE_ID = env.str("TILING_SERVICE_STYLE_ID", default=None)
 
     # STYLES
+    if not hasattr(settings, "MAP_ENGINE_STYLES_FOLDER"):
+        raise RuntimeError("'MAP_ENGINE_STYLES_FOLDER' has to be set for django-mapengine.")
     MAP_ENGINE_CHOROPLETHS = choropleth.Choropleth(settings.MAP_ENGINE_STYLES_FOLDER / "choropleths.json")
 
     with pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER / "layer_styles.json").open(
