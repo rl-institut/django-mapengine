@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from digiplan.map.config import config
+from . import settings
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -63,7 +63,7 @@ class MapSource:
 class ClusterMapSource(MapSource):
     """Map source for clustered layers."""
 
-    cluster_max_zoom: int = config.DEFAULT_CLUSTER_ZOOM
+    cluster_max_zoom: int = settings.DEFAULT_CLUSTER_ZOOM
 
     def get_source(self, request: HttpRequest) -> dict:
         """
