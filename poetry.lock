@@ -125,6 +125,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-appconf"
+version = "1.0.5"
+description = "A helper class for handling configuration defaults of packaged apps gracefully."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+django = "*"
+
+[[package]]
 name = "django-environ"
 version = "0.10.0"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -359,7 +370,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "cb3f0d9c412c3956d20142c12817b45bfd9ff8b65c68c9ea561e33dd5018d655"
+content-hash = "c4da49ecd7045c1d7324e2df019ec341151aa261d9a7667106782b974a997dce"
 
 [metadata.files]
 asgiref = [
@@ -494,6 +505,10 @@ coreschema = [
 django = [
     {file = "Django-3.2.18-py3-none-any.whl", hash = "sha256:4d492d9024c7b3dfababf49f94511ab6a58e2c9c3c7207786f1ba4eb77750706"},
     {file = "Django-3.2.18.tar.gz", hash = "sha256:08208dfe892eb64fff073ca743b3b952311104f939e7f6dae954fe72dcc533ba"},
+]
+django-appconf = [
+    {file = "django-appconf-1.0.5.tar.gz", hash = "sha256:be3db0be6c81fa84742000b89a81c016d70ae66a7ccb620cdef592b1f1a6aaa4"},
+    {file = "django_appconf-1.0.5-py3-none-any.whl", hash = "sha256:ae9f864ee1958c815a965ed63b3fba4874eec13de10236ba063a788f9a17389d"},
 ]
 django-environ = [
     {file = "django-environ-0.10.0.tar.gz", hash = "sha256:b3559a91439c9d774a9e0c1ced872364772c612cdf6dc919506a2b13f7a77225"},

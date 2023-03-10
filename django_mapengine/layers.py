@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional
 
 from django.contrib.gis.db.models import Model
 
-from . import settings
+from .conf import settings
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
