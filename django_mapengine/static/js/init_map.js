@@ -1,4 +1,8 @@
 
+map.on("load", function () {
+  PubSub.publish(eventTopics.MAP_LOADED);
+});
+
 PubSub.subscribe(eventTopics.MAP_LOADED, add_sources);
 PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
 
