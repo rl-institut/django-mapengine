@@ -48,6 +48,12 @@ function add_layers(msg)
     } else {
       map.setLayoutProperty(layer.id, "visibility", "none");
     }
+
+    if (store.cold.debug) {
+      map.on("click", layer.id, function (e) {
+        console.log(`${layer.id}:`, e.features[0].properties.name, e.features[0]);
+      });
+    }
   }
   PubSub.publish(eventTopics.MAP_LAYERS_LOADED);
   return logMessage(msg);
