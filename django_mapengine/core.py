@@ -15,3 +15,6 @@ class MapImage:
     @property
     def path(self) -> str:
         return static(self.filename)
+
+    def as_dict(self):
+        return {"name": self.name, "path": self.path}

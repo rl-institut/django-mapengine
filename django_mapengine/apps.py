@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 import environ
 from appconf import AppConf
@@ -60,7 +60,7 @@ class MapEngineConf(AppConf):
     CLUSTER_ZOOM: int = 11
 
     # IMAGES
-    IMAGES: List[core.MapImage] = []
+    IMAGES: List[Dict[str, str]] = [image.as_dict() for image in getattr(settings, "MAP_ENGINE_IMAGES", [])]
 
     # DISTILL
     X_AT_MIN_Z = 136
