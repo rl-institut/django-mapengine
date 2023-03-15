@@ -21,6 +21,11 @@ function createMap() {
     // Disable zoom on double click
     map.doubleClickZoom.disable();
 
+    // Zoom to feature on click
+      map.on("click", function (element) {
+        flyToElement(element);
+      });
+
     const nav = new maplibregl.NavigationControl();
     map.addControl(nav, "bottom-left");
     map.addControl(new maplibregl.ScaleControl({position: 'bottom-right'}));
