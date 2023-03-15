@@ -42,7 +42,7 @@ class MapEngineConf(AppConf):
     # MAP
     CENTER_AT_STARTUP = settings.MAP_ENGINE_CENTER_AT_STARTUP
     ZOOM_AT_STARTUP = settings.MAP_ENGINE_ZOOM_AT_STARTUP
-    MAX_BOUNDS = getattr("MAP_ENGINE_MAX_BOUNDS", settings, None)
+    MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)
     SETUP = {
         "container": "map",
         "style": f"https://api.maptiler.com/maps/{TILING_SERVICE_STYLE_ID}/style.json?key={TILING_SERVICE_TOKEN}",
