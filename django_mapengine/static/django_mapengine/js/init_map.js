@@ -57,7 +57,7 @@ function add_sources(msg) {
 
 function add_images(msg) {
     const map_images = JSON.parse(document.getElementById("map_images").textContent);
-    for (const map_image in map_images) {
+    for (const map_image of map_images) {
         map.loadImage(map_image.path, function (error, image) {
             if (error) throw error;
             map.addImage(map_image.name, image);
