@@ -2,12 +2,13 @@
 
 import json
 import pathlib
+from typing import List, Tuple
 
 import environ
 from appconf import AppConf
 from django.conf import settings
 
-from . import choropleth
+from . import choropleth, core
 
 env = environ.Env()
 
@@ -40,8 +41,8 @@ class MapEngineConf(AppConf):
     LAYER_STYLES.update(CHOROPLETHS.get_static_styles())
 
     # MAP
-    CENTER_AT_STARTUP = settings.MAP_ENGINE_CENTER_AT_STARTUP
-    ZOOM_AT_STARTUP = settings.MAP_ENGINE_ZOOM_AT_STARTUP
+    CENTER_AT_STARTUP: Tuple[int, int] = settings.MAP_ENGINE_CENTER_AT_STARTUP
+    ZOOM_AT_STARTUP: int = settings.MAP_ENGINE_ZOOM_AT_STARTUP
     MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)
     SETUP = {
         "container": "map",
@@ -53,13 +54,13 @@ class MapEngineConf(AppConf):
         SETUP["maxBounds"] = MAX_BOUNDS
 
     # REGIONS
-    MIN_ZOOM = 8
-    MAX_ZOOM = 22
-    MAX_DISTILLED_ZOOM = 10
-    CLUSTER_ZOOM = 11
+    MIN_ZOOM: int = 8
+    MAX_ZOOM: int = 22
+    MAX_DISTILLED_ZOOM: int = 10
+    CLUSTER_ZOOM: int = 11
 
     # IMAGES
-    IMAGES = []
+    IMAGES: List[core.MapImage] = []
 
     # DISTILL
     X_AT_MIN_Z = 136
