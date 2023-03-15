@@ -1,7 +1,7 @@
 from collections import namedtuple
 from dataclasses import dataclass
 
-from django.templatetags.static import static
+from django.conf import settings
 
 
 Zoom = namedtuple("MinMax", ["min", "max"])
@@ -14,7 +14,7 @@ class MapImage:
 
     @property
     def path(self) -> str:
-        return static(self.filename)
+        return f"{settings.STATIC_URL}{self.filename}"
 
     def as_dict(self):
         return {"name": self.name, "path": self.path}
