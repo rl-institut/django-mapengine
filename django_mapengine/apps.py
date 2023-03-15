@@ -44,10 +44,13 @@ class MapEngineConf(AppConf):
     ZOOM_AT_STARTUP = settings.MAP_ENGINE_ZOOM_AT_STARTUP
     MAX_BOUNDS = None
     SETUP = {
+        "container": "map",
+        "style": f"https://api.maptiler.com/maps/{TILING_SERVICE_STYLE_ID}/style.json?key={TILING_SERVICE_TOKEN}",
         "center": CENTER_AT_STARTUP,
         "zoom": ZOOM_AT_STARTUP,
-        "max_bounds": MAX_BOUNDS
     }
+    if MAX_BOUNDS:
+        SETUP["maxBounds"] = MAX_BOUNDS
 
     # REGIONS
     MIN_ZOOM = 8
