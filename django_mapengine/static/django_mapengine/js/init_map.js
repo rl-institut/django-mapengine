@@ -1,5 +1,6 @@
 
 const map = createMap();
+add_images();
 
 map.on("load", function () {
   PubSub.publish(eventTopics.MAP_LOADED);
@@ -11,7 +12,16 @@ PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
 
 function createMap() {
     const setup = JSON.parse(document.getElementById("map_setup").textContent);
-    return new maplibregl.Map(setup);
+    const map = new maplibregl.Map(setup);
+
+    if (store.cold.debugMode) {
+        map.showTileBoundaries = true;
+      }
+
+    const nav = new maplibregl.NavigationControl();
+    map.addControl(nav, "bottom-left");
+    map.addControl(new maplibregl.ScaleControl({position: 'bottom-right'}));
+    return map;
 }
 
 function add_satellite(msg) {
