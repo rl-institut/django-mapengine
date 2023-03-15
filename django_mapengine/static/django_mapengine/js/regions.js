@@ -26,7 +26,7 @@ function activate_region_hovering() {
           // Fill layer
           map.setFeatureState({
             source: layer.source,
-            sourceLayer: layer.source_layer,
+            sourceLayer: layer.source,
             id: store.cold.hoveredStateId
           }, {
             hover: false
@@ -34,7 +34,7 @@ function activate_region_hovering() {
           // Label layer
           map.setFeatureState({
             source: layer.source,
-            sourceLayer: `${layer.source_layer}label`,
+            sourceLayer: `${layer.source}label`,
             id: store.cold.hoveredStateId
           }, {
             hover: false
@@ -44,7 +44,7 @@ function activate_region_hovering() {
         // Fill layer
         map.setFeatureState({
           source: layer.source,
-          sourceLayer: layer.source_layer,
+          sourceLayer: layer.source,
           id: store.cold.hoveredStateId
         }, {
           hover: true
@@ -52,7 +52,7 @@ function activate_region_hovering() {
         // Label layer
         map.setFeatureState({
           source: layer.source,
-          sourceLayer: `${layer.source_layer}label`,
+          sourceLayer: `${layer.source}label`,
           id: store.cold.hoveredStateId
         }, {
           hover: true
@@ -66,7 +66,14 @@ function activate_region_hovering() {
       if (store.cold.hoveredStateId >= 0) {
         map.setFeatureState({
           source: layer.source,
-          sourceLayer: layer.source_layer,
+          sourceLayer: layer.source,
+          id: store.cold.hoveredStateId
+        }, {
+          hover: false
+        });
+        map.setFeatureState({
+          source: layer.source,
+          sourceLayer: `${layer.source}label`,
           id: store.cold.hoveredStateId
         }, {
           hover: false
