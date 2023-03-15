@@ -23,3 +23,11 @@ class Store {
 }
 
 let store = new Store(store_cold_init, store_hot_init);
+
+function setDebugMode(bool) {
+  store.cold.debugMode = bool;
+}
+
+function setDebugModeVerbose(bool) {
+  store.cold.debugModeVerbose = !(!store.cold.debugMode || !bool);
+}
