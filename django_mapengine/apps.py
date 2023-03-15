@@ -60,7 +60,7 @@ class MapEngineConf(AppConf):
     CLUSTER_ZOOM: int = 11
 
     # IMAGES
-    IMAGES: List[Dict[str, str]] = [image.as_dict() for image in getattr(settings, "MAP_ENGINE_IMAGES", [])]
+    IMAGES: List[Dict[str, str]] = []
 
     # DISTILL
     X_AT_MIN_Z = 136
