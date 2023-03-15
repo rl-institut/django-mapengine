@@ -1,4 +1,16 @@
 
+function createMap() {
+    return new maplibregl.Map({
+        container: "map",
+        style: "https://api.maptiler.com/maps/{{tiling_service_style_id}}/style.json?key={{tiling_service_token}}", // stylesheet location
+        center: [10.407237624103573, 51.22757621251938], // starting position [lng, lat]
+        zoom: 5.546712433728557, // starting zoom
+        maxBounds: [[-2.54, 46.35], [23.93, 55.87]] // [[south-west], [north-east]] restrict area
+    });
+}
+
+const map = createMap();
+
 map.on("load", function () {
   PubSub.publish(eventTopics.MAP_LOADED);
 });

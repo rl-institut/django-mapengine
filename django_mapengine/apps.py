@@ -39,13 +39,23 @@ class MapEngineConf(AppConf):
         LAYER_STYLES = json.load(layer_styles_file)
     LAYER_STYLES.update(CHOROPLETHS.get_static_styles())
 
+    # MAP
+    CENTER_AT_STARTUP = settings.MAP_ENGINE_CENTER_AT_STARTUP
+    ZOOM_AT_STARTUP = settings.MAP_ENGINE_ZOOM_AT_STARTUP
+    MAX_BOUNDS = None
+    SETUP = {
+        "center": CENTER_AT_STARTUP,
+        "zoom": ZOOM_AT_STARTUP,
+        "max_bounds": MAX_BOUNDS
+    }
+
     # REGIONS
     MIN_ZOOM = 8
     MAX_ZOOM = 22
     MAX_DISTILLED_ZOOM = 10
     CLUSTER_ZOOM = 11
 
-    # MAP
+    # IMAGES
     IMAGES = []
 
     # DISTILL
