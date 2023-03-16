@@ -1,6 +1,7 @@
+from django.views.generic.base import ContextMixin
 
 
-class MapEngineMixin:
+class MapEngineMixin(ContextMixin):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
