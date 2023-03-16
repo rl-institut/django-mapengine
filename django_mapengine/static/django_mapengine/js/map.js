@@ -8,28 +8,6 @@ PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
 PubSub.subscribe(eventTopics.MAP_LOADED, add_images);
 
 
-function createMap() {
-    const setup = JSON.parse(document.getElementById("mapengine_setup").textContent);
-    const map = new maplibregl.Map(setup);
-
-    if (map_store.cold.debugMode) {
-        map.showTileBoundaries = true;
-      }
-
-    // Disable zoom on double click
-    map.doubleClickZoom.disable();
-
-    // Zoom to feature on click
-      map.on("click", function (element) {
-        flyToElement(element);
-      });
-
-    const nav = new maplibregl.NavigationControl();
-    map.addControl(nav, "bottom-left");
-    map.addControl(new maplibregl.ScaleControl({position: 'bottom-right'}));
-    return map;
-}
-
 function add_satellite(msg) {
     const layers = map.getStyle().layers;
     // Find the index of the first symbol layer in the map style
