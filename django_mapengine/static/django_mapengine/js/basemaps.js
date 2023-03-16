@@ -1,12 +1,12 @@
 const basemaps = ["satellite"];
 
 function toggleBasemap(basemap) {
-  store.cold.basemap = basemap;
+  map_store.cold.basemap = basemap;
 
   if (basemap === null) {
-    store.cold.basemapFocusElement = "basemaps__default";
+    map_store.cold.basemapFocusElement = "basemaps__default";
   } else {
-    store.cold.basemapFocusElement = `basemaps__${basemap}`;
+    map_store.cold.basemapFocusElement = `basemaps__${basemap}`;
   }
 
   const legend = document.getElementById("legend");
@@ -33,7 +33,7 @@ function toggleBasemapControl() {
   }
   else {
     basemapControl.style.display = "flex";
-    document.getElementById(store.cold.basemapFocusElement).focus();
+    document.getElementById(map_store.cold.basemapFocusElement).focus();
   }
 }
 

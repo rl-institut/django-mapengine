@@ -53,6 +53,9 @@ class MapEngineConf(AppConf):
     if MAX_BOUNDS:
         SETUP["maxBounds"] = MAX_BOUNDS
 
+    # LAYERS
+    LAYERS_AT_STARTUP: List[str] = []
+
     # REGIONS
     MIN_ZOOM: int = 8
     MAX_ZOOM: int = 22
@@ -61,6 +64,9 @@ class MapEngineConf(AppConf):
 
     # IMAGES
     IMAGES: List[Dict[str, str]] = []
+
+    # POPUPS
+    POPUPS: List[str] = []
 
     # DISTILL
     X_AT_MIN_Z = 136

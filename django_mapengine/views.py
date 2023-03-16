@@ -1,33 +1,28 @@
+from typing import List
+
+from django.conf import settings
 from django.views.generic.base import ContextMixin
+
+from . import layers, sources
 
 
 class MapEngineMixin(ContextMixin):
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-
-        context["mapengine_setup"] = settings.MAP_ENGINE_SETUP
-        context["mapengine_zoom_levels"] = settings.MAP_ENGINE_ZOOM_LEVELS
-
-        # Sources need valid URL (containing host and port), thus they have to be defined using request:
-        context["mapengine_sources"] = {
-            map_source.name: map_source.get_source(self.request) for map_source in map_config.SOURCES
+    def get_mapengine_context(self, map_sources: List[sources.MapSource], map_layers: List[layers.MapLayer]) -> dict:
+        context = {
+            "mapengine_setup": settings.MAP_ENGINE_SETUP,
+            "mapengine_zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
+            # Sources need valid URL (containing host and port), thus they have to be defined using request:
+            "mapengine_sources": {source.name: source.get_source(self.request) for source in map_sources},
+            "mapengine_layers": [layer.get_layer() for layer in map_layers],
+            "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP,
+            "mapengine_images": [image.as_dict() for image in settings.MAP_ENGINE_IMAGES],
+            "mapengine_popups": settings.MAP_ENGINE_POPUPS,
         }
-
-        context["mapengine_layers"] = [layer.get_layer() for layer in map_config.ALL_LAYERS]
-        context["mapengine_layers_at_startup"] = map_config.LAYERS_AT_STARTUP
-
-        context["mapengine_images"] = [image.as_dict() for image in settings.MAP_ENGINE_IMAGES]
-
-        context["mapengine_popups"] = map_config.POPUPS
-
         store = {
-            "popup_layers": map_config.POPUPS,
-            "region_layers": [
-                layer.id for layer in map_config.REGION_LAYERS if layer.id.startswith("fill")
-            ],
+            "popup_layers": settings.MAP_ENGINE_POPUPS,
+            "region_layers": settings.MAP_ENGINE_REGIONS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
-            "zoom_levels": map_settings.ZOOM_LEVELS,
-            "region_filter_layers": REGION_FILTER_LAYERS,
+            "zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
         }
 
         context["mapengine_store_cold_init"] = store

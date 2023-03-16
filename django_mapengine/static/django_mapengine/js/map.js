@@ -1,20 +1,18 @@
 
-const map = createMap();
-add_images();
-
 map.on("load", function () {
   PubSub.publish(eventTopics.MAP_LOADED);
 });
 
 PubSub.subscribe(eventTopics.MAP_LOADED, add_sources);
 PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
+PubSub.subscribe(eventTopics.MAP_LOADED, add_images);
 
 
 function createMap() {
     const setup = JSON.parse(document.getElementById("mapengine_setup").textContent);
     const map = new maplibregl.Map(setup);
 
-    if (store.cold.debugMode) {
+    if (map_store.cold.debugMode) {
         map.showTileBoundaries = true;
       }
 
@@ -78,10 +76,10 @@ function flyToElement(element) {
   const features = map.queryRenderedFeatures(element.point);
   let region = null;
   for (let i = 0; i < features.length; i++) {
-    if (store.cold.region_layers.includes(features[i].layer.id)) {
+    if (map_store.cold.region_layers.includes(features[i].layer.id)) {
       region = features[i];
     }
-    if (store.cold.popup_layers.includes(features[i].layer.id)) {
+    if (map_store.cold.popup_layers.includes(features[i].layer.id)) {
       return;
     }
   }

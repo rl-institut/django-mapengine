@@ -20,7 +20,7 @@ function loadResults(msg) {
 
 function changeResultView(msg) {
   const view = result_views.value;
-  if (!(view in store.cold.result_views)) {
+  if (!(view in map_store.cold.result_views)) {
     $.ajax({
       type: "GET",
       url: `choropleth/${view}/1`,
@@ -33,7 +33,7 @@ function changeResultView(msg) {
     });
   }
   else {
-    map.setPaintProperty("results", "fill-color", store.cold.result_views[view]);
+    map.setPaintProperty("results", "fill-color", map_store.cold.result_views[view]);
     PubSub.publish(eventTopics.RESULT_VIEW_UPDATED);
   }
   return logMessage(msg);
@@ -58,5 +58,5 @@ function updateResultsLayer(view, results) {
       result_feature_state
     );
   }
-  store.cold.result_views[view] = results.fill_color;
+  map_store.cold.result_views[view] = results.fill_color;
 }

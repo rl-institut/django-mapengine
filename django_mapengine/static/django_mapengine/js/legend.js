@@ -41,7 +41,7 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
 function loadLegend(){
   const title = result_views_dropdown.value;
   const unit = "unit"; //need value!
-  const data_raw = store.cold.result_views[title][2];
+  const data_raw = map_store.cold.result_views[title][2];
 
   let colors = [];
   let values = [];

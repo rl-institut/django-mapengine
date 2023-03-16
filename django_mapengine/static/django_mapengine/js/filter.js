@@ -34,7 +34,7 @@ function activate_state(msg, state, fly_to=true, async=true) {
         map.flyTo(
           {
             center: results.center,
-            zoom: store.cold.zoom_levels.state[0],
+            zoom: map_store.cold.zoom_levels.state[0],
             speed: 0.5
           }
         );
@@ -75,7 +75,7 @@ function activate_district(msg, district) {
       map.flyTo(
         {
           center: results.center,
-          zoom: store.cold.zoom_levels.district[0],
+          zoom: map_store.cold.zoom_levels.district[0],
           speed: 0.5
         }
       );
@@ -87,7 +87,7 @@ function activate_district(msg, district) {
 function change_region_filter(msg) {
   $.each(detailLayers, function(i, layerForm) {
     let layer_id = get_layer_id(layerForm);
-    if (store.cold.region_filter_layers.includes(layer_id)) {
+    if (map_store.cold.region_filter_layers.includes(layer_id)) {
       PubSub.publish(eventTopics.DETAIL_LAYER_SELECT_CHANGE, {layerForm});
     }
   });

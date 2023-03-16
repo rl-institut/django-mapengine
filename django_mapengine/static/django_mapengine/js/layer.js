@@ -49,7 +49,7 @@ function add_layers(msg)
       map.setLayoutProperty(layer.id, "visibility", "none");
     }
 
-    if (store.cold.debug) {
+    if (map_store.cold.debug) {
       map.on("click", layer.id, function (e) {
         console.log(`${layer.id}:`, e.features[0].properties.name, e.features[0]);
       });
@@ -69,7 +69,7 @@ function hideDetailLayers(msg) {
 
 function showDetailLayers(msg) {
   for (let i = 0; i < detailLayers.length; i++) {
-    $(detailLayers[i]).find(layerInputClass)[0].checked = (store.cold.staticState & 2 ** i) === 2 ** i;
+    $(detailLayers[i]).find(layerInputClass)[0].checked = (map_store.cold.staticState & 2 ** i) === 2 ** i;
     check_layer(detailLayers[i]);
   }
   return logMessage(msg);
@@ -77,7 +77,7 @@ function showDetailLayers(msg) {
 
 function checkLayerOfGivenLayerForm(msg, {layerForm}) {
   check_layer(layerForm);
-  store.cold.staticState = get_static_state();
+  map_store.cold.staticState = get_static_state();
   return logMessage(msg);
 }
 
@@ -86,7 +86,7 @@ function setDetailLayersOnDetailLayersSwitchClick(msg) {
     turn_off_layer(layer);
     $(layer).find(layerInputClass)[0].checked = false;
   });
-  store.cold.staticState = get_static_state();
+  map_store.cold.staticState = get_static_state();
   return logMessage(msg);
 }
 
@@ -154,7 +154,7 @@ function get_layer_filters(layer_form) {
 
   // Add global region filters
   const layer_id = get_layer_id(layer_form);
-  if (store.cold.region_filter_layers.includes(layer_id)) {
+  if (map_store.cold.region_filter_layers.includes(layer_id)) {
     const state = $("#id_state").val();
     if (state) {
         filters.push(
@@ -212,9 +212,9 @@ function set_filters(layer, filters, clustered) {
   let map_filters = ["all"];
 
   const level = layer.split("_").at(-1);
-  if (level in store.cold.zoom_levels) {
+  if (level in map_store.cold.zoom_levels) {
     // Cluster layer
-    const cluster_filter = ["==", ["get", "zoom_level"], store.cold.zoom_levels[level][1]];
+    const cluster_filter = ["==", ["get", "zoom_level"], map_store.cold.zoom_levels[level][1]];
     map_filters.push(cluster_filter);
   } else {
     // Vector layer
