@@ -158,7 +158,7 @@ class ClusterModelLayer(ModelLayer):
         )
 
 
-def get_region_layers() -> list[MapLayer]:
+def get_region_layers() -> Iterable[MapLayer]:
     """
     Return map layers for region-based models.
 
@@ -167,46 +167,36 @@ def get_region_layers() -> list[MapLayer]:
     - one for drawing region area and
     - one for drawing region name into center.
 
-    Returns
-    -------
+    Yields
+    ------
     list[MapLayer]
         Map layers to sow regions on map.
     """
-    return (
-        [
-            MapLayer(
-                id=f"line-{layer}",
-                type="line",
-                source=layer,
-                source_layer=layer,
-                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-                style=settings.MAP_ENGINE_LAYER_STYLES["region-line"],
-            )
-            for layer in settings.MAP_ENGINE_REGIONS
-        ]
-        + [
-            MapLayer(
-                id=f"fill-{layer}",
-                type="fill",
-                source=layer,
-                source_layer=layer,
-                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-                style=settings.MAP_ENGINE_LAYER_STYLES["region-fill"],
-            )
-            for layer in settings.MAP_ENGINE_REGIONS
-        ]
-        + [
-            MapLayer(
-                id=f"label-{layer}",
-                type="symbol",
-                source=layer,
-                source_layer=f"{layer}label",
-                maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-                minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-                style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
-            )
-            for layer in settings.MAP_ENGINE_REGIONS
-        ]
-    )
+    for layer in settings.MAP_ENGINE_REGIONS:
+        yield MapLayer(
+            id=layer,
+            type="fill",
+            source=layer,
+            source_layer=layer,
+            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+            style=settings.MAP_ENGINE_LAYER_STYLES["region-fill"],
+        )
+        yield MapLayer(
+            id=f"{layer}-line",
+            type="line",
+            source=layer,
+            source_layer=layer,
+            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+            style=settings.MAP_ENGINE_LAYER_STYLES["region-line"],
+        )
+        yield MapLayer(
+            id=f"{layer}-label",
+            type="symbol",
+            source=layer,
+            source_layer=f"{layer}label",
+            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
+            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
+            style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
+        )
