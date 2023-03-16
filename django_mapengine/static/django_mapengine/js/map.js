@@ -1,11 +1,11 @@
 
 map.on("load", function () {
-  PubSub.publish(eventTopics.MAP_LOADED);
+  PubSub.publish(mapEvent.MAP_LOADED);
 });
 
-PubSub.subscribe(eventTopics.MAP_LOADED, add_sources);
-PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
-PubSub.subscribe(eventTopics.MAP_LOADED, add_images);
+PubSub.subscribe(mapEvent.MAP_LOADED, add_sources);
+PubSub.subscribe(mapEvent.MAP_LOADED, add_satellite);
+PubSub.subscribe(mapEvent.MAP_LOADED, add_images);
 
 
 function add_satellite(msg) {
@@ -35,7 +35,7 @@ function add_sources(msg) {
     for (const source in sources) {
         map.addSource(source, sources[source]);
     }
-    PubSub.publish(eventTopics.MAP_SOURCES_LOADED);
+    PubSub.publish(mapEvent.MAP_SOURCES_LOADED);
     return logMessage(msg);
 }
 

@@ -28,7 +28,7 @@ map.on("load", function () {
 
 // On Initial Load
 PubSub.subscribe(eventTopics.STATES_INITIALIZED, hideDetailLayers);
-PubSub.subscribe(eventTopics.MAP_SOURCES_LOADED, add_layers);
+PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_layers);
 
 // Layers Detail Panel
 PubSub.subscribe(eventTopics.DETAIL_LAYER_SWITCH_CLICK, checkLayerOfGivenLayerForm);
@@ -56,7 +56,7 @@ function add_layers(msg)
       });
     }
   }
-  PubSub.publish(eventTopics.MAP_LAYERS_LOADED);
+  PubSub.publish(mapEvent.MAP_LAYERS_LOADED);
   return logMessage(msg);
 }
 

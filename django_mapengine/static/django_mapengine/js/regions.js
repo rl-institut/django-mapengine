@@ -1,6 +1,6 @@
 
-PubSub.subscribe(eventTopics.MAP_LAYERS_LOADED, activate_region_pointer);
-PubSub.subscribe(eventTopics.MAP_LAYERS_LOADED, activate_region_hovering);
+PubSub.subscribe(mapEvent.MAP_LAYERS_LOADED, activate_region_pointer);
+PubSub.subscribe(mapEvent.MAP_LAYERS_LOADED, activate_region_hovering);
 
 
 function activate_region_pointer() {

@@ -1,5 +1,5 @@
 
-PubSub.subscribe(eventTopics.MAP_SOURCES_LOADED, add_popups);
+PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_popups);
 
 
 async function fetchGetJson(url) {
