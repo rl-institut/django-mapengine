@@ -139,12 +139,9 @@ function turn_off_layer(layer_form) {
 
 function turn_on_layer(layer_form) {
   const layer_id = get_layer_id(layer_form);
-  const filters = get_layer_filters(layer_form);
-  const clustered = $(layer_form).hasClass("cluster-layer");
   const layers = map.getStyle().layers.filter(layer => layer.id.startsWith(layer_id));
   $.each(layers, function (i, layer) {
     map.setLayoutProperty(layer.id, "visibility", "visible");
-    set_filters(layer.id, filters, clustered);
   });
   return layers.map(layer => layer.id);
 }
