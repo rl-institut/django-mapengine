@@ -43,7 +43,7 @@ function add_layers(msg)
   const layers_at_startup = JSON.parse(document.getElementById("mapengine_layers_at_startup").textContent);
   for (const layer of layers) {
     map.addLayer(layer);
-    if (layers_at_startup.some(layer => layer.id.startsWith(layer))) {
+    if (layers_at_startup.some(startup_layer => layer.id.startsWith(startup_layer))) {
       map.setLayoutProperty(layer.id, "visibility", "visible");
     } else {
       map.setLayoutProperty(layer.id, "visibility", "none");
