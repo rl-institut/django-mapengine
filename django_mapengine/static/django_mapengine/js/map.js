@@ -11,7 +11,7 @@ PubSub.subscribe(eventTopics.MAP_LOADED, add_satellite);
 
 
 function createMap() {
-    const setup = JSON.parse(document.getElementById("map_setup").textContent);
+    const setup = JSON.parse(document.getElementById("mapengine_setup").textContent);
     const map = new maplibregl.Map(setup);
 
     if (store.cold.debugMode) {
@@ -55,7 +55,7 @@ function add_satellite(msg) {
 }
 
 function add_sources(msg) {
-    const sources = JSON.parse(document.getElementById("map_sources").textContent);
+    const sources = JSON.parse(document.getElementById("mapengine_sources").textContent);
     for (const source in sources) {
         map.addSource(source, sources[source]);
     }
@@ -64,7 +64,7 @@ function add_sources(msg) {
 }
 
 function add_images(msg) {
-    const map_images = JSON.parse(document.getElementById("map_images").textContent);
+    const map_images = JSON.parse(document.getElementById("mapengine_images").textContent);
     for (const map_image of map_images) {
         map.loadImage(map_image.path, function (error, image) {
             if (error) throw error;

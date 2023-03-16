@@ -40,7 +40,7 @@ function createListByName(name, series) {
 }
 
 function add_popups() {
-  const popups = JSON.parse(document.getElementById("map_popups").textContent);
+  const popups = JSON.parse(document.getElementById("mapengine_popups").textContent);
   for (const popup of popups) {
     add_popup(popup);
   }

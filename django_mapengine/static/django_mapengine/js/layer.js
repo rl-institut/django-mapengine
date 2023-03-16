@@ -39,8 +39,8 @@ PubSub.subscribe(eventTopics.DETAIL_LAYER_SELECT_CHANGE, filterChanged);
 
 function add_layers(msg)
 {
-  const layers = JSON.parse(document.getElementById("map_layers").textContent);
-  const layers_at_startup = JSON.parse(document.getElementById("layers_at_startup").textContent);
+  const layers = JSON.parse(document.getElementById("mapengine_layers").textContent);
+  const layers_at_startup = JSON.parse(document.getElementById("mapengine_layers_at_startup").textContent);
   for (const layer of layers) {
     map.addLayer(layer);
     if (layers_at_startup.includes(layer.id)) {
