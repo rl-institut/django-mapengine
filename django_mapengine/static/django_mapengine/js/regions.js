@@ -4,7 +4,7 @@ PubSub.subscribe(eventTopics.MAP_LAYERS_LOADED, activate_region_hovering);
 
 
 function activate_region_pointer() {
-  for (const region_layer of map_store.cold.region_layers) {
+  for (const region_layer of map_store.cold.regions) {
     // Show pointer cursor on fills
     map.on("mouseenter", region_layer, function () {
       map.getCanvas().style.cursor = "pointer";
@@ -16,7 +16,7 @@ function activate_region_pointer() {
 }
 
 function activate_region_hovering() {
-  for (const region_layer of map_store.cold.region_layers) {
+  for (const region_layer of map_store.cold.regions) {
     const layer = map.getLayer(region_layer)
     // When the user moves their mouse over the fill layer, we'll update the
     // feature state for the feature under the mouse.
