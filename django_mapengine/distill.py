@@ -1,6 +1,6 @@
 import range_key_dict
 
-from .conf import settings
+from django.conf import settings
 
 
 def get_region_zooms():
