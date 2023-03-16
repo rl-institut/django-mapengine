@@ -54,7 +54,7 @@ function flyToElement(element) {
   const features = map.queryRenderedFeatures(element.point);
   let region = null;
   for (let i = 0; i < features.length; i++) {
-    if (map_store.cold.region_layers.includes(features[i].layer.id)) {
+    if (map_store.cold.regions.includes(features[i].layer.id)) {
       region = features[i];
     }
     if (map_store.cold.popup_layers.includes(features[i].layer.id)) {
