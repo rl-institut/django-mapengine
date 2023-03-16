@@ -1,6 +1,6 @@
 
-const map = initMap();
 const map_store = initStore();
+const map = initMap();
 
 
 function initMap() {
