@@ -14,13 +14,13 @@ class MapEngineMixin(ContextMixin):
             # Sources need valid URL (containing host and port), thus they have to be defined using request:
             "mapengine_sources": {source.name: source.get_source(self.request) for source in map_sources},
             "mapengine_layers": [layer.get_layer() for layer in map_layers],
-            "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP,
+            "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP + settings.MAP_ENGINE_REGIONS,
             "mapengine_images": [image.as_dict() for image in settings.MAP_ENGINE_IMAGES],
             "mapengine_popups": settings.MAP_ENGINE_POPUPS,
         }
         store = {
             "popup_layers": settings.MAP_ENGINE_POPUPS,
-            "region_layers": settings.MAP_ENGINE_REGIONS,
+            "regions": settings.MAP_ENGINE_REGIONS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
         }
