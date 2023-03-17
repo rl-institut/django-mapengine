@@ -19,24 +19,6 @@ urlpatterns += [
     for name, layers in registry.mvt_registry.items()
 ]
 
-
-def get_all_statics_for_state_lod(view_name: str) -> tuple[int, int, int]:
-    """Return distill coordinates for given layer.
-
-    Parameters
-    ----------
-    view_name: str
-        Layer name
-
-    Yields
-    ------
-    tuple[int, int, int]
-        Holding x,y,z
-    """
-    for x, y, z in distill.get_coordinates_for_distilling(view_name):
-        yield z, x, y
-
-
 # Distill MVT-urls:
 if settings.MAP_ENGINE_DISTILL:
     urlpatterns += [
@@ -44,7 +26,7 @@ if settings.MAP_ENGINE_DISTILL:
             f"<int:z>/<int:x>/<int:y>/{name}.mvt",
             mvt.mvt_view_factory(name, layers),
             name=name,
-            distill_func=get_all_statics_for_state_lod,
+            distill_func=distill.get_all_statics_for_state_lod,
             distill_status_codes=(200, 204, 400),
         )
         for name, layers in registry.mvt_registry.items()

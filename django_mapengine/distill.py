@@ -29,3 +29,20 @@ def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
                 if layer in settings.REGIONS and get_region_zooms()[z] != layer:
                     continue
                 yield x, y, z
+
+
+def get_all_statics_for_state_lod(view_name: str) -> tuple[int, int, int]:
+    """Return distill coordinates for given layer.
+
+    Parameters
+    ----------
+    view_name: str
+        Layer name
+
+    Yields
+    ------
+    tuple[int, int, int]
+        Holding x,y,z
+    """
+    for x, y, z in distill.get_coordinates_for_distilling(view_name):
+        yield z, x, y
