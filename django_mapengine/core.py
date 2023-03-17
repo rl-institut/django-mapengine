@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from django.conf import settings
 
 
-Zoom = namedtuple("MinMax", ["min", "max"])
+Zoom = namedtuple("MinMax", ("min", "max"))
+Cluster = namedtuple("Cluster", ("name", "app", "model"))
 
 
 @dataclass

@@ -53,6 +53,11 @@ class MapEngineConf(AppConf):
     if MAX_BOUNDS:
         SETUP["maxBounds"] = MAX_BOUNDS
 
+    # MVTS and CLUSTERS
+
+    MVTS = {}
+    CLUSTERS = []
+
     # LAYERS
     LAYERS_AT_STARTUP: List[str] = []
 
