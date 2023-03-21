@@ -3,20 +3,25 @@ from django.conf import settings
 from django.urls import path
 from django_distill import distill_path
 from djgeojson.views import GeoJSONLayerView
-from django.apps import apps
 
-from . import views, distill, mvt, registry
+from . import views, distill, mvt, setup
 
 app_name = "django_mapengine"
 
 urlpatterns = [
-    path(f"clusters/{name}.geojson", GeoJSONLayerView.as_view(model=model))
-    for name, model in registry.cluster_registry.items()
+    path(
+        f"clusters/{cluster.layer_id}.geojson",
+        GeoJSONLayerView.as_view(model=cluster.model)
+    )
+    for cluster in settings.MAP_ENGINE_API_CLUSTERS
 ]
 
 urlpatterns += [
-    path(f"{name}_mvt/<int:z>/<int:x>/<int:y>/", mvt.mvt_view_factory(name, layers))
-    for name, layers in registry.mvt_registry.items()
+    path(
+        f"{name}_mvt/<int:z>/<int:x>/<int:y>/",
+        mvt.mvt_view_factory(name, [mvt.MVTLayer(mvt_api.layer_id, queryset=mvt_api.manager) for mvt_api in mvt_apis])
+    )
+    for name, mvt_apis in settings.MAP_ENGINE_API_MVTS.items()
 ]
 
 # Distill MVT-urls:

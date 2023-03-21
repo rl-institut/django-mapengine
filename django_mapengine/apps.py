@@ -8,7 +8,7 @@ import environ
 from appconf import AppConf
 from django.conf import settings
 
-from . import choropleth, core
+from . import choropleth, setup
 
 env = environ.Env()
 
@@ -55,8 +55,8 @@ class MapEngineConf(AppConf):
 
     # MVTS and CLUSTERS
 
-    MVTS = {}
-    CLUSTERS = []
+    API_MVTS = {}
+    API_CLUSTERS = []
 
     # LAYERS
     LAYERS_AT_STARTUP: List[str] = []
