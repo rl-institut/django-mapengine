@@ -11,6 +11,8 @@ from django.contrib.gis.db.models import Model
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from django_mapengine import setup
+
 
 @dataclass
 class MapLayer:
@@ -190,3 +192,33 @@ def get_region_layers() -> Iterable[MapLayer]:
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
             style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
         )
+
+
+def get_cluster_layers() -> Iterable[ClusterModelLayer]:
+    for cluster in settings.MAP_ENGINE_API_CLUSTERS:
+        yield ClusterModelLayer(id=cluster.layer_id, model=cluster.model, source=cluster.layer_id)
+
+
+def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
+    """
+    Search for layer API defined in settings
+
+    Parameters
+    ----------
+    layer_id : str
+        ID/Name of the layer
+
+    Returns
+    -------
+    ModelAPI
+        API of a model source
+    """
+    for cluster in settings.MAP_ENGINE_API_CLUSTERS:
+        if cluster.layer_id == layer_id:
+            return cluster
+    for mvts in settings.MAP_ENGINE_API_MVTS.values():
+        for mvt in mvts:
+            if mvt.layer_id == layer_id:
+                return mvt
+    raise KeyError(f"Layer {layer_id=} not found.")
+
