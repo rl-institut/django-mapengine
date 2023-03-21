@@ -17,7 +17,6 @@ class MapLayer:
     """Default map layer used in maplibre."""
 
     id: str  # noqa: A003
-    type: str  # noqa: A003
     source: str
     style: dict
     source_layer: Optional[str] = None
@@ -33,7 +32,7 @@ class MapLayer:
         dict
             to be used as layer in maplibre.
         """
-        layer = {"id": self.id, "type": self.type, "source": self.source, **self.style}
+        layer = {"id": self.id, "source": self.source, **self.style}
         if self.source_layer:
             layer["source-layer"] = self.source_layer
         for attr_name in ("minzoom", "maxzoom"):
@@ -48,7 +47,6 @@ class ModelLayer:
 
     id: str  # noqa: A003
     model: Model.__class__
-    type: str  # noqa: A003
     source: str
 
 
@@ -103,7 +101,6 @@ class StaticModelLayer(ModelLayer):
         """
         yield MapLayer(
             id=self.id,
-            type=self.type,
             source=self.source,
             source_layer=self.id,
             minzoom=self.min_zoom(),
@@ -113,7 +110,6 @@ class StaticModelLayer(ModelLayer):
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
                 id=f"{self.id}_distilled",
-                type=self.type,
                 source=f"{self.source}_distilled",
                 source_layer=self.id,
                 minzoom=self.min_zoom(distill=True),
@@ -140,19 +136,16 @@ class ClusterModelLayer(ModelLayer):
         """
         yield MapLayer(
             id=self.id,
-            type=self.type,
             source=self.source,
             style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
         )
         yield MapLayer(
             id=f"{self.id}_cluster",
-            type="circle",
             source=self.source,
             style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster"],
         )
         yield MapLayer(
             id=f"{self.id}_cluster_count",
-            type="symbol",
             source=self.source,
             style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster_count"],
         )
@@ -175,7 +168,6 @@ def get_region_layers() -> Iterable[MapLayer]:
     for layer in settings.MAP_ENGINE_REGIONS:
         yield MapLayer(
             id=layer,
-            type="fill",
             source=layer,
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
@@ -184,7 +176,6 @@ def get_region_layers() -> Iterable[MapLayer]:
         )
         yield MapLayer(
             id=f"{layer}-line",
-            type="line",
             source=layer,
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
@@ -193,7 +184,6 @@ def get_region_layers() -> Iterable[MapLayer]:
         )
         yield MapLayer(
             id=f"{layer}-label",
-            type="symbol",
             source=layer,
             source_layer=f"{layer}label",
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
