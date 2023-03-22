@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 class MapLayer:
     """Default map layer used in maplibre."""
 
+    # pylint:disable=C0103
     id: str  # noqa: A003
     source: str
     style: dict
@@ -47,6 +48,7 @@ class MapLayer:
 class ModelLayer:
     """Defines a layer by using a django model."""
 
+    # pylint:disable=C0103
     id: str  # noqa: A003
     model: Model.__class__
     source: str
@@ -70,7 +72,11 @@ class StaticModelLayer(ModelLayer):
         int
             Minimal zoom
         """
-        return settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1 if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS else settings.MAP_ENGINE_MIN_ZOOM
+        return (
+            settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
+            if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS
+            else settings.MAP_ENGINE_MIN_ZOOM
+        )
 
     @staticmethod
     def max_zoom(*, distill: bool = False) -> int:
@@ -164,8 +170,8 @@ def get_region_layers() -> Iterable[MapLayer]:
 
     Yields
     ------
-    list[MapLayer]
-        Map layers to sow regions on map.
+    MapLayer
+        Map layers to show regions on map.
     """
     for layer in settings.MAP_ENGINE_REGIONS:
         yield MapLayer(
@@ -194,7 +200,33 @@ def get_region_layers() -> Iterable[MapLayer]:
         )
 
 
+def get_static_layers() -> Iterable[StaticModelLayer]:
+    """
+    Return model layers for static-based MVTs.
+
+    As multiple layers can have same source (via source_layer), API_MVTs is a dict where key is used as parent source.
+
+    Yields
+    ------
+    StaticModelLayer
+        Static model layers to show models on map.
+    """
+    for source, mvt_apis in settings.MAP_ENGINE_API_MVTS.items():
+        if source in settings.MAP_ENGINE_REGIONS:
+            continue
+        for mvt_api in mvt_apis:
+            yield StaticModelLayer(id=mvt_api.layer_id, model=mvt_api.model, source=source)
+
+
 def get_cluster_layers() -> Iterable[ClusterModelLayer]:
+    """
+    Return clustered model layers for preparing geojsons.
+
+    Yields
+    ------
+    ClusterModelLayer
+        Clustered model layers to show on map.
+    """
     for cluster in settings.MAP_ENGINE_API_CLUSTERS:
         yield ClusterModelLayer(id=cluster.layer_id, model=cluster.model, source=cluster.layer_id)
 
@@ -212,6 +244,11 @@ def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
     -------
     ModelAPI
         API of a model source
+
+    Raises
+    ------
+    KeyError
+        if layer ID cannot be found
     """
     for cluster in settings.MAP_ENGINE_API_CLUSTERS:
         if cluster.layer_id == layer_id:
@@ -221,4 +258,3 @@ def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
             if mvt.layer_id == layer_id:
                 return mvt
     raise KeyError(f"Layer {layer_id=} not found.")
-

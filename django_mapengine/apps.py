@@ -2,13 +2,13 @@
 
 import json
 import pathlib
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 import environ
 from appconf import AppConf
 from django.conf import settings
 
-from . import choropleth, setup
+from . import choropleth
 
 env = environ.Env()
 
@@ -82,6 +82,12 @@ class MapEngineConf(AppConf):
     ZOOM_LEVELS = settings.MAP_ENGINE_ZOOM_LEVELS
     REGIONS = list(ZOOM_LEVELS)
 
+    # pylint:disable=R0903
     class Meta:
-        proxy = True
-        prefix = 'MAP_ENGINE'
+        """
+        App config meta
+
+        Sets prefix to be used in settings, so that i.e. "POPUPS" becomes "MAP_ENGINE_POPUPS".
+        """
+
+        prefix = "MAP_ENGINE"
