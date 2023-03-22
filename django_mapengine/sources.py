@@ -131,6 +131,19 @@ def get_static_sources() -> Iterable[MapSource]:
             yield MapSource(f"{source}_distilled", type="vector", tiles=[f"static/mvts/{{z}}/{{x}}/{{y}}/{source}.mvt"])
 
 
+def get_cluster_sources() -> Iterable[MapSource]:
+    """
+    Return geojson sources for all clusters
+
+    Yields
+    ------
+    MapSource
+        for each cluster
+    """
+    for cluster in settings.MAP_ENGINE_API_CLUSTERS:
+        yield ClusterMapSource(cluster.layer_id, type="geojson", url=f"map/clusters/{cluster.layer_id}.geojson")
+
+
 def get_satellite_source() -> MapSource:
     """
     Return source for satellite basemap

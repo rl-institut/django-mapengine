@@ -108,3 +108,30 @@ def test_distilled_static_sources_from_settings():
     assert static_sources[1].url is None
     assert static_sources[1].minzoom is None
     assert static_sources[1].maxzoom is None
+
+
+def test_cluster_sources_from_settings():
+    """Test cluster sources from setings"""
+    settings.MAP_ENGINE_USE_DISTILLED_MVTS = False
+
+    cluster_sources = list(sources.get_cluster_sources())
+
+    assert len(cluster_sources) == 2
+
+    assert isinstance(cluster_sources[0], sources.MapSource)
+    assert cluster_sources[0].name == "wind"
+    assert cluster_sources[0].type == "geojson"
+    assert cluster_sources[0].promote_id == "id"
+    assert cluster_sources[0].tiles is None
+    assert cluster_sources[0].url == "map/clusters/wind.geojson"
+    assert cluster_sources[0].minzoom is None
+    assert cluster_sources[0].maxzoom is None
+
+    assert isinstance(cluster_sources[1], sources.MapSource)
+    assert cluster_sources[1].name == "pvroof"
+    assert cluster_sources[1].type == "geojson"
+    assert cluster_sources[1].promote_id == "id"
+    assert cluster_sources[1].tiles is None
+    assert cluster_sources[1].url == "map/clusters/pvroof.geojson"
+    assert cluster_sources[1].minzoom is None
+    assert cluster_sources[1].maxzoom is None
