@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
 
@@ -161,3 +161,19 @@ def get_satellite_source() -> MapSource:
             f"{{z}}/{{x}}/{{y}}.jpg?key={settings.MAP_ENGINE_TILING_SERVICE_TOKEN}",
         ],
     )
+
+
+def get_all_sources() -> List[MapSource]:
+    """
+    Return all map sources for regions, satellite, statics and clusters
+
+    Returns
+    -------
+    List[MapSource]
+        all map sources
+    """
+    sources = list(get_region_sources())
+    sources.append(get_satellite_source())
+    sources.extend(get_static_sources())
+    sources.extend(get_cluster_sources())
+    return sources

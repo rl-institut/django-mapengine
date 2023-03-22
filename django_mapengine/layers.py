@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
 from django.contrib.gis.db.models import Model
@@ -130,7 +130,7 @@ class StaticModelLayer(ModelLayer):
 class ClusterModelLayer(ModelLayer):
     """Holds logic for clustered layers from django models."""
 
-    def get_map_layers(self) -> MapLayer:
+    def get_map_layers(self) -> Iterable[MapLayer]:
         """
         Return map layers for clustered model data.
 
@@ -258,3 +258,21 @@ def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
             if mvt.layer_id == layer_id:
                 return mvt
     raise KeyError(f"Layer {layer_id=} not found.")
+
+
+def get_all_layers() -> List[MapLayer]:
+    """
+    Return region, static and cluster layers as list
+
+    Returns
+    -------
+    List[MapLayer]
+        List of all region, static and cluster layers
+    """
+    # Order is important! Last items are shown on top!
+    layers = list(get_region_layers())
+    for cluster_layer in get_cluster_layers():
+        layers.extend(cluster_layer.get_map_layers())
+    for static_layer in get_static_layers():
+        layers.extend(static_layer.get_map_layers())
+    return layers
