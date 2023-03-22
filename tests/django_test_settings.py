@@ -16,3 +16,16 @@ MAP_ENGINE_ZOOM_LEVELS = {
 MAP_ENGINE_USE_DISTILLED_MVTS = False
 MAP_ENGINE_MAX_DISTILLED_ZOOM = 10
 MAP_ENGINE_CLUSTER_ZOOM = 8
+
+MAP_ENGINE_API_MVTS = {
+    "municipality": [
+        setup.MVTAPI("municipality", "test_app", "Municipality"),
+        setup.MVTAPI("municipalitylabel", "test_app", "Municipality", "label_tiles"),
+    ],
+    "static": [setup.MVTAPI("wind", "test_app", "WindTurbine"), setup.MVTAPI("pvroof", "test_app", "PVRoof")],
+}
+
+MAP_ENGINE_API_CLUSTERS = [
+    setup.ClusterAPI("wind", "test_app", "WindTurbine"),
+    setup.ClusterAPI("pvroof", "test_app", "PVroof"),
+]

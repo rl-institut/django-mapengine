@@ -110,3 +110,41 @@ def get_region_sources() -> Iterable[MapSource]:
     else:
         for region in settings.MAP_ENGINE_REGIONS:
             yield MapSource(name=region, type="vector", tiles=[f"map/{region}_mvt/{{z}}/{{x}}/{{y}}/"])
+
+
+def get_static_sources() -> Iterable[MapSource]:
+    """
+    Return sources for all MVTs other than region- or cluster-based
+
+    If distilling is used, a second map source for each API is yield, regarding the distilled MVTs.
+
+    Yields
+    ------
+    MapSource
+        for each MVT API which is not a region
+    """
+    for source in settings.MAP_ENGINE_API_MVTS:
+        if source in settings.MAP_ENGINE_REGIONS:
+            continue
+        yield MapSource(source, type="vector", tiles=[f"map/{source}_mvt/{{z}}/{{x}}/{{y}}/"])
+        if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
+            yield MapSource(f"{source}_distilled", type="vector", tiles=[f"static/mvts/{{z}}/{{x}}/{{y}}/{source}.mvt"])
+
+
+def get_satellite_source() -> MapSource:
+    """
+    Return source for satellite basemap
+
+    Returns
+    -------
+    MapSource
+        of satellite raster
+    """
+    return MapSource(
+        "satellite",
+        type="raster",
+        tiles=[
+            "https://api.maptiler.com/tiles/satellite-v2/"
+            f"{{z}}/{{x}}/{{y}}.jpg?key={settings.MAP_ENGINE_TILING_SERVICE_TOKEN}",
+        ],
+    )
