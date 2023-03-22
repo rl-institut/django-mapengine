@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Optional
 from django.conf import settings
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from django.http import HttpRequest
 
 
@@ -83,3 +85,28 @@ class ClusterMapSource(MapSource):
         source["cluster"] = True
         source["clusterMaxZoom"] = self.cluster_max_zoom
         return source
+
+
+def get_region_sources() -> Iterable[MapSource]:
+    """
+    Return region sources from mapengine settings
+
+    Yields
+    ------
+    MapSource
+        (Distilled) map sources for all regions
+    """
+    if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
+        for region in settings.MAP_ENGINE_REGIONS:
+            if settings.MAP_ENGINE_ZOOM_LEVELS[region].min >= settings.MAP_ENGINE_MAX_DISTILLED_ZOOM:
+                yield MapSource(name=region, type="vector", tiles=[f"map/{region}_mvt/{{z}}/{{x}}/{{y}}/"])
+            else:
+                yield MapSource(
+                    name=region,
+                    type="vector",
+                    tiles=[f"static/mvts/{{z}}/{{x}}/{{y}}/{region}.mvt"],
+                    maxzoom=settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1,
+                )
+    else:
+        for region in settings.MAP_ENGINE_REGIONS:
+            yield MapSource(name=region, type="vector", tiles=[f"map/{region}_mvt/{{z}}/{{x}}/{{y}}/"])
