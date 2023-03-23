@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Added
+- layer style lookup to utils and legend layer
+
 ## [0.2.0] - 2023-03-23
 ### Added
 - sources, layers and API interfaces are built from settings

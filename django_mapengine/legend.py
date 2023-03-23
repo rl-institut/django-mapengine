@@ -33,6 +33,18 @@ class LegendLayer:
             return self.color
         return utils.get_color(self.get_layer_id())
 
+    @property
+    def style(self) -> dict:
+        """
+        Return layer style
+
+        Returns
+        -------
+        dict
+            layer style
+        """
+        return utils.get_layer_style(self.get_layer_id())
+
     def get_layer_id(self) -> str:
         """
         Return layer id either from layer or from user input
