@@ -39,6 +39,7 @@ class MapEngineMixin(ContextMixin):
             }
         )
         store = {
+            "debugMode": settings.MAP_ENGINE_DEBUG,
             "popups": {popup.layer_id: popup.as_dict() for popup in settings.MAP_ENGINE_POPUPS},
             "regions": settings.MAP_ENGINE_REGIONS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)

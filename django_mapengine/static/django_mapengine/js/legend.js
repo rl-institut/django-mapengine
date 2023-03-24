@@ -1,6 +1,6 @@
 const legendElement = document.getElementById("legend");
 
-PubSub.subscribe(eventTopics.CHOROPLETH_UPDATED, loadLegend);
+PubSub.subscribe(mapEvent.CHOROPLETH_UPDATED, loadLegend);
 
 /**
  * Returns a legend HTML element as a string.
@@ -37,15 +37,25 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
 };
 
 
-function loadLegend(choroplethName){
+function loadLegend(msg, choroplethName){
   const unit = "unit"; //need value!
-  const data_raw = map_store.cold.storedChoroplethColors[layerID][choroplethName];
+  const paintPropertiesPerLayer = map_store.cold.storedChoroplethPaintProperties[choroplethName];
+
+  /* Find active layer */
+  let paintProperties = null;
+  for (const layerID in paintPropertiesPerLayer) {
+    const layer = map.getLayer(layerID);
+    if (map.getZoom() > layer.minzoom && map.getZoom() < layer.maxzoom){
+      paintProperties = paintPropertiesPerLayer[layerID];
+      break
+    }
+  }
 
   let colors = [];
   let values = [];
 
-  for (const element in data_raw) {
-    let current = data_raw[element];
+  for (const element in paintProperties["fill-color"]) {
+    let current = paintProperties["fill-color"][element];
 
     if (typeof(current) == "number") {
       if (Number.isInteger(current) === false){
@@ -66,6 +76,7 @@ function loadLegend(choroplethName){
   }
   const entriesPerColumn = Math.floor(values.length / 2);
   legendElement.innerHTML = createLegend(choroplethName, unit, colors, values, entriesPerColumn);
+  return logMessage(msg);
 }
 
 

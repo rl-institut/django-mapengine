@@ -14,6 +14,7 @@ function activateChoropleth(msg, choroplethName) {
       $.ajax({
         type: "GET",
         url: `choropleth/${choroplethName}/${layerID}`,
+        async: false,
         dataType: 'json',
         success: function (choroplethData) {
           if (map_store.cold.choropleths[choroplethName].useFeatureState) {

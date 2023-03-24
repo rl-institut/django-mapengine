@@ -19,6 +19,8 @@ class MapEngineConf(AppConf):
     default_auto_field = "django.db.models.BigAutoField"
     name = "django_mapengine"
 
+    DEBUG = getattr(settings, "DEBUG", False)
+
     # If given, use local PROJ_LIB environment variable
     if env("PROJ_LIB", default=False):
         PROJ_LIB = env("PROJ_LIB")
@@ -43,7 +45,7 @@ class MapEngineConf(AppConf):
     # MAP
     CENTER_AT_STARTUP: Tuple[int, int] = settings.MAP_ENGINE_CENTER_AT_STARTUP
     ZOOM_AT_STARTUP: int = settings.MAP_ENGINE_ZOOM_AT_STARTUP
-    MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)
+    MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)  # Must use getattr, as MAX_BOUNDS is used directly
     SETUP = {
         "container": "map",
         "style": f"https://api.maptiler.com/maps/{TILING_SERVICE_STYLE_ID}/style.json?key={TILING_SERVICE_TOKEN}",
