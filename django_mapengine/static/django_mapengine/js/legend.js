@@ -1,7 +1,6 @@
 const legendElement = document.getElementById("legend");
-const result_views_dropdown = document.getElementById("result_views");
 
-PubSub.subscribe(eventTopics.RESULT_VIEW_UPDATED, loadLegend);
+PubSub.subscribe(eventTopics.CHOROPLETH_UPDATED, loadLegend);
 
 /**
  * Returns a legend HTML element as a string.
@@ -38,10 +37,9 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
 };
 
 
-function loadLegend(){
-  const title = result_views_dropdown.value;
+function loadLegend(choroplethName){
   const unit = "unit"; //need value!
-  const data_raw = map_store.cold.result_views[title][2];
+  const data_raw = map_store.cold.storedChoroplethColors[layerID][choroplethName];
 
   let colors = [];
   let values = [];
@@ -67,7 +65,7 @@ function loadLegend(){
     }
   }
   const entriesPerColumn = Math.floor(values.length / 2);
-  legendElement.innerHTML = createLegend(title, unit, colors, values, entriesPerColumn);
+  legendElement.innerHTML = createLegend(choroplethName, unit, colors, values, entriesPerColumn);
 }
 
 

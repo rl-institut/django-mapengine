@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from django.apps import apps
 from django.conf import settings
@@ -97,3 +97,24 @@ class MapImage:
             holding name and path of image
         """
         return {"name": self.name, "path": self.path}
+
+
+@dataclass
+class Choropleth:
+    """Choropleth class used to setup choropleths in project settings"""
+
+    name: str
+    layers: List[str]
+    use_feature_state: bool = True
+    opacity: float = 1.0
+
+    def as_dict(self) -> dict:
+        """
+        Return layers and useFeatureState as dict for choropleths in map engine
+
+        Returns
+        -------
+        dict
+            holding choropleth values needed in map setups
+        """
+        return {"layers": self.layers, "useFeatureState": self.use_feature_state}

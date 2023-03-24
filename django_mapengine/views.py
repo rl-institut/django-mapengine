@@ -44,6 +44,7 @@ class MapEngineMixin(ContextMixin):
             "regions": settings.MAP_ENGINE_REGIONS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
+            "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
         }
 
         context["mapengine_store_cold_init"] = store

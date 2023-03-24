@@ -27,6 +27,11 @@ function initMap() {
 
 
 function initStore() {
-    const store_cold_init = JSON.parse(document.getElementById("mapengine_store_cold_init").textContent);
-    return new Store(store_cold_init);
+    const storeColdInit = JSON.parse(document.getElementById("mapengine_store_cold_init").textContent);
+    storeColdInit.storedChoroplethPaintProperties = {"default": {}};
+    for (const choroplethName in storeColdInit.choropleths) {
+        storeColdInit.storedChoroplethPaintProperties[choroplethName] = {};
+    }
+    storeColdInit.currentChoropleth = null;
+    return new Store(storeColdInit);
 }
