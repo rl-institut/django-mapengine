@@ -2,7 +2,7 @@
 
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 from django.apps import apps
 from django.conf import settings
@@ -101,12 +101,11 @@ class MapImage:
 
 @dataclass
 class Choropleth:
-    """Choropleth class used to setup choropleths in project settings"""
+    """Choropleth class used to set up choropleths in project settings"""
 
     name: str
     layers: List[str]
     use_feature_state: bool = True
-    opacity: float = 1.0
 
     def as_dict(self) -> dict:
         """
@@ -118,3 +117,27 @@ class Choropleth:
             holding choropleth values needed in map setups
         """
         return {"layers": self.layers, "useFeatureState": self.use_feature_state}
+
+
+@dataclass
+class Popup:
+    """Popup class used to set up popups in project settings"""
+
+    layer_id: str
+    popup_at_default_layer: bool = True
+    choropleths: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """
+        Return dict for popups in map engine
+
+        Returns
+        -------
+        dict
+            holding popup values needed in map setups
+        """
+        return {
+            "layerID": self.layer_id,
+            "atDefaultLayer": self.popup_at_default_layer,
+            "choropleths": self.choropleths,
+        }

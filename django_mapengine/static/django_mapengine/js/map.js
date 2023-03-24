@@ -57,7 +57,7 @@ function flyToElement(element) {
     if (map_store.cold.regions.includes(features[i].layer.id)) {
       region = features[i];
     }
-    if (map_store.cold.popup_layers.includes(features[i].layer.id)) {
+    if (checkPop(features[i].layer.id)) {
       return;
     }
   }

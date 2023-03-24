@@ -68,6 +68,7 @@ function deactivateChoropleth(choroplethName) {
       setPaintProperties(layerID, map_store.cold.storedChoroplethPaintProperties["default"][layerID]);
     }
   }
+  map_store.cold.currentChoropleth = null;
 }
 
 function setPaintProperties(layerID, paintProperties) {

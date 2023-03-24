@@ -39,30 +39,40 @@ function createListByName(name, series) {
   return list;
 }
 
+function checkPop(layerID) {
+  if (!(layerID in map_store.cold.popups)) return false;
+  if (map_store.cold.currentChoropleth === null) {
+    return map_store.cold.popups[layerID].atDefaultLayer;
+  } else {
+    if (map_store.cold.popups[layerID].choropleths === null) return false;
+    if (!map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth)) return false;
+  }
+  return true;
+}
+
 function add_popups() {
-  const popups = JSON.parse(document.getElementById("mapengine_popups").textContent);
-  for (const popup of popups) {
+  for (const popup in map_store.cold.popups) {
     add_popup(popup);
   }
 }
 
-function add_popup(layer_id) {
-  map.on("click", layer_id, function (event) {
+function add_popup(layerID) {
+  map.on("click", layerID, function (event) {
     /*
       Check if popup already exists
     */
     if ($('.mapboxgl-popup').length > 0) {
       return;
     }
-
+    if (!checkPop(layerID)) return;
     /*
       Construct Coordinates From Event
     */
     const coordinates = createCoordinates(event);
 
-    const region_id = event.features[0].properties.id;
-    const lookup = document.getElementById('result_views').value;
-    const url = `/popup/${lookup}/${region_id}?lang=en`;
+    const featureID = event.features[0].properties.id;
+    const lookup = map_store.cold.currentChoropleth === null ? layerID : map_store.cold.currentChoropleth;
+    const url = `/popup/${lookup}/${featureID}?lang=en`;
 
     fetchGetJson(url).then(
       (response) => {

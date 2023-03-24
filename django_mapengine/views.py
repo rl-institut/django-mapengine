@@ -36,11 +36,10 @@ class MapEngineMixin(ContextMixin):
                 "mapengine_layers": [layer.get_layer() for layer in layers.get_all_layers()],
                 "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP + settings.MAP_ENGINE_REGIONS,
                 "mapengine_images": [image.as_dict() for image in settings.MAP_ENGINE_IMAGES],
-                "mapengine_popups": settings.MAP_ENGINE_POPUPS,
             }
         )
         store = {
-            "popup_layers": settings.MAP_ENGINE_POPUPS,
+            "popups": {popup.layer_id: popup.as_dict() for popup in settings.MAP_ENGINE_POPUPS},
             "regions": settings.MAP_ENGINE_REGIONS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
