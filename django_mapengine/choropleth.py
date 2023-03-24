@@ -112,20 +112,13 @@ class Choropleth:
             error_msg = f"Too many choropleth values given for {name=}."
             raise IndexError(error_msg)
         colors = colorbrewer.sequential["multihue"][choropleth_config["color_palette"]][len(steps)]
-        # case (and default color black) is needed in order to supress no-number warnings
         fill_color = [
-            "case",
-            ["!=", ["to-number", ["feature-state", name]], 0],
-        ]
-        interpolate = [
             "interpolate",
             ["linear"],
             ["feature-state", name],
         ]
         for value, color in zip(steps, colors):
-            interpolate.append(value)
+            fill_color.append(value)
             rgb_color = f"rgb({color[0]}, {color[1]}, {color[2]})"
-            interpolate.append(rgb_color)
-        fill_color.append(interpolate)
-        fill_color.append("rgba(0, 0, 0, 0)")
+            fill_color.append(rgb_color)
         return fill_color
