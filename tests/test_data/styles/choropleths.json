@@ -1,1 +1,15 @@
-{}
+{
+  "with_values": {
+    "color_palette": "GnBu",
+    "values": [
+      0.3,
+      0.6,
+      0.8,
+      1.0
+    ]
+  },
+  "without_values": {
+    "color_palette": "YlGnBu",
+    "num_colors": 6
+  }
+}
