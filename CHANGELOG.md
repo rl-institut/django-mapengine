@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.4.2] - 2023-03-30
+### Fixed
+- map urls for projects using i18n patterns
+
 ## [0.4.1] - 2023-03-24
 ### Fixed
 - choropleth legend

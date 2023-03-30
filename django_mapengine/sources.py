@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional
 
+from django import urls
 from django.conf import settings
 
 if TYPE_CHECKING:
@@ -52,10 +53,13 @@ class MapSource:
             source["maxzoom"] = self.maxzoom
         if self.type in ("vector", "raster"):
             source["tiles"] = [
-                tile if tile.startswith("http") else f"{request.get_raw_uri()}{tile}" for tile in self.tiles
+                tile if tile.startswith("http") else f"{request.scheme}://{request.get_host()}{tile}"
+                for tile in self.tiles
             ]
         elif self.type == "geojson":
-            source["data"] = self.url if self.url.startswith("http") else f"{request.get_raw_uri()}{self.url}"
+            source["data"] = (
+                self.url if self.url.startswith("http") else f"{request.scheme}://{request.get_host()}{self.url}"
+            )
         else:
             raise TypeError(f"Unsupported source type '{self.type}'.")
         return source
@@ -96,20 +100,21 @@ def get_region_sources() -> Iterable[MapSource]:
     MapSource
         (Distilled) map sources for all regions
     """
+    app_url = urls.reverse_lazy("django_mapengine:index")
     if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
         for region in settings.MAP_ENGINE_REGIONS:
             if settings.MAP_ENGINE_ZOOM_LEVELS[region].min >= settings.MAP_ENGINE_MAX_DISTILLED_ZOOM:
-                yield MapSource(name=region, type="vector", tiles=[f"map/{region}_mvt/{{z}}/{{x}}/{{y}}/"])
+                yield MapSource(name=region, type="vector", tiles=[f"{app_url}{region}_mvt/{{z}}/{{x}}/{{y}}/"])
             else:
                 yield MapSource(
                     name=region,
                     type="vector",
-                    tiles=[f"static/mvts/{{z}}/{{x}}/{{y}}/{region}.mvt"],
+                    tiles=[f"{app_url}static/mvts/{{z}}/{{x}}/{{y}}/{region}.mvt"],
                     maxzoom=settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1,
                 )
     else:
         for region in settings.MAP_ENGINE_REGIONS:
-            yield MapSource(name=region, type="vector", tiles=[f"map/{region}_mvt/{{z}}/{{x}}/{{y}}/"])
+            yield MapSource(name=region, type="vector", tiles=[f"{app_url}{region}_mvt/{{z}}/{{x}}/{{y}}/"])
 
 
 def get_static_sources() -> Iterable[MapSource]:
@@ -123,12 +128,15 @@ def get_static_sources() -> Iterable[MapSource]:
     MapSource
         for each MVT API which is not a region
     """
+    app_url = urls.reverse_lazy("django_mapengine:index")
     for source in settings.MAP_ENGINE_API_MVTS:
         if source in settings.MAP_ENGINE_REGIONS:
             continue
-        yield MapSource(source, type="vector", tiles=[f"map/{source}_mvt/{{z}}/{{x}}/{{y}}/"])
+        yield MapSource(source, type="vector", tiles=[f"{app_url}{source}_mvt/{{z}}/{{x}}/{{y}}/"])
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
-            yield MapSource(f"{source}_distilled", type="vector", tiles=[f"static/mvts/{{z}}/{{x}}/{{y}}/{source}.mvt"])
+            yield MapSource(
+                f"{source}_distilled", type="vector", tiles=[f"{app_url}static/mvts/{{z}}/{{x}}/{{y}}/{source}.mvt"]
+            )
 
 
 def get_cluster_sources() -> Iterable[MapSource]:
@@ -141,7 +149,9 @@ def get_cluster_sources() -> Iterable[MapSource]:
         for each cluster
     """
     for cluster in settings.MAP_ENGINE_API_CLUSTERS:
-        yield ClusterMapSource(cluster.layer_id, type="geojson", url=f"map/clusters/{cluster.layer_id}.geojson")
+        yield ClusterMapSource(
+            cluster.layer_id, type="geojson", url=urls.reverse_lazy(f"django_mapengine:{cluster.layer_id}_cluster")
+        )
 
 
 def get_satellite_source() -> MapSource:

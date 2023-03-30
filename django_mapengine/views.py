@@ -1,9 +1,27 @@
 """Views and mixins in order to use mapengine"""
 
 from django.conf import settings
+from django.http import JsonResponse
 from django.views.generic.base import ContextMixin
 
-from . import layers, sources
+from . import __version__, layers, sources
+
+
+def index(request):
+    """
+    Placeholder to get app url from `urls.reverse()` function by calling `reverse("django_mapengine:index")`.
+
+    Parameters
+    ----------
+    request
+        Request is neglected
+
+    Returns
+    -------
+    JsonResponse
+        containing app name and current version
+    """
+    return JsonResponse({"app": "django_mapengine", "version": __version__})
 
 
 # pylint:disable=R0903

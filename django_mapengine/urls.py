@@ -5,12 +5,20 @@ from django.urls import path
 from django_distill import distill_path
 from djgeojson.views import GeoJSONLayerView
 
-from . import distill, mvt
+from . import distill, mvt, views
 
 app_name = "django_mapengine"
 
 urlpatterns = [
-    path(f"clusters/{cluster.layer_id}.geojson", GeoJSONLayerView.as_view(model=cluster.model))
+    path("", views.index, name="index"),
+]
+
+urlpatterns += [
+    path(
+        f"clusters/{cluster.layer_id}.geojson",
+        GeoJSONLayerView.as_view(model=cluster.model),
+        name=f"{cluster.layer_id}_cluster",
+    )
     for cluster in settings.MAP_ENGINE_API_CLUSTERS
 ]
 
