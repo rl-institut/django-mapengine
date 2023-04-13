@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import math
 from typing import Optional, Union
 
 import colorbrewer
@@ -80,6 +81,17 @@ class Choropleth:
             error_msg = "Values have to be set in style file in order to composite choropleth colors."
             raise ChoroplethError(error_msg)
         return choropleth_config["values"]
+
+    def __calculate_range(accuracy, max):
+        """
+        accuracy dynamic
+        significant_number_decimal point back
+        decimals < 0
+        """
+        multiplier = 10 ** accuracy
+        max_edited = max / 10 ** len(str(max))
+        significant_number_decimal = math.ceil(max_edited * multiplier) / multiplier
+        return significant_number_decimal
 
     def get_fill_color(self, name: str, values: Optional[list] = None) -> list:
         """Return fill_color in choropleth style for setPaintProperty of maplibre.
