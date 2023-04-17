@@ -71,8 +71,8 @@ class Choropleth:
             if "num_colors" not in choropleth_config:
                 error_msg = "Number of colors has to be se in choropleth style for dynamic choropleth composition."
                 raise ChoroplethError(error_msg)
-            min_value = min(values)
-            max_value = max(values)
+            min_value = __calculate_lower_limit(min(values))
+            max_value = __calculate_upper_limit(max(values))
             num = choropleth_config["num_colors"]
             step = (max_value - min_value) / (num - 1)
             return [min_value + i * step for i in range(num - 1)] + [max_value]
@@ -82,16 +82,28 @@ class Choropleth:
             raise ChoroplethError(error_msg)
         return choropleth_config["values"]
 
-    def __calculate_range(accuracy, max):
-        """
-        accuracy dynamic
-        significant_number_decimal point back
-        decimals < 0
-        """
-        multiplier = 10 ** accuracy
-        max_edited = max / 10 ** len(str(max))
-        significant_number_decimal = math.ceil(max_edited * multiplier) / multiplier
-        return significant_number_decimal
+    def __calculate_lower_limit(mini):
+        if mini > 1:
+            if isinstance(mini, float):
+                mini = str(mini).split(".")
+            limit = int(mini[:1] * (10 * (len(mini) - 1)))
+        if mini < 1:
+            mini = str(mini).split(".")[1]
+            limit = int(mini[:1]) / 10
+
+        return limit
+
+    def __calculate_upper_limit(maxi):
+        if maxi < 1:
+            limit = math.ceil(maxi * 10) / 10
+        if maxi > 1:
+            if isinstance(maxi, float):
+                maxi = int(str(maxi).split("."))
+            length = 10 * len(str(maxi))
+            intermediate = math.ceil(maxi / length * 10) / 10
+            limit = intermediate * length
+
+        return limit
 
     def get_fill_color(self, name: str, values: Optional[list] = None) -> list:
         """Return fill_color in choropleth style for setPaintProperty of maplibre.
