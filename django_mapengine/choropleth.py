@@ -69,8 +69,10 @@ class Choropleth:
         """
         if values:
             if "num_colors" not in choropleth_config:
-                error_msg = "Number of colors has to be se in choropleth style for dynamic choropleth composition."
+                error_msg = "Number of colors has to be set in choropleth style for dynamic choropleth composition."
                 raise ChoroplethError(error_msg)
+            if max(value) is 0:
+                error_msg = "the given values are not valid"
             min_value = __calculate_lower_limit(min(values))
             max_value = __calculate_upper_limit(max(values))
             num = choropleth_config["num_colors"]
@@ -83,6 +85,8 @@ class Choropleth:
         return choropleth_config["values"]
 
     def __calculate_lower_limit(mini):
+        if mini == 0:
+            limit = mini
         if mini > 1:
             if isinstance(mini, float):
                 mini = str(mini).split(".")
