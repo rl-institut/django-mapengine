@@ -93,9 +93,6 @@ class Choropleth:
             If values are neither given nor set in config.
         """
         if values:
-            if "num_colors" not in choropleth_config:
-                error_msg = "Number of colors has to be set in choropleth style for dynamic choropleth composition."
-                raise ChoroplethError(error_msg)
             if min(values) < 0 or max(values) <= 0:
                 error_msg = "the given values are not valid"
                 raise ChoroplethError(error_msg)
