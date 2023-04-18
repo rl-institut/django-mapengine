@@ -44,8 +44,39 @@ class Choropleth:
                 continue
         return static_choropleths
 
+    def __calculate_lower_limit(self,mini):
+        if mini == 0:
+            limit = mini
+            return limit
+        if mini > 1:
+            new_mini = mini
+            if isinstance(mini, float):
+                new_mini = str(mini).split(".")[0]
+
+            length = len(str(new_mini))
+            first_number = int(str(new_mini)[:1])
+
+            limit = first_number * (10 ** (length - 1))
+        if mini < 1:
+            mini = str(mini).split(".")[1]
+            limit = int(mini[:1]) / 10
+
+        return limit
+
+    def __calculate_upper_limit(self,maxi):
+        if maxi < 1:
+            limit = math.ceil(maxi * 10) / 10
+        if maxi > 1:
+            if isinstance(maxi, float):
+                maxi = int(str(maxi).split("."))
+            length = 10 * len(str(maxi))
+            intermediate = math.ceil(maxi / length * 10) / 10
+            limit = intermediate * length
+
+        return limit
+
     @staticmethod
-    def __calculate_steps(choropleth_config: dict, values: Optional[list] = None) -> list[float]:
+    def __calculate_steps(self,choropleth_config: dict, values: Optional[list] = None) -> list[float]:
         """
         Calculate needed steps, either from given values or from static values in choropleth config.
 
@@ -71,10 +102,11 @@ class Choropleth:
             if "num_colors" not in choropleth_config:
                 error_msg = "Number of colors has to be set in choropleth style for dynamic choropleth composition."
                 raise ChoroplethError(error_msg)
-            if max(value) is 0:
+            if max(values) <= 0 or min(values) < 0:
                 error_msg = "the given values are not valid"
-            min_value = __calculate_lower_limit(min(values))
-            max_value = __calculate_upper_limit(max(values))
+                raise ChoroplethError(error_msg)
+            min_value = self.__calculate_lower_limit(min(values))
+            max_value = self.__calculate_upper_limit(max(values))
             num = choropleth_config["num_colors"]
             step = (max_value - min_value) / (num - 1)
             return [min_value + i * step for i in range(num - 1)] + [max_value]
@@ -83,31 +115,6 @@ class Choropleth:
             error_msg = "Values have to be set in style file in order to composite choropleth colors."
             raise ChoroplethError(error_msg)
         return choropleth_config["values"]
-
-    def __calculate_lower_limit(mini):
-        if mini == 0:
-            limit = mini
-        if mini > 1:
-            if isinstance(mini, float):
-                mini = str(mini).split(".")
-            limit = int(mini[:1] * (10 * (len(mini) - 1)))
-        if mini < 1:
-            mini = str(mini).split(".")[1]
-            limit = int(mini[:1]) / 10
-
-        return limit
-
-    def __calculate_upper_limit(maxi):
-        if maxi < 1:
-            limit = math.ceil(maxi * 10) / 10
-        if maxi > 1:
-            if isinstance(maxi, float):
-                maxi = int(str(maxi).split("."))
-            length = 10 * len(str(maxi))
-            intermediate = math.ceil(maxi / length * 10) / 10
-            limit = intermediate * length
-
-        return limit
 
     def get_fill_color(self, name: str, values: Optional[list] = None) -> list:
         """Return fill_color in choropleth style for setPaintProperty of maplibre.
@@ -132,7 +139,7 @@ class Choropleth:
             if values exceed colorbrewer steps
         """
         choropleth_config = self.choropleths[name]
-        steps = self.__calculate_steps(choropleth_config, values)
+        steps = self.__calculate_steps(self,choropleth_config, values)
         if choropleth_config["color_palette"] not in colorbrewer.sequential["multihue"]:
             error_msg = f"Invalid color palette for choropleth {name=}."
             raise ChoroplethError(error_msg)
