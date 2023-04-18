@@ -12,14 +12,14 @@ def __calculate_lower_limit(mini) -> int:
     """Calculate a significant number as lower limit for choropleth coloring.
 
     Parameter
-        ----------
-        mini: int
-            smalles value from list of values
+    ----------
+    mini: int
+        smalles value from list of values
 
     Returns
-        -------
-        int
-            rounded down value by meaningful amount, depending on the size of mini
+    -------
+    int
+        rounded down value by meaningful amount, depending on the size of mini
     """
     if mini == 0:
         limit = mini
@@ -40,14 +40,14 @@ def __calculate_upper_limit(maxi) -> int:
     """Calculate a significant number as upper limit for choropleth coloring.
 
     Parameter
-        ----------
-        maxi: int
-            biggest value from list of values
+    ----------
+    maxi: int
+        biggest value from list of values
 
     Returns
-        -------
-        int
-            rounded up value by meaningful amount, depending on the size of maxi
+    -------
+    limit: int
+        rounded up value by meaningful amount, depending on the size of maxi
     """
     if maxi < 1:
         limit = math.ceil(maxi * 10) / 10
