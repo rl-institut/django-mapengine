@@ -8,7 +8,19 @@ from typing import Optional, Union
 import colorbrewer
 
 
-def __calculate_lower_limit(mini):
+def __calculate_lower_limit(mini) -> int:
+    """Calculate a significant number as lower limit for choropleth coloring.
+
+    Parameter
+        ----------
+        mini: int
+            smalles value from list of values
+
+    Returns
+        -------
+        int
+            rounded down value by meaningful amount, depending on the size of mini
+    """
     if mini == 0:
         limit = mini
         return limit
@@ -24,7 +36,19 @@ def __calculate_lower_limit(mini):
     return limit
 
 
-def __calculate_upper_limit(maxi):
+def __calculate_upper_limit(maxi) -> int:
+    """Calculate a significant number as upper limit for choropleth coloring.
+
+    Parameter
+        ----------
+        maxi: int
+            biggest value from list of values
+
+    Returns
+        -------
+        int
+            rounded up value by meaningful amount, depending on the size of maxi
+    """
     if maxi < 1:
         limit = math.ceil(maxi * 10) / 10
     if maxi > 1:
@@ -89,12 +113,12 @@ class Choropleth:
         Raises
         ------
         ChoroplethError
-            If values are given, but no num_colors is set.
+            If values are out of range or invalid.
             If values are neither given nor set in config.
         """
         if values:
             if min(values) < 0 or max(values) <= 0:
-                error_msg = "the given values are not valid"
+                error_msg = "the given values are not valid or out of range"
                 raise ChoroplethError(error_msg)
             min_value = __calculate_lower_limit(min(values))
             max_value = __calculate_upper_limit(max(values))
@@ -123,8 +147,6 @@ class Choropleth:
 
         Raises
         ------
-        ChoroplethError
-            if either `num_colors` or `values` key is missing in choropleth style
         IndexError
             if values exceed colorbrewer steps
         """
