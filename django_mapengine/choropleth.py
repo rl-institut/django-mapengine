@@ -7,6 +7,8 @@ from typing import Optional, Union
 
 import colorbrewer
 
+MAX_COLORBREWER_STEPS = 9
+
 
 def __calculate_lower_limit(mini) -> int:
     """Calculate a significant number as lower limit for choropleth coloring.
@@ -122,8 +124,12 @@ class Choropleth:
                 raise ChoroplethError(error_msg)
             min_value = __calculate_lower_limit(min(values))
             max_value = __calculate_upper_limit(max(values))
-            step = (max_value - min_value) / 5
-            return [min_value + i * step for i in range(5)] + [max_value]
+            if choropleth_config["num_colors"]:
+                num = choropleth_config["num_colors"]
+            else:
+                num = 6
+            step = (max_value - min_value) / (num - 1)
+            return [min_value + i * step for i in range(num - 1)] + [max_value]
 
         if "values" not in choropleth_config:
             error_msg = "Values have to be set in style file in order to composite choropleth colors."
@@ -155,6 +161,9 @@ class Choropleth:
         if choropleth_config["color_palette"] not in colorbrewer.sequential["multihue"]:
             error_msg = f"Invalid color palette for choropleth {name=}."
             raise ChoroplethError(error_msg)
+        if len(steps) > MAX_COLORBREWER_STEPS:
+            error_msg = f"Too many choropleth values given for {name=}."
+            raise IndexError(error_msg)
         colors = colorbrewer.sequential["multihue"][choropleth_config["color_palette"]][len(steps)]
         fill_color = [
             "interpolate",
