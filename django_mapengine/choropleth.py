@@ -148,7 +148,7 @@ class Choropleth:
         Raises
         ------
         ChoroplethError
-            if either `color_palette` key is missing in choropleth style
+            if `color_palette` key is missing in choropleth style
         IndexError
             if values exceed colorbrewer steps
         """
