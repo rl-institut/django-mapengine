@@ -27,14 +27,10 @@ def __calculate_lower_limit(mini) -> int:
         limit = mini
         return limit
     if mini < 1:
-        current = str(mini).split(".")[1]
-        limit = int(current[:1]) / 10
+        limit = int(mini * 10) / 10
     if mini > 1:
-        if isinstance(mini, float):
-            mini = str(mini).split(".")[0]
-        length = len(str(mini))
-        first_number = int(str(mini)[:1])
-        limit = first_number * 10 ** (length - 1)
+        digits = (int)(math.log10(mini))
+        limit = (int)(mini / pow(10, digits)) * 10**digits
     return limit
 
 
