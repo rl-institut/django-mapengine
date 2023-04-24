@@ -50,10 +50,8 @@ def __calculate_upper_limit(maxi) -> int:
     if maxi < 1:
         limit = math.ceil(maxi * 10) / 10
     if maxi > 1:
-        if isinstance(maxi, float):
-            maxi = int(str(maxi).split(".")[0])
-        length = len(str(maxi)) - 1
-        limit = math.ceil(maxi / 10**length) * 10**length
+        digits = (int)(math.log10(maxi))
+        limit = math.ceil(maxi / 10**digits) * 10**digits
     return limit
 
 
