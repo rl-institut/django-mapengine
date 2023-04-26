@@ -1,58 +1,13 @@
 """Module to handle choropleths."""
 
 import json
-import pathlib
 import math
+import pathlib
 from typing import Optional, Union
 
 import colorbrewer
 
 MAX_COLORBREWER_STEPS = 9
-
-
-def __calculate_lower_limit(mini) -> int:
-    """Calculate a significant number as lower limit for choropleth coloring.
-
-    Parameter
-    ----------
-    mini: int
-        smalles value from list of values
-
-    Returns
-    -------
-    int
-        rounded down value by meaningful amount, depending on the size of mini
-    """
-    if mini == 0:
-        limit = mini
-        return limit
-    if mini < 1:
-        limit = int(mini * 10) / 10
-    if mini > 1:
-        digits = (int)(math.log10(mini))
-        limit = (int)(mini / pow(10, digits)) * 10**digits
-    return limit
-
-
-def __calculate_upper_limit(maxi) -> int:
-    """Calculate a significant number as upper limit for choropleth coloring.
-
-    Parameter
-    ----------
-    maxi: int
-        biggest value from list of values
-
-    Returns
-    -------
-    limit: int
-        rounded up value by meaningful amount, depending on the size of maxi
-    """
-    if maxi < 1:
-        limit = math.ceil(maxi * 10) / 10
-    if maxi > 1:
-        digits = (int)(math.log10(maxi))
-        limit = math.ceil(maxi / 10**digits) * 10**digits
-    return limit
 
 
 class ChoroplethError(Exception):
@@ -89,8 +44,7 @@ class Choropleth:
                 continue
         return static_choropleths
 
-    @staticmethod
-    def __calculate_steps(choropleth_config: dict, values: Optional[list] = None) -> list[float]:
+    def __calculate_steps(self, choropleth_config: dict, values: Optional[list] = None) -> list[float]:
         """
         Calculate needed steps, either from given values or from static values in choropleth config.
 
@@ -116,8 +70,8 @@ class Choropleth:
             if min(values) < 0 or max(values) <= 0:
                 error_msg = "the given values are not valid or out of range"
                 raise ChoroplethError(error_msg)
-            min_value = __calculate_lower_limit(min(values))
-            max_value = __calculate_upper_limit(max(values))
+            min_value = self.__calculate_lower_limit(min(values))
+            max_value = self.__calculate_upper_limit(max(values))
             if choropleth_config["num_colors"]:
                 num = choropleth_config["num_colors"]
             else:
@@ -171,3 +125,58 @@ class Choropleth:
             rgb_color = f"rgb({color[0]}, {color[1]}, {color[2]})"
             fill_color.append(rgb_color)
         return fill_color
+
+    @staticmethod
+    def __calculate_lower_limit(number: float) -> int:
+        """
+        Calculate a significant number as lower limit for choropleth coloring
+
+        Parameters
+        ----------
+        number: float
+            find lower limit for this number
+
+        Returns
+        -------
+        int
+            rounded down value by meaningful amount, depending on the size of mini
+
+        Raises
+        ------
+        ValueError
+            if lower limit cannot be found
+        """
+        if number == 0:
+            return number
+        if number < 1:
+            return int((number * 10) / 10)
+        if number > 1:
+            digits = int(math.log10(number))
+            return int(number / pow(10, digits)) * 10 ** digits
+        raise ValueError(f"Cannot find lower limit for {number=}")
+
+    @staticmethod
+    def __calculate_upper_limit(number: float) -> int:
+        """Calculate a significant number as upper limit for choropleth coloring.
+
+        Parameters
+        ----------
+        number: float
+            find upper limit for this number
+
+        Returns
+        -------
+        int
+            rounded up value by meaningful amount, depending on the size of number
+
+        Raises
+        ------
+        ValueError
+            if upper limit cannot be found
+        """
+        if number < 1:
+            return math.ceil((number * 10) / 10)
+        if number > 1:
+            digits = int(math.log10(number))
+            return math.ceil(number / 10 ** digits) * 10 ** digits
+        raise ValueError(f"Cannot find upper limit for {number=}")
