@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-mapengine"
-version = "0.4.2"
+version = "0.5.0"
 description = "Map engine for maplibre in django"
 authors = ["Hendrik Huyskens <hendrik.huyskens@rl-institut.de>"]
 readme = "README.md"
