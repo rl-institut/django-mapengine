@@ -1,6 +1,7 @@
 """Module to handle choropleths."""
 
 import json
+import math
 import pathlib
 from typing import Optional, Union
 
@@ -43,8 +44,7 @@ class Choropleth:
                 continue
         return static_choropleths
 
-    @staticmethod
-    def __calculate_steps(choropleth_config: dict, values: Optional[list] = None) -> list[float]:
+    def __calculate_steps(self, choropleth_config: dict, values: Optional[list] = None) -> list[float]:
         """
         Calculate needed steps, either from given values or from static values in choropleth config.
 
@@ -63,16 +63,19 @@ class Choropleth:
         Raises
         ------
         ChoroplethError
-            If values are given, but no num_colors is set.
+            If values are out of range or invalid.
             If values are neither given nor set in config.
         """
         if values:
-            if "num_colors" not in choropleth_config:
-                error_msg = "Number of colors has to be se in choropleth style for dynamic choropleth composition."
+            if min(values) < 0 or max(values) <= 0:
+                error_msg = "the given values are not valid or out of range"
                 raise ChoroplethError(error_msg)
-            min_value = min(values)
-            max_value = max(values)
-            num = choropleth_config["num_colors"]
+            min_value = self.__calculate_lower_limit(min(values))
+            max_value = self.__calculate_upper_limit(max(values))
+            if choropleth_config["num_colors"]:
+                num = choropleth_config["num_colors"]
+            else:
+                num = 6
             step = (max_value - min_value) / (num - 1)
             return [min_value + i * step for i in range(num - 1)] + [max_value]
 
@@ -99,7 +102,7 @@ class Choropleth:
         Raises
         ------
         ChoroplethError
-            if either `num_colors` or `values` key is missing in choropleth style
+            if `color_palette` key is invalid
         IndexError
             if values exceed colorbrewer steps
         """
@@ -122,3 +125,58 @@ class Choropleth:
             rgb_color = f"rgb({color[0]}, {color[1]}, {color[2]})"
             fill_color.append(rgb_color)
         return fill_color
+
+    @staticmethod
+    def __calculate_lower_limit(number: float) -> int:
+        """
+        Calculate a significant number as lower limit for choropleth coloring
+
+        Parameters
+        ----------
+        number: float
+            find lower limit for this number
+
+        Returns
+        -------
+        int
+            rounded down value by meaningful amount, depending on the size of mini
+
+        Raises
+        ------
+        ValueError
+            if lower limit cannot be found
+        """
+        if number == 0:
+            return number
+        if number < 1:
+            return int((number * 10) / 10)
+        if number > 1:
+            digits = int(math.log10(number))
+            return int(number / pow(10, digits)) * 10 ** digits
+        raise ValueError(f"Cannot find lower limit for {number=}")
+
+    @staticmethod
+    def __calculate_upper_limit(number: float) -> int:
+        """Calculate a significant number as upper limit for choropleth coloring.
+
+        Parameters
+        ----------
+        number: float
+            find upper limit for this number
+
+        Returns
+        -------
+        int
+            rounded up value by meaningful amount, depending on the size of number
+
+        Raises
+        ------
+        ValueError
+            if upper limit cannot be found
+        """
+        if number < 1:
+            return math.ceil((number * 10) / 10)
+        if number > 1:
+            digits = int(math.log10(number))
+            return math.ceil(number / 10 ** digits) * 10 ** digits
+        raise ValueError(f"Cannot find upper limit for {number=}")
