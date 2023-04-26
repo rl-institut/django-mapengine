@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- lower and upper bounds for numbers in legend
+
 ## [0.4.1] - 2023-03-24
 ### Fixed
 - choropleth legend
