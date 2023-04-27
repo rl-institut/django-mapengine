@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## Unreleased
+### Added
+- map state information is send for popups and choropleths
+
 ## [0.5.0] - 2023-04-26
 ### Changed
 - lower and upper bounds for numbers in legend

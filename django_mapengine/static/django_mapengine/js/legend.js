@@ -78,15 +78,3 @@ function loadLegend(msg, choroplethName){
   legendElement.innerHTML = createLegend(choroplethName, unit, colors, values, entriesPerColumn);
   return logMessage(msg);
 }
-
-
-
-window.onload = () => {
-  const onLoadUrl = "/static/tests/api/legend.json??lookup=population&lang=en";
-
-  fetchGetJson(onLoadUrl).then(
-    (response) => {
-      const {title, unit, colors, values} = response;
-      legendElement.innerHTML = createLegend(title, unit, colors, values);
-    });
-};

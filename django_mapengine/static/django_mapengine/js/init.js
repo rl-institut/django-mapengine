@@ -28,6 +28,7 @@ function initMap() {
 
 function initStore() {
     const storeColdInit = JSON.parse(document.getElementById("mapengine_store_cold_init").textContent);
+    storeColdInit.state = {};
     storeColdInit.storedChoroplethPaintProperties = {"default": {}};
     for (const choroplethName in storeColdInit.choropleths) {
         storeColdInit.storedChoroplethPaintProperties[choroplethName] = {};

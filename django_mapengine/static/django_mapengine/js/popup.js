@@ -2,28 +2,6 @@
 PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_popups);
 
 
-async function fetchGetJson(url) {
-  try {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-      }, redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *client
-    });
-    return await response.json(); // parses JSON response into native JavaScript objects
-  } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
-    throw err;
-  }
-}
-
 function createCoordinates(event) {
   if ("lat" in event.features[0].properties) {
     return [event.features[0].properties.lat, event.features[0].properties.lon];
@@ -72,24 +50,27 @@ function add_popup(layerID) {
 
     const featureID = event.features[0].properties.id;
     const lookup = map_store.cold.currentChoropleth === null ? layerID : map_store.cold.currentChoropleth;
-    const url = `/popup/${lookup}/${featureID}?lang=en`;
 
-    fetchGetJson(url).then(
-      (response) => {
+    $.ajax({
+      type: "GET",
+      url: `/popup/${lookup}/${featureID}?lang=en`,
+      data: map_store.cold.state,
+      dataType: 'json',
+      success: function (data) {
         const popup = document.createElement('div');
-        const {html} = response;
+        const {html} = data;
         popup.innerHTML = html;
 
-        if ("chart" in response) {
+        if ("chart" in data) {
           // Chart Title
-          const {chart: {title}} = response;
+          const {chart: {title}} = data;
 
           // Chart
           const chartElement = popup.querySelector("#js-popup__chart");
           const chart = echarts.init(chartElement, null, {renderer: 'svg'});
           // TODO: use lookup property in payload to construct chart dynamically. For now we assume bar chart type.
           // TODO: In this fetch we always expect one payload item. Make failsafe.
-          const {chart: {series}} = response;
+          const {chart: {series}} = data;
           const xAxisData = createListByName("key", series[0].data);
           const yAxisData = createListByName("value", series[0].data);
           const option = {
@@ -165,7 +146,8 @@ function add_popup(layerID) {
               maxWidth: "280px",
             }).setLngLat(coordinates).setHTML(popup.innerHTML).addTo(map);
           });
-      });
+      }
+    });
   });
 }
 
