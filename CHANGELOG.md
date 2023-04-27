@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Added
+- popup template
+
 ## [0.6.0] - 2023-04-27
 ### Added
 - map state information is send for popups and choropleths
