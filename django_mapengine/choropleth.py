@@ -9,6 +9,8 @@ import colorbrewer
 
 MAX_COLORBREWER_STEPS = 9
 
+DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 6}
+
 
 class ChoroplethError(Exception):
     """Raised if something is wrong with choropleth values or parameters."""
@@ -25,8 +27,31 @@ class Choropleth:
         choropleth_styles_file: str
             Name or path to choropleth style file
         """
-        with pathlib.Path(choropleth_styles_file).open("r", encoding="utf-8") as cs_file:
-            self.choropleths = json.load(cs_file)
+        if pathlib.Path(choropleth_styles_file).exists():
+            with pathlib.Path(choropleth_styles_file).open("r", encoding="utf-8") as cs_file:
+                self.choropleths = json.load(cs_file)
+        else:
+            self.choropleths = {}
+
+    def get_config(self, name: str) -> dict:
+        """
+        Reads config for given name
+
+        Return s default config if name is not found.
+
+        Parameters
+        ----------
+        name: str
+            Name of choropleth to look up in choropleth config file
+
+        Returns
+        -------
+        dict
+            containing choropleth config
+        """
+        if name in self.choropleths:
+            return self.choropleths[name]
+        return DEFAULT_CHOROPLETH_CONFIG
 
     def get_static_styles(self) -> dict[str, list]:
         """Return choropleth styles for static (fixed values) choropleths.
@@ -106,7 +131,7 @@ class Choropleth:
         IndexError
             if values exceed colorbrewer steps
         """
-        choropleth_config = self.choropleths[name]
+        choropleth_config = self.get_config(name)
         steps = self.__calculate_steps(choropleth_config, values)
         if choropleth_config["color_palette"] not in colorbrewer.sequential["multihue"]:
             error_msg = f"Invalid color palette for choropleth {name=}."
