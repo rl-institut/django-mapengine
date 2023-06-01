@@ -271,8 +271,8 @@ def get_all_layers() -> List[MapLayer]:
     """
     # Order is important! Last items are shown on top!
     layers = list(get_region_layers())
-    for cluster_layer in get_cluster_layers():
-        layers.extend(cluster_layer.get_map_layers())
     for static_layer in get_static_layers():
         layers.extend(static_layer.get_map_layers())
+    for cluster_layer in get_cluster_layers():
+        layers.extend(cluster_layer.get_map_layers())
     return layers
