@@ -78,7 +78,7 @@ class MapEngineMixin(ContextMixin):
                 model_field = MapLayerModel._meta.get_field("choropleth_field")
             except FieldDoesNotExist:
                 raise LookupError("Your MapLayerModel has no field named 'choropleth_field', which is mandatory.")
-            choropleths = MapLayerModel.objects.filter(choropleth_field__isnull=False).values_list(
+            choropleths = MapLayerModel.objects.exclude(choropleth_field="").filter(choropleth_field__isnull=False).values_list(
                 "identifier", "geom_layer", "choropleth_unit", "name")
             store["choropleths"] = {
                 item[0]: {
