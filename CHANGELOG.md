@@ -10,6 +10,9 @@ Here is a template for new release sections
 ### Changed
 - chart options are taken from backend; no frontend modifications
 
+### Fixed
+- no choropleths set in settings
+
 ## [0.9.0] - 2023-06-09
 ### Added
 - title and unit for choropleths in legend

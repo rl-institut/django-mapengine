@@ -72,6 +72,9 @@ class MapEngineConf(AppConf):
     # IMAGES
     IMAGES: List[Dict[str, str]] = []
 
+    # CHOROPLETHS
+    CHOROPLETHS = []
+
     # POPUPS
     POPUPS: List[str] = []
 
