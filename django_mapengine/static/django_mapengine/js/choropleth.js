@@ -64,7 +64,7 @@ function initDefaultChoropleths() {
   }
 }
 
-function deactivateChoropleth(choroplethName) {
+function deactivateChoropleth() {
   for (const choropleth in map_store.cold.choropleths) {
     for (const layerID of map_store.cold.choropleths[choropleth].layers) {
       setPaintProperties(layerID, map_store.cold.storedChoroplethPaintProperties["default"][layerID]);
