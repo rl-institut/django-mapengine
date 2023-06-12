@@ -62,82 +62,10 @@ function add_popup(layerID) {
         popup.innerHTML = html;
 
         if ("chart" in data) {
-          // Chart Title
-          const {chart: {title}} = data;
-
           // Chart
           const chartElement = popup.querySelector("#js-popup__chart");
           const chart = echarts.init(chartElement, null, {renderer: 'svg'});
-          // TODO: use lookup property in payload to construct chart dynamically. For now we assume bar chart type.
-          // TODO: In this fetch we always expect one payload item. Make failsafe.
-          const {chart: {series}} = data;
-          const xAxisData = createListByName("key", series[0].data);
-          const yAxisData = createListByName("value", series[0].data);
-          const option = {
-            title: {
-              text: title,
-              textStyle: {
-                color: '#002E50',
-                fontSize: 14,
-                fontWeight: 400,
-                lineHeight: 16
-              },
-              left: 'center'
-            },
-            animation: false,
-            tooltip: {
-              trigger: 'axis',
-              axisPointer: {
-                type: 'shadow'
-              }
-            },
-            grid: {
-              left: 16,
-              right: 0,
-              bottom: 32,
-              top: 48,
-              containLabel: true
-            },
-            textStyle: {
-              color: '#002E50'
-            },
-            xAxis: [{
-              type: 'category',
-              data: xAxisData,
-              axisTick: {
-                show: false
-              },
-              axisLine: {
-                show: true,
-                lineStyle: {
-                  color: '#ECF2F6'
-                }
-              },
-            }],
-            yAxis: [{
-              type: 'value',
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#ECF2F6'
-                }
-              }
-            }],
-            series: [{
-              name: 'Direct',
-              type: 'line',
-              symbol: 'circle',
-              symbolSize: 6,
-              data: yAxisData,
-              lineStyle: {
-                color: '#002E50'
-              },
-              itemStyle: {
-                color: '#002E50'
-              }
-            }]
-          };
-          chart.setOption(option);
+          chart.setOption(data.chart);
         }
 
         requestAnimationFrame(() => {
