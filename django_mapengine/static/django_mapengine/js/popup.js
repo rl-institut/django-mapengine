@@ -61,19 +61,15 @@ function add_popup(layerID) {
         const {html} = data;
         popup.innerHTML = html;
 
-        if ("chart" in data) {
-          // Chart
-          const chartElement = popup.querySelector("#js-popup__chart");
-          const chart = echarts.init(chartElement, null, {renderer: 'svg'});
-          chart.setOption(data.chart);
-        }
+        new maplibregl.Popup({
+          // https://maplibre.org/maplibre-gl-js-docs/api/markers/#popup-parameters
+          maxWidth: "280px",
+        }).setLngLat(coordinates).setHTML(popup.innerHTML).addTo(map);
 
-        requestAnimationFrame(() => {
-            new maplibregl.Popup({
-              // https://maplibre.org/maplibre-gl-js-docs/api/markers/#popup-parameters
-              maxWidth: "280px",
-            }).setLngLat(coordinates).setHTML(popup.innerHTML).addTo(map);
-          });
+        if ("chart" in data) {
+          // createChart function must be defined in project app (not in mapengine)
+          createChart("js-popup__chart", data.chart);
+        }
       }
     });
   });

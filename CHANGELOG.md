@@ -6,6 +6,13 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.11.0] - 2023-06-15
+### Changed
+- chart creation function must be declared by project app
+
+### Fixed
+- chart errors in popups
+
 ## [0.10.0] - 2023-06-12
 ### Changed
 - chart options are taken from backend; no frontend modifications
