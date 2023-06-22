@@ -76,6 +76,6 @@ function loadLegend(msg, choroplethName){
     }
   }
   const entriesPerColumn = Math.floor(values.length / 2);
-  legendElement.innerHTML = createLegend(choroplethName, unit, colors, values, entriesPerColumn);
+  legendElement.innerHTML = createLegend(title, unit, colors, values, entriesPerColumn);
   return logMessage(msg);
 }
