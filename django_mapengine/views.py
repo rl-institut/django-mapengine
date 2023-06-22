@@ -85,7 +85,7 @@ class MapEngineMixin(ContextMixin):
                     'layers': [item[1]],
                     'useFeatureState': True,
                     'unit': [item[2]],
-                    'name': [item[3]]
+                    'title': [item[3]]
                 }
                 for item in choropleths
             }
