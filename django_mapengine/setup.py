@@ -104,6 +104,8 @@ class Choropleth:
     """Choropleth class used to set up choropleths in project settings"""
 
     name: str
+    title: str
+    unit: str
     layers: List[str]
     use_feature_state: bool = True
 
@@ -116,7 +118,12 @@ class Choropleth:
         dict
             holding choropleth values needed in map setups
         """
-        return {"layers": self.layers, "useFeatureState": self.use_feature_state}
+        return {
+            "title": self.title,
+            "unit": self.unit,
+            "layers": self.layers,
+            "useFeatureState": self.use_feature_state,
+        }
 
 
 @dataclass

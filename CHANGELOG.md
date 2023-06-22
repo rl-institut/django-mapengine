@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.9.0] - 2023-06-09
+### Added
+- title and unit for choropleths in legend
+
 ## [0.8.0] - 2023-05-02
 ### Added
 - default choropleth config

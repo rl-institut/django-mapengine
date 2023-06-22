@@ -4,6 +4,8 @@ from django_mapengine import setup
 
 INSTALLED_APPS = ["django_mapengine", "tests.test_app.apps.TestConf"]
 
+ROOT_URLCONF = "django_mapengine.urls"
+
 MAP_ENGINE_CENTER_AT_STARTUP = [1, 2]
 MAP_ENGINE_ZOOM_AT_STARTUP = 8
 
