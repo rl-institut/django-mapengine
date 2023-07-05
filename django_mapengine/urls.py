@@ -16,7 +16,7 @@ urlpatterns = [
 urlpatterns += [
     path(
         f"clusters/{cluster.layer_id}.geojson",
-        GeoJSONLayerView.as_view(model=cluster.model),
+        GeoJSONLayerView.as_view(model=cluster.model, properties=cluster.properties),
         name=f"{cluster.layer_id}_cluster",
     )
     for cluster in settings.MAP_ENGINE_API_CLUSTERS

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-mapengine"
-version = "0.12.0"
+version = "0.13.0"
 description = "Map engine for maplibre in django"
 authors = ["Hendrik Huyskens <hendrik.huyskens@rl-institut.de>"]
 readme = "README.md"
@@ -14,6 +14,7 @@ colorbrewer = {git = "https://github.com/henhuy/colorbrewer-python.git"}
 djangorestframework = "^3.14.0"
 djangorestframework-mvt = "^0.2.5"
 django-appconf = "^1.0.5"
+django-geojson = "^3.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
