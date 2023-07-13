@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.13.1] - 2023-07-13
+### Fixed
+- choropleth legend unit brackets
+
 ## [0.13.0] - 2023-07-05
 ### Added
 - cluster properties to forward model attributes to map engine
