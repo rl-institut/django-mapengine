@@ -1,5 +1,5 @@
 
-const map_store = initStore();
+const map_store = initMapStore();
 const map = initMap();
 
 
@@ -26,7 +26,7 @@ function initMap() {
 }
 
 
-function initStore() {
+function initMapStore() {
     const storeColdInit = JSON.parse(document.getElementById("mapengine_store_cold_init").textContent);
     storeColdInit.state = {};
     storeColdInit.storedChoroplethPaintProperties = {"default": {}};
