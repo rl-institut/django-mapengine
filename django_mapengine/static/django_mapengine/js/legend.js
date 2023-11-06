@@ -20,7 +20,7 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
     <div class="legend__heading">
       <span class="legend__title">Legend -&nbsp;</span>
       <span class="legend__detail">${title}</span>
-      <div class="legend__unit">(${unit})</div>
+      <div class="legend__unit">${unit ? `(${unit})` : ""}</div>
     </div>
     <div class="legend__wrap">
       <div class="legend__column">

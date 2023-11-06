@@ -1,7 +1,7 @@
 """Setup module is used in settings of django projects to set up mapengine"""
 
 from collections import namedtuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, List, Optional
 
 from django.apps import apps
@@ -42,8 +42,10 @@ class ModelAPI:
 
 
 # pylint:disable=R0903
+@dataclass
 class ClusterAPI(ModelAPI):
     """Exists only to distinguish between "normal" and clustered API"""
+    properties: list = field(default_factory=lambda: [])
 
 
 @dataclass
