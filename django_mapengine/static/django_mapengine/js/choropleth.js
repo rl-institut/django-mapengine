@@ -31,6 +31,7 @@ function activateChoropleth(msg, choroplethName) {
   }
   map_store.cold.currentChoropleth = choroplethName;
   PubSub.publish(mapEvent.CHOROPLETH_UPDATED, choroplethName);
+  legendElement.style.visibility = "visible";
   return logMessage(msg);
 }
 
@@ -71,6 +72,7 @@ function deactivateChoropleth() {
     }
   }
   map_store.cold.currentChoropleth = null;
+  legendElement.style.visibility = "hidden";
 }
 
 function setPaintProperties(layerID, paintProperties) {
