@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased] - XXXX-XX-XX
+## [0.4.0] - 2024-02-02
 ### Added
 - toggle legend visibility on choropleth (de)activation
 
