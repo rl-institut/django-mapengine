@@ -6,7 +6,11 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [0.4.0] - 2024-02-02
+## [0.15.0] - 2024-02-02
+### Changed
+- make basemap optional
+
+## [0.14.0] - 2024-02-02
 ### Added
 - toggle legend visibility on choropleth (de)activation
 
