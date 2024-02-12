@@ -1,4 +1,7 @@
 
+let popupClicked = false;
+const POPUP_DOUBLE_CLICK_TIMEOUT = 300;
+
 PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_popups);
 
 
@@ -36,6 +39,11 @@ function add_popups() {
 
 function add_popup(layerID) {
   map.on("click", layerID, function (event) {
+    if (popupClicked) return;
+    popupClicked = true;
+    setTimeout(function() {
+      popupClicked = false;
+    }, POPUP_DOUBLE_CLICK_TIMEOUT);
     /*
       Check if popup already exists
     */
