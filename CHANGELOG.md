@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.16.0] - 2024-02-12
+### Fixed
+- prevent empty popup on double-clicking a layer
+
 ## [0.15.0] - 2024-02-02
 ### Changed
 - make basemap optional
