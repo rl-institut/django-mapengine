@@ -1,5 +1,5 @@
 
-map.on("load", function () {
+map.on("load", async function() {
   PubSub.publish(mapEvent.MAP_LOADED);
 });
 
@@ -39,13 +39,18 @@ function add_sources(msg) {
     return logMessage(msg);
 }
 
-function add_images(msg) {
+async function add_images(msg) {
     const map_images = JSON.parse(document.getElementById("mapengine_images").textContent);
     for (const map_image of map_images) {
-        map.loadImage(map_image.path, function (error, image) {
-            if (error) throw error;
-            map.addImage(map_image.name, image);
-        });
+        if (maplibregl.getVersion() < "3") {
+            map.loadImage(map_image.path, function (error, image) {
+                if (error) throw error;
+                map.addImage(map_image.name, image);
+            });
+        } else {
+            const image = await map.loadImage(map_image.path);
+            map.addImage(map_image.name, image.data);
+        }
     }
 }
 
