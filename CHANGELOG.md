@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.17.0] - 2024-02-12
+### Fixed
+- remove upper constraint for django-environ dependency
+
 ## [0.16.0] - 2024-02-12
 ### Fixed
 - prevent empty popup on double-clicking a layer
