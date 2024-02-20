@@ -1,0 +1,13 @@
+{
+  "esversion": 8,
+  "globals": {
+    "logMessage": false,
+    "map": false,
+    "maplibregl": false,
+    "PubSub": false,
+    "document": false,
+    "mapEvent": false,
+    "map_store": false
+  },
+  "strict": "implied"
+}
