@@ -41,8 +41,9 @@ function add_sources(msg) {
 
 async function add_images(msg) {
     const map_images = JSON.parse(document.getElementById("mapengine_images").textContent);
+    const version = (maplibregl.version === undefined) ? maplibregl.getVersion() : maplibregl.version;
     for (const map_image of map_images) {
-        if (maplibregl.getVersion() < "3") {
+        if (version < "3") {
             map.loadImage(map_image.path, function (error, image) {
                 if (error) throw error;
                 map.addImage(map_image.name, image);
