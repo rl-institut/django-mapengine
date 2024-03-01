@@ -21,14 +21,15 @@ function createListByName(name, series) {
 }
 
 function checkPop(layerID) {
+  // Check if layer allows popups
   if (!(layerID in map_store.cold.popups)) return false;
-  if (map_store.cold.currentChoropleth === null) {
-    return map_store.cold.popups[layerID].atDefaultLayer;
-  } else {
-    if (map_store.cold.popups[layerID].choropleths === null) return false;
-    if (!map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth)) return false;
-  }
-  return true;
+  // Always return true if layer allows popups per default
+  if (map_store.cold.popups[layerID].atDefaultLayer) return true;
+
+  // Otherwise only possible popup comes from choropleth - check it
+  if (map_store.cold.currentChoropleth === null) return false;
+  if (map_store.cold.popups[layerID].choropleths === null) return false;
+  return map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth);
 }
 
 function add_popups() {
@@ -57,7 +58,16 @@ function add_popup(layerID) {
     const coordinates = createCoordinates(event);
 
     const featureID = event.features[0].properties.id;
-    const lookup = map_store.cold.currentChoropleth === null ? layerID : map_store.cold.currentChoropleth;
+
+    // Check if choropleth of current layer is clicked
+    let lookup = layerID;
+    if (
+        (map_store.cold.currentChoropleth !== null) &&
+        (map_store.cold.popups[layerID].choropleths !== null) &&
+        map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth)
+    ) {
+       lookup = map_store.cold.currentChoropleth;
+    }
 
     $.ajax({
       type: "GET",
