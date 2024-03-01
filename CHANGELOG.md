@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.18.3] - 2024-03-01
+### Fixed
+- popups above choropleths
+
 ## [0.18.2] - 2024-02-20
 ### Fixed
 - version check at image loading
