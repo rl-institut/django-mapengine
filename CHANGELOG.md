@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [0.19.0] - 2024-03-04
+### Changed
+- remove colorbrewer dependency and implement colors locally
+
 ## [0.18.3] - 2024-03-01
 ### Fixed
 - popups above choropleths

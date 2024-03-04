@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-mapengine"
-version = "0.18.3"
+version = "0.19.0"
 description = "Map engine for maplibre in django"
 authors = ["Hendrik Huyskens <hendrik.huyskens@rl-institut.de>"]
 readme = "README.md"
@@ -10,7 +10,6 @@ packages = [{include = "django_mapengine"}]
 python = ">=3.9,<3.12"
 range-key-dict = "^1.1.0"
 django-environ = ">=0.10.0"
-colorbrewer = {git = "https://github.com/henhuy/colorbrewer-python.git"}
 djangorestframework = "^3.14.0"
 djangorestframework-mvt = "^0.2.5"
 django-appconf = "^1.0.5"

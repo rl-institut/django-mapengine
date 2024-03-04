@@ -5,7 +5,7 @@ import math
 import pathlib
 from typing import Optional, Union
 
-import colorbrewer
+from . import colorbrewer
 
 MAX_COLORBREWER_STEPS = 9
 
@@ -177,7 +177,7 @@ class Choropleth:
             return int((number * 10) / 10)
         if number > 1:
             digits = int(math.log10(number))
-            return int(number / pow(10, digits)) * 10 ** digits
+            return int(number / pow(10, digits)) * 10**digits
         raise ValueError(f"Cannot find lower limit for {number=}")
 
     @staticmethod
@@ -203,5 +203,5 @@ class Choropleth:
             return math.ceil((number * 10) / 10)
         if number > 1:
             digits = int(math.log10(number))
-            return math.ceil(number / 10 ** digits) * 10 ** digits
+            return math.ceil(number / 10**digits) * 10**digits
         raise ValueError(f"Cannot find upper limit for {number=}")
