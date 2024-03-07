@@ -7,14 +7,9 @@ from django.views.generic.base import ContextMixin
 from . import __version__, layers, sources
 
 
-def index(request):
+def index():
     """
     Placeholder to get app url from `urls.reverse()` function by calling `reverse("django_mapengine:index")`.
-
-    Parameters
-    ----------
-    request
-        Request is neglected
 
     Returns
     -------
@@ -63,6 +58,7 @@ class MapEngineMixin(ContextMixin):
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "zoom_levels": settings.MAP_ENGINE_ZOOM_LEVELS,
             "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
+            "layer_switch_class": settings.MAP_ENGINE_LAYER_SWITCH_CLASS,
         }
 
         context["mapengine_store_cold_init"] = store

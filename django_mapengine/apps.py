@@ -55,6 +55,8 @@ class MapEngineConf(AppConf):
     if MAX_BOUNDS:
         SETUP["maxBounds"] = MAX_BOUNDS
 
+    LAYER_SWITCH_CLASS = "layer__switch"
+
     # MVTS and CLUSTERS
 
     API_MVTS = {}

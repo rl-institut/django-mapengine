@@ -103,3 +103,7 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    <script src="{% static 'django_mapengine/js/basemaps.js' %}" type="text/javascript"></script>
    {% include 'django_mapengine/map_basemaps.html'}
    ```
+
+# User Guides
+
+- [Layers](docs/LAYERS.md)
