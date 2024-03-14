@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import pathlib
 from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
-from django.contrib.gis.db.models import Model
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -50,8 +50,12 @@ class ModelLayer:
 
     # pylint:disable=C0103
     id: str  # noqa: A003
-    model: Model.__class__
     source: str
+    source_layer: Optional[str] = None
+
+    def get_source_layer(self) -> str:
+        """By default, layer ID is used as source layer."""
+        return self.source_layer if self.source_layer else self.id
 
 
 class StaticModelLayer(ModelLayer):
@@ -110,19 +114,19 @@ class StaticModelLayer(ModelLayer):
         yield MapLayer(
             id=self.id,
             source=self.source,
-            source_layer=self.id,
+            source_layer=self.get_source_layer(),
             minzoom=self.min_zoom(),
             maxzoom=self.max_zoom(),
-            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+            style=get_layer_style(self.id),
         )
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
                 id=f"{self.id}_distilled",
                 source=f"{self.source}_distilled",
-                source_layer=self.id,
+                source_layer=self.get_source_layer(),
                 minzoom=self.min_zoom(distill=True),
                 maxzoom=self.max_zoom(distill=True),
-                style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+                style=get_layer_style(self.id),
             )
 
 
@@ -145,17 +149,17 @@ class ClusterModelLayer(ModelLayer):
         yield MapLayer(
             id=self.id,
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+            style=get_layer_style(self.id),
         )
         yield MapLayer(
             id=f"{self.id}_cluster",
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster"],
+            style=get_layer_style(f"{self.id}_cluster"),
         )
         yield MapLayer(
             id=f"{self.id}_cluster_count",
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster_count"],
+            style=get_layer_style(f"{self.id}_cluster_count"),
         )
 
 
@@ -180,7 +184,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-fill"],
+            style=get_layer_style("region-fill"),
         )
         yield MapLayer(
             id=f"{layer}-line",
@@ -188,7 +192,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-line"],
+            style=get_layer_style("region-line"),
         )
         yield MapLayer(
             id=f"{layer}-label",
@@ -196,7 +200,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=f"{layer}label",
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
+            style=get_layer_style("region-label"),
         )
 
 
@@ -205,17 +209,27 @@ def get_static_layers() -> Iterable[StaticModelLayer]:
     Return model layers for static-based MVTs.
 
     As multiple layers can have same source (via source_layer), API_MVTs is a dict where key is used as parent source.
+    Additionally, sources and source layers are reused if same model manager is used for multiple layers.
 
     Yields
     ------
     StaticModelLayer
         Static model layers to show models on map.
     """
-    for source, mvt_apis in settings.MAP_ENGINE_API_MVTS.items():
-        if source in settings.MAP_ENGINE_REGIONS:
-            continue
+    managers = {}
+    for original_source, mvt_apis in settings.MAP_ENGINE_API_MVTS.items():
         for mvt_api in mvt_apis:
-            yield StaticModelLayer(id=mvt_api.layer_id, model=mvt_api.model, source=source)
+            source_layer = mvt_api.layer_id
+            manager_reference = f"{mvt_api.model_name}.{mvt_api.manager_name}"
+            if manager_reference in managers:
+                # Add model managers only once and use source and source layer in multiple layers
+                source, source_layer = managers[manager_reference]
+            else:
+                managers[manager_reference] = (original_source, source_layer)
+                source = original_source
+            if original_source in settings.MAP_ENGINE_REGIONS:
+                continue
+            yield StaticModelLayer(id=mvt_api.layer_id, source=source, source_layer=source_layer)
 
 
 def get_cluster_layers() -> Iterable[ClusterModelLayer]:
@@ -228,7 +242,7 @@ def get_cluster_layers() -> Iterable[ClusterModelLayer]:
         Clustered model layers to show on map.
     """
     for cluster in settings.MAP_ENGINE_API_CLUSTERS:
-        yield ClusterModelLayer(id=cluster.layer_id, model=cluster.model, source=cluster.layer_id)
+        yield ClusterModelLayer(id=cluster.layer_id, source=cluster.layer_id)
 
 
 def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
@@ -276,3 +290,31 @@ def get_all_layers() -> List[MapLayer]:
     for cluster_layer in get_cluster_layers():
         layers.extend(cluster_layer.get_map_layers())
     return layers
+
+
+def get_layer_style(layer_name: str) -> dict:
+    """
+    Return layer style for given layer name
+
+    Parameters
+    ----------
+    layer_name: str
+        Layer name to look up style for
+
+    Returns
+    -------
+    dict
+        Layer style for given layer name
+
+    Raises
+    ------
+    KeyError
+        if layer name is not found in layer styles file
+    """
+    if layer_name not in settings.MAP_ENGINE_LAYER_STYLES:
+        raise KeyError(
+            f"No style for {layer_name=} found. "
+            f"Please add a related style in {pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / 'layer_styles.json'} "
+            f"or adapt environment variable 'MAP_ENGINE_STYLES_FOLDER' if it points to wrong styles folder."
+        )
+    return settings.MAP_ENGINE_LAYER_STYLES[layer_name]

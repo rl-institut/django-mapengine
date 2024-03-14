@@ -6,6 +6,14 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [1.1.0] - 2024-03-14
+### Added
+- error message for missing layer style
+- layers reuse other sources and source layers if model managers match
+
+### Changed
+- remove unnecessary model reference in ModelLayer class and Legend
+
 ## [1.0.0] - 2024-03-07
 ### Added
 - clean layer activation

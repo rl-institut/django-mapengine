@@ -1,3 +1,5 @@
+"""Module containing functions for preparing MVT responses from model managers"""
+
 from dataclasses import dataclass
 from typing import List
 
@@ -9,7 +11,9 @@ from rest_framework_mvt.views import BaseMVTView
 
 
 @dataclass
-class MVTLayer:
+class MVTSourceLayer:
+    """Source layer and related queryset used in MVTView"""
+
     name: str
     queryset: QuerySet
 
@@ -18,13 +22,15 @@ class MVTResponse(Response):
     """This class is needed in order to distill empty MVTs, as empty responses does not have a key "Content-Type"."""
 
     def render(self):
-        retval = super(MVTResponse, self).render()
+        retval = super().render()
         self["Content-Type"] = self.content_type
         return retval
 
 
 class MVTView(BaseMVTView):
-    layers: List[MVTLayer] = []
+    """Use MVTView in urls.py to create MVTs from models"""
+
+    layers: List[MVTSourceLayer] = []
 
     def get(self, request, *args, **kwargs):
         params = request.GET.dict()
@@ -66,6 +72,7 @@ class MVTView(BaseMVTView):
 
 
 def mvt_view_factory(classname, layers):
+    """Factory method for creating MVT views from settings"""
     return type(
         f"{classname}MVTView",
         (MVTView,),
