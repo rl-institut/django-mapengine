@@ -2,12 +2,12 @@
 
 from django.conf import settings
 from django.urls import path
-from django_distill import distill_path
+
 from djgeojson.views import GeoJSONLayerView
 
 from . import distill, mvt, views
 
-app_name = "django_mapengine"
+app_name = "django_mapengine"  # noqa: C0103
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -22,21 +22,34 @@ urlpatterns += [
     for cluster in settings.MAP_ENGINE_API_CLUSTERS
 ]
 
-urlpatterns += [
-    path(
-        f"{name}_mvt/<int:z>/<int:x>/<int:y>/",
-        mvt.mvt_view_factory(name, [mvt.MVTLayer(mvt_api.layer_id, queryset=mvt_api.manager) for mvt_api in mvt_apis]),
+for source, mvt_apis in settings.MAP_ENGINE_API_MVTS.items():
+    source_layers = []
+    managers = []
+    for mvt_api in mvt_apis:
+        if f"{mvt_api.model_name}.{mvt_api.manager_name}" in managers:
+            # Add model managers only once and use source layer in multiple layers
+            continue
+        source_layers.append(mvt.MVTSourceLayer(mvt_api.layer_id, queryset=mvt_api.manager))
+    urlpatterns.append(
+        path(
+            f"{source}_mvt/<int:z>/<int:x>/<int:y>/",
+            mvt.mvt_view_factory(source, source_layers),
+        )
     )
-    for name, mvt_apis in settings.MAP_ENGINE_API_MVTS.items()
-]
 
 # Distill MVT-urls:
 if settings.MAP_ENGINE_DISTILL:
+    try:
+        from django_distill import distill_path
+    except ImportError as ie:
+        raise ImportError(
+            "You set env variable 'MAP_ENGINE_DISTILL', but django-distill package cannot be found."
+        ) from ie
     urlpatterns += [
         distill_path(
             f"<int:z>/<int:x>/<int:y>/{name}.mvt",
             mvt.mvt_view_factory(
-                name, [mvt.MVTLayer(mvt_api.layer_id, queryset=mvt_api.manager) for mvt_api in mvt_apis]
+                name, [mvt.MVTSourceLayer(mvt_api.layer_id, queryset=mvt_api.manager) for mvt_api in mvt_apis]
             ),
             name=name,
             distill_func=distill.get_all_statics_for_state_lod,
