@@ -9,6 +9,7 @@ Here is a template for new release sections
 ## [Unreleased]
 ### Added
 - error message for missing layer style
+- layers reuse other sources and source layers if model managers match
 
 ### Changed
 - remove unnecessary model reference in ModelLayer class and Legend

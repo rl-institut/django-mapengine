@@ -55,6 +55,9 @@ function add_layers(msg)
 
 function turn_off_layer(layer_id) {
   const layers = map.getStyle().layers.filter(layer => layer.id.startsWith(layer_id));
+  if (layers.length === 0) {
+    throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
+  }
   $.each(layers, function (i, layer) {
     map.setLayoutProperty(layer.id, "visibility", "none");
   });
@@ -62,6 +65,9 @@ function turn_off_layer(layer_id) {
 
 function turn_on_layer(layer_id) {
   const layers = map.getStyle().layers.filter(layer => layer.id.startsWith(layer_id));
+  if (layers.length === 0) {
+    throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
+  }
   $.each(layers, function (i, layer) {
     map.setLayoutProperty(layer.id, "visibility", "visible");
   });
@@ -69,6 +75,7 @@ function turn_on_layer(layer_id) {
 }
 
 function toggleLayer(msg, layerSwitch) {
+
   if (layerSwitch.checked) {
     turn_on_layer(layerSwitch.id);
   } else {

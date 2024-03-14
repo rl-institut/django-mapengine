@@ -22,13 +22,15 @@ urlpatterns += [
     for cluster in settings.MAP_ENGINE_API_CLUSTERS
 ]
 
+managers = []
 for source, mvt_apis in settings.MAP_ENGINE_API_MVTS.items():
     source_layers = []
-    managers = []
     for mvt_api in mvt_apis:
-        if f"{mvt_api.model_name}.{mvt_api.manager_name}" in managers:
+        manager_reference = f"{mvt_api.model_name}.{mvt_api.manager_name}"
+        if manager_reference in managers:
             # Add model managers only once and use source layer in multiple layers
             continue
+        managers.append(manager_reference)
         source_layers.append(mvt.MVTSourceLayer(mvt_api.layer_id, queryset=mvt_api.manager))
     urlpatterns.append(
         path(
