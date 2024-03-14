@@ -7,7 +7,6 @@ import pathlib
 from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
-from django.contrib.gis.db.models import Model
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -51,7 +50,6 @@ class ModelLayer:
 
     # pylint:disable=C0103
     id: str  # noqa: A003
-    model: Model.__class__
     source: str
 
 
@@ -216,7 +214,7 @@ def get_static_layers() -> Iterable[StaticModelLayer]:
         if source in settings.MAP_ENGINE_REGIONS:
             continue
         for mvt_api in mvt_apis:
-            yield StaticModelLayer(id=mvt_api.layer_id, model=mvt_api.model, source=source)
+            yield StaticModelLayer(id=mvt_api.layer_id, source=source)
 
 
 def get_cluster_layers() -> Iterable[ClusterModelLayer]:
@@ -229,7 +227,7 @@ def get_cluster_layers() -> Iterable[ClusterModelLayer]:
         Clustered model layers to show on map.
     """
     for cluster in settings.MAP_ENGINE_API_CLUSTERS:
-        yield ClusterModelLayer(id=cluster.layer_id, model=cluster.model, source=cluster.layer_id)
+        yield ClusterModelLayer(id=cluster.layer_id, source=cluster.layer_id)
 
 
 def get_layer_by_id(layer_id: str) -> setup.ModelAPI:

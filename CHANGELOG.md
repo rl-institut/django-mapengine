@@ -10,6 +10,9 @@ Here is a template for new release sections
 ### Added
 - error message for missing layer style
 
+### Changed
+- remove unnecessary model reference in ModelLayer class and Legend
+
 ## [1.0.0] - 2024-03-07
 ### Added
 - clean layer activation
