@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Added
+- error message for missing layer style
+
 ## [1.0.0] - 2024-03-07
 ### Added
 - clean layer activation

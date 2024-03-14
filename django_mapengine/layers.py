@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import pathlib
 from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
@@ -113,7 +114,7 @@ class StaticModelLayer(ModelLayer):
             source_layer=self.id,
             minzoom=self.min_zoom(),
             maxzoom=self.max_zoom(),
-            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+            style=get_layer_style(self.id),
         )
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
@@ -122,7 +123,7 @@ class StaticModelLayer(ModelLayer):
                 source_layer=self.id,
                 minzoom=self.min_zoom(distill=True),
                 maxzoom=self.max_zoom(distill=True),
-                style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+                style=get_layer_style(self.id),
             )
 
 
@@ -145,17 +146,17 @@ class ClusterModelLayer(ModelLayer):
         yield MapLayer(
             id=self.id,
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[self.id],
+            style=get_layer_style(self.id),
         )
         yield MapLayer(
             id=f"{self.id}_cluster",
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster"],
+            style=get_layer_style(f"{self.id}_cluster"),
         )
         yield MapLayer(
             id=f"{self.id}_cluster_count",
             source=self.source,
-            style=settings.MAP_ENGINE_LAYER_STYLES[f"{self.id}_cluster_count"],
+            style=get_layer_style(f"{self.id}_cluster_count"),
         )
 
 
@@ -180,7 +181,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-fill"],
+            style=get_layer_style("region-fill"),
         )
         yield MapLayer(
             id=f"{layer}-line",
@@ -188,7 +189,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=layer,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-line"],
+            style=get_layer_style("region-line"),
         )
         yield MapLayer(
             id=f"{layer}-label",
@@ -196,7 +197,7 @@ def get_region_layers() -> Iterable[MapLayer]:
             source_layer=f"{layer}label",
             maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
             minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-            style=settings.MAP_ENGINE_LAYER_STYLES["region-label"],
+            style=get_layer_style("region-label"),
         )
 
 
@@ -276,3 +277,31 @@ def get_all_layers() -> List[MapLayer]:
     for cluster_layer in get_cluster_layers():
         layers.extend(cluster_layer.get_map_layers())
     return layers
+
+
+def get_layer_style(layer_name: str) -> dict:
+    """
+    Return layer style for given layer name
+
+    Parameters
+    ----------
+    layer_name: str
+        Layer name to look up style for
+
+    Returns
+    -------
+    dict
+        Layer style for given layer name
+
+    Raises
+    ------
+    KeyError
+        if layer name is not found in layer styles file
+    """
+    if layer_name not in settings.MAP_ENGINE_LAYER_STYLES:
+        raise KeyError(
+            f"No style for {layer_name=} found. "
+            f"Please add a related style in {pathlib.Path(settings.MAP_ENGINE_STYLES_FOLDER) / 'layer_styles.json'} "
+            f"or adapt environment variable 'MAP_ENGINE_STYLES_FOLDER' if it points to wrong styles folder."
+        )
+    return settings.MAP_ENGINE_LAYER_STYLES[layer_name]
