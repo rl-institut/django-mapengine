@@ -122,7 +122,7 @@ class StaticModelLayer(ModelLayer):
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
                 id=f"{self.id}_distilled",
-                source=f"{self.source}_distilled",
+                source=self.source if self.source in settings.MAP_ENGINE_REGIONS else f"{self.source}_distilled",
                 source_layer=self.get_source_layer(),
                 minzoom=self.min_zoom(distill=True),
                 maxzoom=self.max_zoom(distill=True),
