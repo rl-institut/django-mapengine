@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [1.2.2] - 2024-03-19
 ### Fixed
 - distilled sources for layers referencing region MVTs
 
