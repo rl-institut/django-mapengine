@@ -6,7 +6,11 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [1.2.0] - 2024-03-19
+## [Unreleased]
+### Fixed
+- range-key-dict dependency
+
+## [1.2.0] - 2024-03-19 (BROKEN)
 ### Fixed
 - distilling
 
