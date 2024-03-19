@@ -13,7 +13,7 @@ packages = [{include = "django_mapengine"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"
-range-key-dict = "^1.2.0"
+range-key-dict = "^1.1.0"
 django-environ = ">=0.10.0"
 djangorestframework = "^3.14.0"
 djangorestframework-mvt = "^0.2.5"
