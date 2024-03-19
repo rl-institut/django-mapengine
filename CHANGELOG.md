@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- distilling
+
 ## [1.1.0] - 2024-03-14
 ### Added
 - error message for missing layer style

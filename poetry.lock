@@ -293,6 +293,25 @@ files = [
 django = "*"
 
 [[package]]
+name = "django-distill"
+version = "3.1.3"
+description = "Static site renderer and publisher for Django."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-distill-3.1.3.tar.gz", hash = "sha256:3c14e85e1197f4c11dddc5caf9e4a13669d83ab9654c64855e6217dea7619678"},
+]
+
+[package.dependencies]
+django = "*"
+requests = "*"
+
+[package.extras]
+amazon = ["boto3"]
+google = ["google-api-python-client", "google-cloud-storage"]
+microsoft = ["azure-storage-blob"]
+
+[[package]]
 name = "django-environ"
 version = "0.11.2"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -791,4 +810,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "17ac2a894f066b40000f2691a35ef4952104199aecf8a8c7e29c7c312f163ff6"
+content-hash = "ef54023bb3bb9575c762130dce0944664488c30d9158efe54c8af6774335a4f3"

@@ -25,11 +25,17 @@ def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
     tuple[int, int, int]
         Holding x,y,z
     """
-    for z in range(settings.MIN_ZOOM, settings.MAX_DISTILLED_ZOOM + 1):
-        z_factor = 2 ** (z - settings.MIN_ZOOM)
-        for x in range(settings.X_AT_MIN_Z * z_factor, (settings.X_AT_MIN_Z + 1) * z_factor + settings.X_OFFSET):
-            for y in range(settings.Y_AT_MIN_Z * z_factor, (settings.Y_AT_MIN_Z + 1) * z_factor + settings.Y_OFFSET):
-                if layer in settings.REGIONS and get_region_zooms()[z] != layer:
+    for z in range(settings.MAP_ENGINE_MIN_ZOOM, settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1):
+        z_factor = 2 ** (z - settings.MAP_ENGINE_MIN_ZOOM)
+        for x in range(
+            settings.MAP_ENGINE_X_AT_MIN_Z * z_factor,
+            (settings.MAP_ENGINE_X_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_X_OFFSET,
+        ):
+            for y in range(
+                settings.MAP_ENGINE_Y_AT_MIN_Z * z_factor,
+                (settings.MAP_ENGINE_Y_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_Y_OFFSET,
+            ):
+                if layer in settings.MAP_ENGINE_REGIONS and get_region_zooms()[z] != layer:
                     continue
                 yield x, y, z
 

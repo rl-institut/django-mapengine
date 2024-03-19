@@ -109,7 +109,7 @@ def get_region_sources() -> Iterable[MapSource]:
                 yield MapSource(
                     name=region,
                     type="vector",
-                    tiles=[f"{app_url}static/mvts/{{z}}/{{x}}/{{y}}/{region}.mvt"],
+                    tiles=[f"/static/mvts{app_url}{{z}}/{{x}}/{{y}}/{region}.mvt"],
                     maxzoom=settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1,
                 )
     else:
@@ -135,7 +135,7 @@ def get_static_sources() -> Iterable[MapSource]:
         yield MapSource(source, type="vector", tiles=[f"{app_url}{source}_mvt/{{z}}/{{x}}/{{y}}/"])
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapSource(
-                f"{source}_distilled", type="vector", tiles=[f"{app_url}static/mvts/{{z}}/{{x}}/{{y}}/{source}.mvt"]
+                f"{source}_distilled", type="vector", tiles=[f"/static/mvts{app_url}{{z}}/{{x}}/{{y}}/{source}.mvt"]
             )
 
 
