@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## Unreleased
+### Added
+- error message if region zoom level does not work with distill zoom level
+
 ## [1.3.0] - 2024-03-20
 ### Changed
 - env names for distilling and tileservice

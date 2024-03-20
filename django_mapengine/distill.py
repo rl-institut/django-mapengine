@@ -5,11 +5,21 @@ import range_key_dict
 from django.conf import settings
 
 
-def get_region_zooms():
-    """Create range-key-dict from regions and related zoom factors."""
-    return range_key_dict.RangeKeyDict(
+def get_region_layer_for_zoom_level(zoom_level):
+    """Return region layer for zoom level."""
+    zoom_layers = range_key_dict.RangeKeyDict(
         {zoom: layer for layer, zoom in settings.MAP_ENGINE_ZOOM_LEVELS.items() if layer in settings.MAP_ENGINE_REGIONS}
     )
+    try:
+        return zoom_layers[zoom_level]
+    except KeyError:
+        # pylint: disable = W0707
+        raise KeyError(
+            f"Cannot detect region layer for zoom level '{zoom_level}'. "
+            f"You must probably add layer for zoom level '{zoom_level + 1}' "
+            f"(Note: upper bound zoom level is not included) in MAP_ENGINE_ZOOM_LEVELS "
+            f"or adapt zoom level for existing region layer accordingly. "
+        )
 
 
 def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
@@ -35,7 +45,7 @@ def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
                 settings.MAP_ENGINE_Y_AT_MIN_Z * z_factor,
                 (settings.MAP_ENGINE_Y_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_Y_OFFSET * z_factor,
             ):
-                if layer in settings.MAP_ENGINE_REGIONS and get_region_zooms()[z] != layer:
+                if layer in settings.MAP_ENGINE_REGIONS and get_region_layer_for_zoom_level(z) != layer:
                     continue
                 yield x, y, z
 
