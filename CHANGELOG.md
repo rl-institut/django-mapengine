@@ -12,6 +12,7 @@ Here is a template for new release sections
 
 ### Fixed
 - min/max zoom in map setup
+- distill offset factor
 
 ## [1.2.2] - 2024-03-19
 ### Fixed

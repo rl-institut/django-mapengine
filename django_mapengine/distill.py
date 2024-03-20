@@ -29,11 +29,11 @@ def get_coordinates_for_distilling(layer: str) -> tuple[int, int, int]:
         z_factor = 2 ** (z - settings.MAP_ENGINE_MIN_ZOOM)
         for x in range(
             settings.MAP_ENGINE_X_AT_MIN_Z * z_factor,
-            (settings.MAP_ENGINE_X_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_X_OFFSET,
+            (settings.MAP_ENGINE_X_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_X_OFFSET * z_factor,
         ):
             for y in range(
                 settings.MAP_ENGINE_Y_AT_MIN_Z * z_factor,
-                (settings.MAP_ENGINE_Y_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_Y_OFFSET,
+                (settings.MAP_ENGINE_Y_AT_MIN_Z + 1) * z_factor + settings.MAP_ENGINE_Y_OFFSET * z_factor,
             ):
                 if layer in settings.MAP_ENGINE_REGIONS and get_region_zooms()[z] != layer:
                     continue
