@@ -25,11 +25,11 @@ class MapEngineConf(AppConf):
     if env("PROJ_LIB", default=False):
         PROJ_LIB = env("PROJ_LIB")
 
-    DISTILL = env.bool("DISTILL", False)
-    USE_DISTILLED_MVTS = env.bool("USE_DISTILLED_MVTS", True)
+    DISTILL = env.bool("MAP_ENGINE_DISTILL", False)
+    USE_DISTILLED_MVTS = env.bool("MAP_ENGINE_USE_DISTILLED_MVTS", True)
 
-    TILING_SERVICE_TOKEN = env.str("TILING_SERVICE_TOKEN", default=None)
-    TILING_SERVICE_STYLE_ID = env.str("TILING_SERVICE_STYLE_ID", default=None)
+    TILING_SERVICE_TOKEN = env.str("MAP_ENGINE_TILING_SERVICE_TOKEN", default=None)
+    TILING_SERVICE_STYLE_ID = env.str("MAP_ENGINE_TILING_SERVICE_STYLE_ID", default=None)
 
     # STYLES
     if not hasattr(settings, "MAP_ENGINE_STYLES_FOLDER"):

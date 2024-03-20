@@ -7,6 +7,9 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 Here is a template for new release sections
 
 ## [Unreleased]
+### Changed
+- env names for distilling and tileservice
+
 ### Fixed
 - min/max zoom in map setup
 
