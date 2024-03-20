@@ -43,14 +43,21 @@ class MapEngineConf(AppConf):
     LAYER_STYLES.update(CHOROPLETH_STYLES.get_static_styles())
 
     # MAP
+    # Must use getattr for constants which are used directly!
+    MIN_ZOOM: int = getattr(settings, "MAP_ENGINE_MIN_ZOOM", 8)
+    MAX_ZOOM: int = getattr(settings, "MAP_ENGINE_MAX_ZOOM", 22)
+    MAX_DISTILLED_ZOOM: int = 10
+    CLUSTER_ZOOM: int = 11
     CENTER_AT_STARTUP: Tuple[int, int] = settings.MAP_ENGINE_CENTER_AT_STARTUP
     ZOOM_AT_STARTUP: int = settings.MAP_ENGINE_ZOOM_AT_STARTUP
-    MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)  # Must use getattr, as MAX_BOUNDS is used directly
+    MAX_BOUNDS = getattr(settings, "MAP_ENGINE_MAX_BOUNDS", None)
     SETUP = {
         "container": "map",
         "style": f"https://api.maptiler.com/maps/{TILING_SERVICE_STYLE_ID}/style.json?key={TILING_SERVICE_TOKEN}",
         "center": CENTER_AT_STARTUP,
         "zoom": ZOOM_AT_STARTUP,
+        "minZoom": MIN_ZOOM,
+        "maxZoom": MAX_ZOOM,
     }
     if MAX_BOUNDS:
         SETUP["maxBounds"] = MAX_BOUNDS
@@ -64,12 +71,6 @@ class MapEngineConf(AppConf):
 
     # LAYERS
     LAYERS_AT_STARTUP: List[str] = []
-
-    # REGIONS
-    MIN_ZOOM: int = 8
-    MAX_ZOOM: int = 22
-    MAX_DISTILLED_ZOOM: int = 10
-    CLUSTER_ZOOM: int = 11
 
     # IMAGES
     IMAGES: List[Dict[str, str]] = []
