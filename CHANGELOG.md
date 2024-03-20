@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [1.3.0] - 2024-03-20
 ### Changed
 - env names for distilling and tileservice
 
