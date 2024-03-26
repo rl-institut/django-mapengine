@@ -34,7 +34,7 @@ function add_layers(msg)
   const layers_at_startup = JSON.parse(document.getElementById("mapengine_layers_at_startup").textContent);
   for (const layer of layers) {
     map.addLayer(layer);
-    const isStartupLayer = layers_at_startup.some(startup_layer => layer.id.startsWith(startup_layer));
+    const isStartupLayer = layers_at_startup.some(startup_layer => layer.id === startup_layer);
     if (isStartupLayer) {
       map.setLayoutProperty(layer.id, "visibility", "visible");
     } else {
@@ -54,32 +54,34 @@ function add_layers(msg)
 // Helper Functions
 
 function turn_off_layer(layer_id) {
-  const layers = map.getStyle().layers.filter(layer => layer.id.startsWith(layer_id));
-  if (layers.length === 0) {
+  const layerExists = map.getStyle().layers.some(layer => layer.id === layer_id);
+  if (!layerExists) {
     throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
   }
-  $.each(layers, function (i, layer) {
-    map.setLayoutProperty(layer.id, "visibility", "none");
-  });
+  map.setLayoutProperty(layer_id, "visibility", "none");
 }
 
 function turn_on_layer(layer_id) {
-  const layers = map.getStyle().layers.filter(layer => layer.id.startsWith(layer_id));
-  if (layers.length === 0) {
+  const layerExists = map.getStyle().layers.some(layer => layer.id === layer_id);
+  if (!layerExists) {
     throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
   }
-  $.each(layers, function (i, layer) {
-    map.setLayoutProperty(layer.id, "visibility", "visible");
-  });
-  return layers.map(layer => layer.id);
+  map.setLayoutProperty(layer_id, "visibility", "visible");
 }
 
 function toggleLayer(msg, layerSwitch) {
-
   if (layerSwitch.checked) {
     turn_on_layer(layerSwitch.id);
+    if (map_store.cold.cluster_layers.includes(layerSwitch.id)) {
+      turn_on_layer(`${layerSwitch.id}_cluster`);
+      turn_on_layer(`${layerSwitch.id}_cluster_count`);
+    }
   } else {
     turn_off_layer(layerSwitch.id);
+    if (map_store.cold.cluster_layers.includes(layerSwitch.id)) {
+      turn_off_layer(`${layerSwitch.id}_cluster`);
+      turn_off_layer(`${layerSwitch.id}_cluster_count`);
+    }
   }
   return logMessage(msg);
 }

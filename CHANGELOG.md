@@ -10,6 +10,9 @@ Here is a template for new release sections
 ### Added
 - error message if region zoom level does not work with distill zoom level
 
+### Changed
+- layers are activated by their full name, not beginning of name; cluster activation is adapted
+
 ## [1.3.0] - 2024-03-20
 ### Changed
 - env names for distilling and tileservice
