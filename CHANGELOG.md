@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [1.4.0] - 2024-03-26
 ### Added
 - error message if region zoom level does not work with distill zoom level
 
