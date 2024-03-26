@@ -46,7 +46,7 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    MAP_ENGINE_ZOOM_AT_STARTUP = 9
    MAP_ENGINE_MAX_BOUNDS = [[11.280733017118229, 51.22918643452503], [13.616574868700604, 52.35515806663738]]
 
-   MAP_ENGINE_IMAGES = [core.MapImage("wind", "images/icons/i_wind.png")]
+   MAP_ENGINE_IMAGES = [setup.MapImage("wind", "images/icons/i_wind.png")]
 
    MAP_ENGINE_API_MVTS = {
        "municipality":
