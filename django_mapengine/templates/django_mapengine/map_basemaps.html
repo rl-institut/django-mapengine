@@ -9,15 +9,17 @@
 </button>
 <div id="basemaps" class="basemaps" style="display:none">
   <div class="basemaps__btn">
-    <button id="basemaps__default" class="btn" onclick="toggleBasemap(null);">
-      <img src="{% static 'images/layer_ctrl_default.svg' %}" alt="Default basemap view">
+    <button id="basemaps__default" class="btn">
+      <img src="{% static 'django_mapengine/images/layer_ctrl_default.svg' %}" alt="Default basemap view">
       <span>{% trans "default"|title %}</span>
     </button>
   </div>
-  <div class="basemaps__btn">
-    <button id="basemaps__satellite" class="btn" onclick="toggleBasemap('satellite');">
-      <img src="{% static 'images/layer_ctrl_satellite.svg' %}" alt="Satellite basemap view">
-      <span>{% trans "satellite"|title %}</span>
-    </button>
-  </div>
+  {% for basemap in mapengine_basemap_layers %}
+    <div class="basemaps__btn">
+      <button id="basemaps__{{ basemap.layer_id }}" class="btn">
+        <img src="{% static basemap.image %}" alt="{{ basemap.description }}">
+        <span>{% trans basemap.layer_id|title %}</span>
+      </button>
+    </div>
+  {% endfor %}
 </div>

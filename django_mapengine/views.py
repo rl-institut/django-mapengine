@@ -46,6 +46,7 @@ class MapEngineMixin(ContextMixin):
                 "mapengine_sources": {
                     source.name: source.get_source(self.request) for source in sources.get_all_sources()
                 },
+                "mapengine_basemap_layers": [basemap.as_dict() for basemap in settings.MAP_ENGINE_BASEMAPS],
                 "mapengine_layers": [layer.get_layer() for layer in layers.get_all_layers()],
                 "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP + settings.MAP_ENGINE_REGIONS,
                 "mapengine_images": [image.as_dict() for image in settings.MAP_ENGINE_IMAGES],
@@ -60,6 +61,7 @@ class MapEngineMixin(ContextMixin):
             "cluster_layers": [cluster.layer_id for cluster in settings.MAP_ENGINE_API_CLUSTERS],
             "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
             "layer_switch_class": settings.MAP_ENGINE_LAYER_SWITCH_CLASS,
+            "basemap": "default",
         }
 
         context["mapengine_store_cold_init"] = store

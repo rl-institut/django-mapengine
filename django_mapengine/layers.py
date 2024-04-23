@@ -15,6 +15,27 @@ if TYPE_CHECKING:
 
 
 @dataclass
+class BasemapLayer:
+    """Default map layer used in maplibre."""
+
+    # pylint:disable=C0103
+    id: str  # noqa: A003
+    source: str
+    type: str  # noqa: A003
+
+    def get_layer(self):
+        """
+        Build dict from layer settings and style.
+
+        Returns
+        -------
+        dict
+            to be used as layer in maplibre.
+        """
+        return {"id": self.id, "source": self.source, "type": self.type}
+
+
+@dataclass
 class MapLayer:
     """Default map layer used in maplibre."""
 
@@ -161,6 +182,12 @@ class ClusterModelLayer(ModelLayer):
             source=self.source,
             style=get_layer_style(f"{self.id}_cluster_count"),
         )
+
+
+def get_basemap_layers() -> Iterable[BasemapLayer]:
+    """Return basemap layers"""
+    for basemap in settings.MAP_ENGINE_BASEMAPS:
+        yield BasemapLayer(id=basemap.layer_id, source=basemap.layer_id, type=basemap.type)
 
 
 def get_region_layers() -> Iterable[MapLayer]:

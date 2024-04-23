@@ -8,7 +8,7 @@ import environ
 from appconf import AppConf
 from django.conf import settings
 
-from . import choropleth
+from . import choropleth, setup
 
 env = environ.Env()
 
@@ -66,6 +66,15 @@ class MapEngineConf(AppConf):
 
     # MVTS and CLUSTERS
 
+    BASEMAPS = [
+        setup.MaptilerBasemap(
+            "satellite",
+            source_id="satellite",
+            type="raster",
+            image="django_mapengine/images/layer_ctrl_satellite.svg",
+            description="Satellite basemap view",
+        )
+    ]
     API_MVTS = {}
     API_CLUSTERS = []
 

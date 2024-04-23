@@ -4,31 +4,8 @@ map.on("load", async function() {
 });
 
 PubSub.subscribe(mapEvent.MAP_LOADED, add_sources);
-PubSub.subscribe(mapEvent.MAP_LOADED, add_satellite);
 PubSub.subscribe(mapEvent.MAP_LOADED, add_images);
 
-
-function add_satellite(msg) {
-    const layers = map.getStyle().layers;
-    // Find the index of the first symbol layer in the map style
-    let firstSymbolId;
-    for (let i = 0; i < layers.length; i++) {
-        if (layers[i].type === "symbol") {
-            firstSymbolId = layers[i].id;
-            break;
-        }
-    }
-    map.addLayer(
-        {
-            id: "satellite",
-            type: "raster",
-            source: "satellite"
-        },
-        firstSymbolId
-    );
-    map.setLayoutProperty("satellite", "visibility", "none");
-    return logMessage(msg);
-}
 
 function add_sources(msg) {
     const sources = JSON.parse(document.getElementById("mapengine_sources").textContent);

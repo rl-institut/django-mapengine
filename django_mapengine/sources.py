@@ -154,7 +154,7 @@ def get_cluster_sources() -> Iterable[MapSource]:
         )
 
 
-def get_satellite_source() -> MapSource:
+def get_satellite_sources() -> Iterable[MapSource]:
     """
     Return source for satellite basemap
 
@@ -163,14 +163,15 @@ def get_satellite_source() -> MapSource:
     MapSource
         of satellite raster
     """
-    return MapSource(
-        "satellite",
-        type="raster",
-        tiles=[
-            "https://api.maptiler.com/tiles/satellite-v2/"
-            f"{{z}}/{{x}}/{{y}}.jpg?key={settings.MAP_ENGINE_TILING_SERVICE_TOKEN}",
-        ],
-    )
+    for basemap in settings.MAP_ENGINE_BASEMAPS:
+        yield MapSource(
+            basemap.layer_id,
+            type=basemap.type,
+            tiles=[
+                f"https://api.maptiler.com/maps/{basemap.source_id}/"
+                f"{{z}}/{{x}}/{{y}}.{basemap.format}?key={settings.MAP_ENGINE_TILING_SERVICE_TOKEN}",
+            ],
+        )
 
 
 def get_all_sources() -> List[MapSource]:
@@ -183,7 +184,7 @@ def get_all_sources() -> List[MapSource]:
         all map sources
     """
     sources = list(get_region_sources())
-    sources.append(get_satellite_source())
+    sources.extend(get_satellite_sources())
     sources.extend(get_static_sources())
     sources.extend(get_cluster_sources())
     return sources

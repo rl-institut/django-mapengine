@@ -14,6 +14,35 @@ Zoom = namedtuple("MinMax", ("min", "max"))
 
 
 @dataclass
+class MaptilerBasemap:
+    """
+    Base class for a basemap
+
+    This is used to:
+    - prepare basemap layers
+    - prepare basemap sources
+    """
+
+    layer_id: str
+    source_id: str
+    description: str
+    image: str
+    type: str = "vector"  # noqa: A003
+    format: str = "jpg"
+
+    def as_dict(self):
+        """Return maptilerBasemap as dict"""
+        return {
+            "layer_id": self.layer_id,
+            "source_id": self.source_id,
+            "description": self.description,
+            "image": self.image,
+            "type": self.type,
+            "format": self.format,
+        }
+
+
+@dataclass
 class ModelAPI:
     """
     Base class for API interface
@@ -45,6 +74,7 @@ class ModelAPI:
 @dataclass
 class ClusterAPI(ModelAPI):
     """Exists only to distinguish between "normal" and clustered API"""
+
     properties: list = field(default_factory=lambda: [])
 
 

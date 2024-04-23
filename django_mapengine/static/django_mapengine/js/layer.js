@@ -22,11 +22,37 @@ map.on("load", function () {
 
 // Subscriptions
 
+PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_basemap_layers);
 PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_layers);
 PubSub.subscribe(mapEvent.MAP_LAYER_SWITCH_CLICK, toggleLayer);
 
 
 // Subscriber Functions
+
+function add_basemap_layers(msg) {
+    const layers = map.getStyle().layers;
+    // Find the index of the first symbol layer in the map style
+    let beforeLayer;
+    for (let i = 0; i < layers.length; i++) {
+        if (layers[i].type === "symbol") {
+            firstSymbolId = layers[i].id;
+            break;
+        }
+    }
+    const basemap_layers = JSON.parse(document.getElementById("mapengine_basemap_layers").textContent);
+    for (const basemap_layer of basemap_layers) {
+        map.addLayer(
+            {
+                id: basemap_layer.layer_id,
+                type: basemap_layer.type,
+                source: basemap_layer.layer_id,
+            },
+            beforeLayer
+        );
+        map.setLayoutProperty(basemap_layer.layer_id, "visibility", "none");
+    }
+    return logMessage(msg);
+}
 
 function add_layers(msg)
 {

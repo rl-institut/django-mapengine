@@ -1,29 +1,33 @@
-const basemaps = ["satellite"];
+
+const toggleBasemapButton = document.getElementById("basemaps-control");
+toggleBasemapButton.onclick = toggleBasemapControl;
+
+const basemapButtons = document.getElementById("basemaps").querySelectorAll("button");
+const basemaps = Array.from(basemapButtons).map(function (basemapButton) {return basemapButton.id.slice("basemaps__".length);});
+
+for (const basemapButton of basemapButtons) {
+  let basemap_layer = basemapButton.id.slice("basemaps__".length);
+  basemapButton.addEventListener("click", () => {
+    toggleBasemap(basemap_layer);
+  });
+}
 
 function toggleBasemap(basemap) {
   map_store.cold.basemap = basemap;
 
-  if (basemap === null) {
-    map_store.cold.basemapFocusElement = "basemaps__default";
-  } else {
-    map_store.cold.basemapFocusElement = `basemaps__${basemap}`;
-  }
-
   const legend = document.getElementById("legend");
   for (const bm of basemaps) {
-    map.setLayoutProperty(bm, "visibility", "none");
+    if (bm !== "default") {
+      map.setLayoutProperty(bm, "visibility", "none");
+    }
   }
-  if (basemap !== null) {
+  if (basemap !== "default") {
     map.setLayoutProperty(basemap, "visibility", "visible");
   }
   else {
     legend.hidden = true;
-
   }
 }
-
-// Toggle basemaps control
-let toggleBasemapButton = document.getElementById("basemaps-control");
 
 function toggleBasemapControl() {
   const basemapControl = document.getElementById("basemaps");
@@ -33,8 +37,6 @@ function toggleBasemapControl() {
   }
   else {
     basemapControl.style.display = "flex";
-    document.getElementById(map_store.cold.basemapFocusElement).focus();
+    document.getElementById(`basemaps__${map_store.cold.basemap}`).focus();
   }
 }
-
-toggleBasemapButton.onclick = toggleBasemapControl;
