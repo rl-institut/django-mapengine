@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased] - 2024-XX-XX
+### Added
+- more symbols for basemaps
+
 ## [1.5.0] - 2024-04-24
 ### Added
 - multiple basemaps possible
