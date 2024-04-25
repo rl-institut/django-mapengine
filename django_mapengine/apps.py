@@ -68,12 +68,28 @@ class MapEngineConf(AppConf):
 
     BASEMAPS = [
         setup.MaptilerBasemap(
+            "dataviz-light",
+            source_id="dataviz-light",
+            type="raster",
+            format="png",
+            image="django_mapengine/images/layer_ctrl_light.svg",
+            description="Light basemap for data visualization",
+        ),
+        setup.MaptilerBasemap(
+            "dataviz-dark",
+            source_id="dataviz-dark",
+            type="raster",
+            format="png",
+            image="django_mapengine/images/layer_ctrl_dark.svg",
+            description="Dark basemap for data visualization",
+        ),
+        setup.MaptilerBasemap(
             "satellite",
             source_id="satellite",
             type="raster",
             image="django_mapengine/images/layer_ctrl_satellite.svg",
             description="Satellite basemap view",
-        )
+        ),
     ]
     API_MVTS = {}
     API_CLUSTERS = []

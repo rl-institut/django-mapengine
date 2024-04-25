@@ -8,7 +8,7 @@ Here is a template for new release sections
 
 ## [Unreleased] - 2024-XX-XX
 ### Added
-- more symbols for basemaps
+- light and dark basemaps for datavisualization as default basemaps
 
 ## [1.5.0] - 2024-04-24
 ### Added
