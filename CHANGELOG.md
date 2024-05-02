@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- region lines and labels at startup
+
 ## [1.6.0] - 2024-04-25 - 2024-XX-XX
 ### Added
 - light and dark basemaps for datavisualization as default basemaps
