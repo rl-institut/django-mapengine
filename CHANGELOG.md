@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [1.6.1] - 2024-05-02
 ### Fixed
 - region lines and labels at startup
 
