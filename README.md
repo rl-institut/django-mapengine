@@ -74,7 +74,17 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    MAP_ENGINE_POPUPS = ["results"]
    ```
 
-5. Add maplibre-gl, pubsub-js and mapengine JS, CSS and JSONs in template by:
+5. Add middleware to your middleware setup before Whitenoise middleware (or other static server middleware):
+   ```python
+   MIDDLEWARE = [
+       "django.middleware.security.SecurityMiddleware",
+       "django_mapengine.django_mapengine.middleware.MapEngineMiddleware",
+       "whitenoise.middleware.WhiteNoiseMiddleware",
+       ...
+   ]
+   ```
+
+6. Add maplibre-gl, pubsub-js and mapengine JS, CSS and JSONs in template by:
    ```html
    {% block javascript %}
      {{ block.super }}
@@ -98,7 +108,7 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    {% endblock css %}
    ```
 
-6. If you want to integrate basemaps to your map add the following to the corresponding places:
+7. If you want to integrate basemaps to your map add the following to the corresponding places:
    ```html
    <script src="{% static 'django_mapengine/js/basemaps.js' %}" type="text/javascript"></script>
    {% include 'django_mapengine/map_basemaps.html'}
