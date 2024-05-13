@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [1.7.0] - 2024-05-13
+### Added
+- Middleware to prevent 404 errors for missing MVTs
+
 ## [1.6.1] - 2024-05-02
 ### Fixed
 - region lines and labels at startup
