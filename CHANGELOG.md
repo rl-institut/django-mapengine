@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Added
+- docs for popups
+
 ## [1.7.0] - 2024-05-13
 ### Added
 - Middleware to prevent 404 errors for missing MVTs

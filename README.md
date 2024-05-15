@@ -116,4 +116,6 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
 
 # User Guides
 
-- [Layers](docs/LAYERS.md)
+- [How to define layers](docs/LAYERS.md)
+- [How to enable popups](docs/POPUPS.md)
+- [How to set up clusters](docs/CLUSTERS.md)
