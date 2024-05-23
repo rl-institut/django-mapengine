@@ -24,10 +24,10 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
     </div>
     <div class="legend__wrap">
       <div class="legend__column">
-        ${valueRanges.filter((value, idx) => idx < nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx}">${value}</div>`).join(' ')}
+        ${valueRanges.filter((value, idx) => idx <= nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx}">${value}</div>`).join(' ')}
       </div>
       <div class="legend__column">
-        ${valueRanges.filter((value, idx) => idx >= nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex}">${value}</div>`).join(' ')}
+        ${valueRanges.filter((value, idx) => idx > nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex}">${value}</div>`).join(' ')}
       </div>
     </div>
     <style>
@@ -38,44 +38,34 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
 
 
 function loadLegend(msg, choroplethName){
-  const title = map_store.cold.choropleths[choroplethName]["title"];
-  const unit = map_store.cold.choropleths[choroplethName]["unit"];
+  const title = map_store.cold.choropleths[choroplethName].title;
+  const unit = map_store.cold.choropleths[choroplethName].unit;
   const paintPropertiesPerLayer = map_store.cold.storedChoroplethPaintProperties[choroplethName];
 
   /* Find active layer */
   let paintProperties = null;
   for (const layerID in paintPropertiesPerLayer) {
     const layer = map.getLayer(layerID);
-    if (map.getZoom() > layer.minzoom && map.getZoom() < layer.maxzoom){
+    if (layer.visibility === "visible"){
       paintProperties = paintPropertiesPerLayer[layerID];
-      break
+      break;
     }
   }
-
-  let colors = [];
-  let values = [];
-
-  for (const element in paintProperties["fill-color"]) {
-    let current = paintProperties["fill-color"][element];
-
-    if (typeof(current) == "number") {
-      if (Number.isInteger(current) === false){
-        current = current.toFixed(2);
-      }
-
-      if (values.length === 0) {
-        values.push("0 - " + String(current));
-      }
-      else {
-        values.push(values[values.length-1].split(" ").slice(-1)[0] + " - " + String(current));
-      }
-    }
-
-    if (typeof(current) == "string" && current.slice(0,3) === "rgb") {
-      colors.push(current);
-    }
+  if (paintProperties === null) {
+    return logMessage(msg);
   }
+
+  const colors = paintProperties["fill-color"].slice(3).filter((_, index) => index % 2 !== 0);
+  const values = paintProperties["fill-color"].slice(3).filter((_, index) => (index + 1) % 2 !== 0).map(value => value < 100 ? value.toFixed(2) : Math.round(value));
+
+  let valueRanges = [];
+  const step_size = parseFloat(values[1]) - parseFloat(values[0]);
+  for (let i = 0; i < values.length; i++) {
+    const nextValue = i === values.length - 1 ? parseFloat(values[i]) + step_size : values[i + 1];
+    valueRanges.push(`${values[i]} - ${nextValue}`);
+  }
+
   const entriesPerColumn = Math.floor(values.length / 2);
-  legendElement.innerHTML = createLegend(title, unit, colors, values, entriesPerColumn);
+  legendElement.innerHTML = createLegend(title, unit, colors, valueRanges, entriesPerColumn);
   return logMessage(msg);
 }

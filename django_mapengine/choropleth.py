@@ -9,7 +9,7 @@ from . import colorbrewer
 
 MAX_COLORBREWER_STEPS = 9
 
-DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 6}
+DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 5}
 
 
 class ChoroplethError(Exception):
@@ -101,8 +101,8 @@ class Choropleth:
                 num = choropleth_config["num_colors"]
             else:
                 num = 6
-            step = (max_value - min_value) / (num - 1)
-            return [min_value + i * step for i in range(num - 1)] + [max_value]
+            step_size = self.__calculate_step_size(min_value, max_value, num)
+            return [min_value + i * step_size for i in range(num)] + [max_value]
 
         if "values" not in choropleth_config:
             error_msg = "Values have to be set in style file in order to composite choropleth colors."
@@ -139,7 +139,7 @@ class Choropleth:
         if len(steps) > MAX_COLORBREWER_STEPS:
             error_msg = f"Too many choropleth values given for {name=}."
             raise IndexError(error_msg)
-        colors = colorbrewer.sequential["multihue"][choropleth_config["color_palette"]][len(steps)]
+        colors = colorbrewer.sequential["multihue"][choropleth_config["color_palette"]][len(steps) - 1]
         fill_color = [
             "interpolate",
             ["linear"],
@@ -150,6 +150,15 @@ class Choropleth:
             rgb_color = f"rgb({color[0]}, {color[1]}, {color[2]})"
             fill_color.append(rgb_color)
         return fill_color
+
+    @staticmethod
+    def __calculate_step_size(min_value: float, max_value: float, num: int) -> float:
+        """
+        Calculate step size
+
+        Algorithm tries to find nice step sizes instead of simply dividing range by number of steps.
+        """
+        return (max_value - min_value) / num
 
     @staticmethod
     def __calculate_lower_limit(number: float) -> int:
@@ -164,7 +173,7 @@ class Choropleth:
         Returns
         -------
         int
-            rounded down value by meaningful amount, depending on the size of mini
+            rounded down value by meaningful amount
 
         Raises
         ------
@@ -172,12 +181,12 @@ class Choropleth:
             if lower limit cannot be found
         """
         if number == 0:
-            return number
+            return int(number)
         if number < 1:
             return int((number * 10) / 10)
-        if number > 1:
-            digits = int(math.log10(number))
-            return int(number / pow(10, digits)) * 10**digits
+        if number >= 1:
+            digits = int(math.log10(number)) + 1
+            return int(number / 10**digits) * 10**digits
         raise ValueError(f"Cannot find lower limit for {number=}")
 
     @staticmethod
@@ -199,9 +208,9 @@ class Choropleth:
         ValueError
             if upper limit cannot be found
         """
-        if number < 1:
+        if number <= 1:
             return math.ceil((number * 10) / 10)
         if number > 1:
-            digits = int(math.log10(number))
+            digits = int(math.log10(number)) + 1
             return math.ceil(number / 10**digits) * 10**digits
         raise ValueError(f"Cannot find upper limit for {number=}")
