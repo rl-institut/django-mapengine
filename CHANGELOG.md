@@ -6,6 +6,18 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [1.8.0] - 2024-05-23
+### Added
+- docs for popups
+
+### Changed
+- step size calculation rounds to 10, 100, 1000 etc.
+- default choropleth legend entries to 5
+
+### Fixed
+- zero item in choropleth legend
+- error in choropleths if value equals "1"
+
 ## [1.7.0] - 2024-05-13
 ### Added
 - Middleware to prevent 404 errors for missing MVTs
