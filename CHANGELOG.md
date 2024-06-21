@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [1.8.2] - 2024-06-21
 ### Changed
 - fly to element on map can be turned off
 
