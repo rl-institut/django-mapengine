@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- fly to element on map can be turned off
+
 ## [1.8.1] - 2024-06-20
 ### Changed
 - add opacity to choropleth legend item colors

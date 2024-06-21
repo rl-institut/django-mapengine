@@ -17,7 +17,7 @@ function activate_region_pointer() {
 
 function activate_region_hovering() {
   for (const region_layer of map_store.cold.regions) {
-    const layer = map.getLayer(region_layer)
+    const layer = map.getLayer(region_layer);
     // When the user moves their mouse over the fill layer, we'll update the
     // feature state for the feature under the mouse.
     map.on("mousemove", region_layer, function (e) {
