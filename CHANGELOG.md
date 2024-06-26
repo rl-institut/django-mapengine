@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [2.0.0] - 2024-06-26
 ### Changed
 - region-specific setup has been removed, instead regions are handled like static MVTs
 - MVTs can get min/max zoom and style named different from layer ID
