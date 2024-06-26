@@ -84,7 +84,7 @@ class ModelLayer:
                 f"Error in ModelLayer '{self.id}': "
                 f"Minimal zoom cannot be less than MAP_ENGINE_MIN_ZOOM={settings.MAP_ENGINE_MIN_ZOOM}."
             )
-        if self.maxzoom < settings.MAP_ENGINE_MAX_ZOOM:
+        if self.maxzoom > settings.MAP_ENGINE_MAX_ZOOM:
             raise ValueError(
                 f"Error in ModelLayer '{self.id}': "
                 f"Maximal zoom cannot be more than MAP_ENGINE_MAX_ZOOM={settings.MAP_ENGINE_MAX_ZOOM}."

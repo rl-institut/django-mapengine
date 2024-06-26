@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- error at max zoom level in MVTAPI
+
 ## [2.0.0] - 2024-06-26
 ### Changed
 - region-specific setup has been removed, instead regions are handled like static MVTs
