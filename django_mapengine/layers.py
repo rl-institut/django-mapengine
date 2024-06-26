@@ -73,17 +73,35 @@ class ModelLayer:
     id: str  # noqa: A003
     source: str
     source_layer: Optional[str] = None
+    minzoom: Optional[int] = None
+    maxzoom: Optional[int] = None
+
+    def __post_init__(self):
+        self.minzoom = self.minzoom if self.minzoom is not None else settings.MAP_ENGINE_MIN_ZOOM
+        self.maxzoom = self.maxzoom if self.maxzoom is not None else settings.MAP_ENGINE_MAX_ZOOM
+        if self.minzoom < settings.MAP_ENGINE_MIN_ZOOM:
+            raise ValueError(
+                f"Error in ModelLayer '{self.id}': "
+                f"Minimal zoom cannot be less than MAP_ENGINE_MIN_ZOOM={settings.MAP_ENGINE_MIN_ZOOM}."
+            )
+        if self.maxzoom < settings.MAP_ENGINE_MAX_ZOOM:
+            raise ValueError(
+                f"Error in ModelLayer '{self.id}': "
+                f"Maximal zoom cannot be more than MAP_ENGINE_MAX_ZOOM={settings.MAP_ENGINE_MAX_ZOOM}."
+            )
 
     def get_source_layer(self) -> str:
         """By default, layer ID is used as source layer."""
         return self.source_layer if self.source_layer else self.id
 
 
+@dataclass
 class StaticModelLayer(ModelLayer):
     """Defines a static layer based on a model."""
 
-    @staticmethod
-    def min_zoom(*, distill: bool = False) -> int:
+    style: Optional[str] = None
+
+    def get_min_zoom(self, *, distill: bool = False) -> int:
         """
         Return minimal zoom. Depends on whether distilling is activated or not.
 
@@ -97,14 +115,14 @@ class StaticModelLayer(ModelLayer):
         int
             Minimal zoom
         """
-        return (
+        return max(
             settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
             if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS
-            else settings.MAP_ENGINE_MIN_ZOOM
+            else settings.MAP_ENGINE_MIN_ZOOM,
+            self.minzoom,
         )
 
-    @staticmethod
-    def max_zoom(*, distill: bool = False) -> int:
+    def get_max_zoom(self, *, distill: bool = False) -> int:
         """
         Return maximal zoom. Depends on whether distilling is activated or not.
 
@@ -121,7 +139,15 @@ class StaticModelLayer(ModelLayer):
         int
             Maximal zoom
         """
-        return settings.MAP_ENGINE_MAX_ZOOM if not distill else settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
+        return min(
+            settings.MAP_ENGINE_MAX_ZOOM if not distill else settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1, self.maxzoom
+        )
+
+    def get_style(self):
+        """Return style from style name if set, otherwise use ID to get style."""
+        if self.style:
+            return get_layer_style(self.style)
+        return get_layer_style(self.id)
 
     def get_map_layers(self) -> Iterable[MapLayer]:
         """
@@ -136,18 +162,18 @@ class StaticModelLayer(ModelLayer):
             id=self.id,
             source=self.source,
             source_layer=self.get_source_layer(),
-            minzoom=self.min_zoom(),
-            maxzoom=self.max_zoom(),
-            style=get_layer_style(self.id),
+            minzoom=self.get_min_zoom(),
+            maxzoom=self.get_max_zoom(),
+            style=self.get_style(),
         )
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapLayer(
                 id=f"{self.id}_distilled",
                 source=self.source if self.source in settings.MAP_ENGINE_REGIONS else f"{self.source}_distilled",
                 source_layer=self.get_source_layer(),
-                minzoom=self.min_zoom(distill=True),
-                maxzoom=self.max_zoom(distill=True),
-                style=get_layer_style(self.id),
+                minzoom=self.get_min_zoom(distill=True),
+                maxzoom=self.get_max_zoom(distill=True),
+                style=self.get_style(),
             )
 
 
@@ -190,47 +216,6 @@ def get_basemap_layers() -> Iterable[BasemapLayer]:
         yield BasemapLayer(id=basemap.layer_id, source=basemap.layer_id, type=basemap.type)
 
 
-def get_region_layers() -> Iterable[MapLayer]:
-    """
-    Return map layers for region-based models.
-
-    Returns three layers:
-    - one for drawing region outline,
-    - one for drawing region area and
-    - one for drawing region name into center.
-
-    Yields
-    ------
-    MapLayer
-        Map layers to show regions on map.
-    """
-    for layer in settings.MAP_ENGINE_REGIONS:
-        yield MapLayer(
-            id=layer,
-            source=layer,
-            source_layer=layer,
-            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=get_layer_style("region-fill"),
-        )
-        yield MapLayer(
-            id=f"{layer}-line",
-            source=layer,
-            source_layer=layer,
-            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            style=get_layer_style("region-line"),
-        )
-        yield MapLayer(
-            id=f"{layer}-label",
-            source=layer,
-            source_layer=f"{layer}label",
-            maxzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].max,
-            minzoom=settings.MAP_ENGINE_ZOOM_LEVELS[layer].min,
-            style=get_layer_style("region-label"),
-        )
-
-
 def get_static_layers() -> Iterable[StaticModelLayer]:
     """
     Return model layers for static-based MVTs.
@@ -254,9 +239,14 @@ def get_static_layers() -> Iterable[StaticModelLayer]:
             else:
                 managers[manager_reference] = (original_source, source_layer)
                 source = original_source
-            if original_source in settings.MAP_ENGINE_REGIONS:
-                continue
-            yield StaticModelLayer(id=mvt_api.layer_id, source=source, source_layer=source_layer)
+            yield StaticModelLayer(
+                id=mvt_api.layer_id,
+                source=source,
+                source_layer=source_layer,
+                minzoom=mvt_api.minzoom,
+                maxzoom=mvt_api.maxzoom,
+                style=mvt_api.style,
+            )
 
 
 def get_cluster_layers() -> Iterable[ClusterModelLayer]:
@@ -311,7 +301,7 @@ def get_all_layers() -> List[MapLayer]:
         List of all region, static and cluster layers
     """
     # Order is important! Last items are shown on top!
-    layers = list(get_region_layers())
+    layers = []
     for static_layer in get_static_layers():
         layers.extend(static_layer.get_map_layers())
     for cluster_layer in get_cluster_layers():

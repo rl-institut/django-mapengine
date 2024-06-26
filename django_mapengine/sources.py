@@ -91,32 +91,6 @@ class ClusterMapSource(MapSource):
         return source
 
 
-def get_region_sources() -> Iterable[MapSource]:
-    """
-    Return region sources from mapengine settings
-
-    Yields
-    ------
-    MapSource
-        (Distilled) map sources for all regions
-    """
-    app_url = urls.reverse_lazy("django_mapengine:index")
-    if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
-        for region in settings.MAP_ENGINE_REGIONS:
-            if settings.MAP_ENGINE_ZOOM_LEVELS[region].min >= settings.MAP_ENGINE_MAX_DISTILLED_ZOOM:
-                yield MapSource(name=region, type="vector", tiles=[f"{app_url}{region}_mvt/{{z}}/{{x}}/{{y}}/"])
-            else:
-                yield MapSource(
-                    name=region,
-                    type="vector",
-                    tiles=[f"/static/mvts{app_url}{{z}}/{{x}}/{{y}}/{region}.mvt"],
-                    maxzoom=settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1,
-                )
-    else:
-        for region in settings.MAP_ENGINE_REGIONS:
-            yield MapSource(name=region, type="vector", tiles=[f"{app_url}{region}_mvt/{{z}}/{{x}}/{{y}}/"])
-
-
 def get_static_sources() -> Iterable[MapSource]:
     """
     Return sources for all MVTs other than region- or cluster-based
@@ -130,8 +104,6 @@ def get_static_sources() -> Iterable[MapSource]:
     """
     app_url = urls.reverse_lazy("django_mapengine:index")
     for source in settings.MAP_ENGINE_API_MVTS:
-        if source in settings.MAP_ENGINE_REGIONS:
-            continue
         yield MapSource(source, type="vector", tiles=[f"{app_url}{source}_mvt/{{z}}/{{x}}/{{y}}/"])
         if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             yield MapSource(
@@ -183,7 +155,7 @@ def get_all_sources() -> List[MapSource]:
     List[MapSource]
         all map sources
     """
-    sources = list(get_region_sources())
+    sources = []
     sources.extend(get_satellite_sources())
     sources.extend(get_static_sources())
     sources.extend(get_cluster_sources())
