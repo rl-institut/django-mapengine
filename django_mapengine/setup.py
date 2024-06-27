@@ -1,10 +1,12 @@
 """Setup module is used in settings of django projects to set up mapengine"""
+from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Any
 
 from django.apps import apps
 from django.conf import settings
+from django.http import HttpRequest
 
 if TYPE_CHECKING:
     from django.db.models import Manager, Model
@@ -180,3 +182,107 @@ class Popup:
             "atDefaultLayer": self.popup_at_default_layer,
             "choropleths": self.choropleths,
         }
+
+
+@dataclass
+class BasemapLayer:
+    """Default map layer used in maplibre."""
+
+    # pylint:disable=C0103
+    id: str  # noqa: A003
+    source: str
+    type: str  # noqa: A003
+
+    def get_layer(self):
+        """
+        Build dict from layer settings and style.
+
+        Returns
+        -------
+        dict
+            to be used as layer in maplibre.
+        """
+        return {"id": self.id, "source": self.source, "type": self.type}
+
+
+@dataclass
+class MapLayer:
+    """Default map layer used in maplibre."""
+
+    # pylint:disable=C0103
+    id: str  # noqa: A003
+    source: str
+    style: dict
+    source_layer: Optional[str] = None
+    minzoom: Optional[int] = None
+    maxzoom: Optional[int] = None
+
+    def get_layer(self) -> dict:
+        """
+        Build dict from layer settings and style.
+
+        Returns
+        -------
+        dict
+            to be used as layer in maplibre.
+        """
+        layer = {"id": self.id, "source": self.source, **self.style}
+        if self.source_layer:
+            layer["source-layer"] = self.source_layer
+        for attr_name in ("minzoom", "maxzoom"):
+            if attr := getattr(self, attr_name):
+                layer[attr_name] = attr
+        return layer
+
+
+# pylint:disable=R0902
+@dataclass
+class MapSource:
+    """Default map source to be used in maplibre."""
+
+    name: str
+    type: str  # noqa: A003
+    promote_id: str = "id"
+    tiles: Optional[list[str]] = None
+    url: Optional[str] = None
+    minzoom: Optional[int] = None
+    maxzoom: Optional[int] = None
+    kwargs: Optional[dict[str, Any]] = None
+
+    def get_source(self, request: HttpRequest) -> dict:
+        """
+        Return source data/tiles using current host and port from request.
+
+        Parameters
+        ----------
+        request: HttpRequest
+            Django request holding host and port
+
+        Returns
+        -------
+        dict
+            Containing source data for map
+
+        Raises
+        ------
+        TypeError
+            if type is not supported as map source type.
+        """
+        kwargs = self.kwargs or {}
+        source = {"type": self.type, "promoteId": self.promote_id, **kwargs}
+        if self.minzoom:
+            source["minzoom"] = self.minzoom
+        if self.maxzoom:
+            source["maxzoom"] = self.maxzoom
+        if self.type in ("vector", "raster"):
+            source["tiles"] = [
+                tile if tile.startswith("http") else f"{request.scheme}://{request.get_host()}{tile}"
+                for tile in self.tiles
+            ]
+        elif self.type == "geojson":
+            source["data"] = (
+                self.url if self.url.startswith("http") else f"{request.scheme}://{request.get_host()}{self.url}"
+            )
+        else:
+            raise TypeError(f"Unsupported source type '{self.type}'.")
+        return source
