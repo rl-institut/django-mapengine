@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 
 from django import urls
 from django.conf import settings
+
+from django_mapengine.setup import MapSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -15,54 +17,6 @@ if TYPE_CHECKING:
 
 
 # pylint: disable=R0902
-@dataclass
-class MapSource:
-    """Default map source to be used in maplibre."""
-
-    name: str
-    type: str  # noqa: A003
-    promote_id: str = "id"
-    tiles: Optional[list[str]] = None
-    url: Optional[str] = None
-    minzoom: Optional[int] = None
-    maxzoom: Optional[int] = None
-
-    def get_source(self, request: HttpRequest) -> dict:
-        """
-        Return source data/tiles using current host and port from request.
-
-        Parameters
-        ----------
-        request: HttpRequest
-            Django request holding host and port
-
-        Returns
-        -------
-        dict
-            Containing source data for map
-
-        Raises
-        ------
-        TypeError
-            if type is not supported as map source type.
-        """
-        source = {"type": self.type, "promoteId": self.promote_id}
-        if self.minzoom:
-            source["minzoom"] = self.minzoom
-        if self.maxzoom:
-            source["maxzoom"] = self.maxzoom
-        if self.type in ("vector", "raster"):
-            source["tiles"] = [
-                tile if tile.startswith("http") else f"{request.scheme}://{request.get_host()}{tile}"
-                for tile in self.tiles
-            ]
-        elif self.type == "geojson":
-            source["data"] = (
-                self.url if self.url.startswith("http") else f"{request.scheme}://{request.get_host()}{self.url}"
-            )
-        else:
-            raise TypeError(f"Unsupported source type '{self.type}'.")
-        return source
 
 
 @dataclass
@@ -159,4 +113,5 @@ def get_all_sources() -> List[MapSource]:
     sources.extend(get_satellite_sources())
     sources.extend(get_static_sources())
     sources.extend(get_cluster_sources())
+    sources.extend(settings.MAP_ENGINE_SOURCES)
     return sources
