@@ -1,9 +1,10 @@
 """Views and mixins in order to use mapengine"""
-
+from django.apps import apps
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.generic.base import ContextMixin
 
+from django.core.exceptions import FieldDoesNotExist
 from . import __version__, layers, sources
 
 
@@ -62,6 +63,53 @@ class MapEngineMixin(ContextMixin):
             "basemap": "default",
             "fly_to_clicked_feature": True,
         }
+
+        if settings.MAP_ENGINE_MAPLAYER_MODEL:
+            # get MapLayerModel from settings
+            try:
+                MapLayerModel = apps.get_model(app_label='map', model_name=settings.MAP_ENGINE_MAPLAYER_MODEL)
+            except ImportError:
+                raise LookupError("The MapLayerModel does not exist.")
+
+            # get choropleth fields
+            try:
+                model_field = MapLayerModel._meta.get_field("choropleth_field")
+            except FieldDoesNotExist:
+                raise LookupError("Your MapLayerModel has no field named 'choropleth_field', which is mandatory.")
+            choropleths = MapLayerModel.objects.exclude(choropleth_field="").filter(choropleth_field__isnull=False).values_list(
+                "identifier", "geom_layer", "choropleth_unit", "name")
+            store["choropleths"] = {
+                item[0]: {
+                    'layers': [item[1]],
+                    'useFeatureState': True,
+                    'unit': [item[2]],
+                    'title': [item[3]]
+                }
+                for item in choropleths
+            }
+
+            # get popups
+            try:
+                model_field = MapLayerModel._meta.get_field("popup_fields")
+            except FieldDoesNotExist:
+                raise LookupError("Your MapLayerModel has no field named 'popup_fields', which is mandatory.")
+
+            popups = MapLayerModel.objects.filter(popup_fields__isnull=False).values_list("identifier", "geom_layer")
+            transformed_popups = {}
+            for item in popups:
+                layer_id = item[1]
+                choropleth = item[0]
+
+                if layer_id not in transformed_popups:
+                    transformed_popups[layer_id] = {
+                        'layerID': layer_id,
+                        'atDefaultLayer': False,
+                        'choropleths': []
+                    }
+
+                transformed_popups[layer_id]['choropleths'].append(choropleth)
+
+            store["popups"] = transformed_popups
 
         context["mapengine_store_cold_init"] = store
 
