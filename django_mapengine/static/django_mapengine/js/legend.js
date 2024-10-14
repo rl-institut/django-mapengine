@@ -55,7 +55,10 @@ function loadLegend(msg, choroplethName){
     return logMessage(msg);
   }
 
-  const colors = paintProperties["fill-color"].slice(3).filter((_, index) => index % 2 !== 0);
+  // Get array of colors in RGB format (i.e. "rgb(red, green, blue)")
+  const colors_without_opacity = paintProperties["fill-color"].slice(3).filter((_, index) => index % 2 !== 0);
+  const opacity = "fill-opacity" in paintProperties ? paintProperties["fill-opacity"] : 1;
+  const colors = colors_without_opacity.map(rgb_color => rgb_color.slice(0, -1) + `, ${opacity})`);
   const values = paintProperties["fill-color"].slice(3).filter((_, index) => (index + 1) % 2 !== 0).map(value => value < 100 ? value.toFixed(2) : Math.round(value));
 
   let valueRanges = [];

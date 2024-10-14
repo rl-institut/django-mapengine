@@ -9,15 +9,17 @@ function initMap() {
 
     if (map_store.cold.debugMode) {
         map.showTileBoundaries = true;
-      }
+    }
 
     // Disable zoom on double click
     map.doubleClickZoom.disable();
 
     // Zoom to feature on click
-      map.on("click", function (element) {
-        flyToElement(element);
-      });
+    if (map_store.cold.fly_to_clicked_feature) {
+        map.on("click", function (element) {
+            flyToElement(element);
+        });
+    }
 
     const nav = new maplibregl.NavigationControl();
     map.addControl(nav, "bottom-left");

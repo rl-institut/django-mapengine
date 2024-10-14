@@ -1,6 +1,5 @@
 """Setup module is used in settings of django projects to set up mapengine"""
 
-from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, List, Optional
 
@@ -9,8 +8,6 @@ from django.conf import settings
 
 if TYPE_CHECKING:
     from django.db.models import Manager, Model
-
-Zoom = namedtuple("MinMax", ("min", "max"))
 
 
 @dataclass
@@ -86,6 +83,9 @@ class MVTAPI(ModelAPI):
     app_name: str
     model_name: str
     manager_name: str = "vector_tiles"
+    minzoom: Optional[int] = None
+    maxzoom: Optional[int] = None
+    style: Optional[str] = None
 
     @property
     def manager(self) -> "Manager":

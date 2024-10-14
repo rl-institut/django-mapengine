@@ -6,6 +6,23 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [2.0.1] - 2024-06-26
+### Fixed
+- error at max zoom level in MVTAPI
+
+## [2.0.0] - 2024-06-26
+### Changed
+- region-specific setup has been removed, instead regions are handled like static MVTs
+- MVTs can get min/max zoom and style named different from layer ID
+
+## [1.8.2] - 2024-06-21
+### Changed
+- fly to element on map can be turned off
+
+## [1.8.1] - 2024-06-20
+### Changed
+- add opacity to choropleth legend item colors
+
 ## [1.8.0] - 2024-05-23
 ### Added
 - docs for popups
