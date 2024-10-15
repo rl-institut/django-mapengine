@@ -27,7 +27,7 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
         ${valueRanges.filter((value, idx) => idx <= nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx}">${value}</div>`).join(' ')}
       </div>
       <div class="legend__column">
-        ${valueRanges.filter((value, idx) => idx > nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex}">${value}</div>`).join(' ')}
+        ${valueRanges.filter((value, idx) => idx > nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex + 1}">${value}</div>`).join(' ')}
       </div>
     </div>
     <style>
