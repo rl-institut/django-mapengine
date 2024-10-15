@@ -7,6 +7,9 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 Here is a template for new release sections
 
 ## [Unreleased]
+### Added
+- custom choropleth legend labels
+
 ### Changed
 - choropleth legend lower and upper limits
 

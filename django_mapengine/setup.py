@@ -139,6 +139,7 @@ class Choropleth:
     title: str
     unit: str
     layers: List[str]
+    labels: Optional[List[str]] = None
     use_feature_state: bool = True
 
     def as_dict(self) -> dict:
@@ -150,12 +151,15 @@ class Choropleth:
         dict
             holding choropleth values needed in map setups
         """
-        return {
+        data = {
             "title": self.title,
             "unit": self.unit,
             "layers": self.layers,
             "useFeatureState": self.use_feature_state,
         }
+        if self.labels is not None:
+            data["labels"] = self.labels
+        return data
 
 
 @dataclass
