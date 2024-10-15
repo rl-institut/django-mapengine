@@ -14,10 +14,10 @@ Adjust the tile URL to your needs, see the WMS GetCapabilities
 ([GetCapabilities for this example](https://isk.geobasis-bb.de/ows/alkis_wms?request=GetCapabilities&service=WMS))
 for supported parameter values.
 
-```
+```python
 MAP_ENGINE_SOURCES = [
     setup.MapSource(
-        name="wms_layer",
+        name="bb_flurstuecke",
         type="raster",
         tiles=[
             "https://isk.geobasis-bb.de/ows/alkis_wms"
@@ -28,8 +28,35 @@ MAP_ENGINE_SOURCES = [
 ]
 
 MAP_ENGINE_LAYERS = [
-    setup.MapLayer(id="wms_layer", source="wms_layer", style={"type": "raster"}),
+    setup.MapLayer(id="bb_flurstuecke", source="bb_flurstuecke", style={"type": "raster"}),
 ]
+```
+
+To add the layer to your legend, add the following to your legend definition:
+```python
+legend.LegendLayer(
+    _("Flurstücke"),
+    _(
+        "Flurstücke Brandenburg<br>"
+        "© GeoBasis-DE/LGB, dl-de/by-2-0<br><br>"
+        "<i>Diese Ebene wird erst bei hohen Zoomstufen eingeblendet.</i>",
+    ),
+    layer_id="bb_flurstuecke",
+),
+```
+
+You will also need a style definition for the legend in your layer style json
+file (defined in the variable ``), e.g.
+```json
+{
+    "bb_flurstuecke": {
+        "type": "fill",
+        "paint": {
+            "fill-color": "#000000",
+            "fill-opacity": 0.8
+        }
+    }
+}
 ```
 
 On WMS see also:
