@@ -185,7 +185,7 @@ class Choropleth:
         if number < 1:
             return int((number * 10) / 10)
         if number >= 1:
-            digits = int(math.log10(number)) + 1
+            digits = int(math.log10(number))
             return int(number / 10**digits) * 10**digits
         raise ValueError(f"Cannot find lower limit for {number=}")
 
@@ -211,6 +211,6 @@ class Choropleth:
         if number <= 1:
             return math.ceil((number * 10) / 10)
         if number > 1:
-            digits = int(math.log10(number)) + 1
+            digits = int(math.log10(number))
             return math.ceil(number / 10**digits) * 10**digits
         raise ValueError(f"Cannot find upper limit for {number=}")

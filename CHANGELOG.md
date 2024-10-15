@@ -10,6 +10,16 @@ Here is a template for new release sections
 ### Added
 - Custom layers and sources (e.g. WMS)
 
+## [2.1.0] - 2024-10-15
+### Added
+- custom choropleth legend labels
+
+### Changed
+- choropleth legend lower and upper limits
+
+### Fixed
+- choropleth legend color matching
+
 ## [2.0.1] - 2024-06-26
 ### Fixed
 - error at max zoom level in MVTAPI

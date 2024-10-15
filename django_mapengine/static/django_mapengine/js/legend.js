@@ -27,7 +27,7 @@ const createLegend = (title, unit, colors, valueRanges, nextColumnStartIndex = 3
         ${valueRanges.filter((value, idx) => idx <= nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx}">${value}</div>`).join(' ')}
       </div>
       <div class="legend__column">
-        ${valueRanges.filter((value, idx) => idx > nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex}">${value}</div>`).join(' ')}
+        ${valueRanges.filter((value, idx) => idx > nextColumnStartIndex).map((value, idx) => `<div class="legend__item" id="legend__item__color-${idx + nextColumnStartIndex + 1}">${value}</div>`).join(' ')}
       </div>
     </div>
     <style>
@@ -61,14 +61,20 @@ function loadLegend(msg, choroplethName){
   const colors = colors_without_opacity.map(rgb_color => rgb_color.slice(0, -1) + `, ${opacity})`);
   const values = paintProperties["fill-color"].slice(3).filter((_, index) => (index + 1) % 2 !== 0).map(value => value < 100 ? value.toFixed(2) : Math.round(value));
 
+
+  // Use user labels if given
   let valueRanges = [];
-  const step_size = parseFloat(values[1]) - parseFloat(values[0]);
-  for (let i = 0; i < values.length; i++) {
-    const nextValue = i === values.length - 1 ? parseFloat(values[i]) + step_size : values[i + 1];
-    valueRanges.push(`${values[i]} - ${nextValue}`);
+  if (map_store.cold.choropleths[choroplethName].labels !== undefined) {
+    valueRanges = map_store.cold.choropleths[choroplethName].labels;
+  } else {
+    const step_size = parseFloat(values[1]) - parseFloat(values[0]);
+    for (let i = 0; i < values.length; i++) {
+      const nextValue = i === values.length - 1 ? parseFloat(values[i]) + step_size : values[i + 1];
+      valueRanges.push(`${values[i]} - ${nextValue}`);
+    }
   }
 
-  const entriesPerColumn = Math.floor(values.length / 2);
+  const entriesPerColumn = Math.floor(valueRanges.length / 2);
   legendElement.innerHTML = createLegend(title, unit, colors, valueRanges, entriesPerColumn);
   return logMessage(msg);
 }
