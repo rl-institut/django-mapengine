@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased] - 2024-XX-XX
+### Added
+- Custom layers and sources (e.g. WMS)
+
 ## [2.1.0] - 2024-10-15
 ### Added
 - custom choropleth legend labels

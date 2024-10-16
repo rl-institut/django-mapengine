@@ -8,61 +8,12 @@ from typing import TYPE_CHECKING, List, Optional
 
 from django.conf import settings
 
+from django_mapengine.setup import BasemapLayer, MapLayer
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from django_mapengine import setup
-
-
-@dataclass
-class BasemapLayer:
-    """Default map layer used in maplibre."""
-
-    # pylint:disable=C0103
-    id: str  # noqa: A003
-    source: str
-    type: str  # noqa: A003
-
-    def get_layer(self):
-        """
-        Build dict from layer settings and style.
-
-        Returns
-        -------
-        dict
-            to be used as layer in maplibre.
-        """
-        return {"id": self.id, "source": self.source, "type": self.type}
-
-
-@dataclass
-class MapLayer:
-    """Default map layer used in maplibre."""
-
-    # pylint:disable=C0103
-    id: str  # noqa: A003
-    source: str
-    style: dict
-    source_layer: Optional[str] = None
-    minzoom: Optional[int] = None
-    maxzoom: Optional[int] = None
-
-    def get_layer(self) -> dict:
-        """
-        Build dict from layer settings and style.
-
-        Returns
-        -------
-        dict
-            to be used as layer in maplibre.
-        """
-        layer = {"id": self.id, "source": self.source, **self.style}
-        if self.source_layer:
-            layer["source-layer"] = self.source_layer
-        for attr_name in ("minzoom", "maxzoom"):
-            if attr := getattr(self, attr_name):
-                layer[attr_name] = attr
-        return layer
 
 
 @dataclass
@@ -302,6 +253,7 @@ def get_all_layers() -> List[MapLayer]:
     """
     # Order is important! Last items are shown on top!
     layers = []
+    layers.extend(settings.MAP_ENGINE_LAYERS)
     for static_layer in get_static_layers():
         layers.extend(static_layer.get_map_layers())
     for cluster_layer in get_cluster_layers():

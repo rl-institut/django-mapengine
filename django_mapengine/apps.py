@@ -94,6 +94,9 @@ class MapEngineConf(AppConf):
     API_MVTS = {}
     API_CLUSTERS = []
 
+    SOURCES = []
+    LAYERS = []
+
     # LAYERS
     LAYERS_AT_STARTUP: List[str] = []
 
