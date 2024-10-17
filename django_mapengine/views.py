@@ -1,5 +1,7 @@
 """Views and mixins in order to use mapengine"""
 
+import itertools
+
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.generic.base import ContextMixin
@@ -47,7 +49,11 @@ class MapEngineMixin(ContextMixin):
                 },
                 "mapengine_basemap_layers": [basemap.as_dict() for basemap in settings.MAP_ENGINE_BASEMAPS],
                 "mapengine_layers": [layer.get_layer() for layer in layers.get_all_layers()],
-                "mapengine_layers_at_startup": settings.MAP_ENGINE_LAYERS_AT_STARTUP,
+                "mapengine_layers_at_startup": list(
+                    itertools.chain.from_iterable(
+                        [layer, f"{layer}_distilled"] for layer in settings.MAP_ENGINE_LAYERS_AT_STARTUP
+                    )
+                ),
                 "mapengine_images": [image.as_dict() for image in settings.MAP_ENGINE_IMAGES],
             }
         )

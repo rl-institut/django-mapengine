@@ -10,6 +10,9 @@ Here is a template for new release sections
 ### Added
 - Custom layers and sources (e.g. WMS)
 
+### Fixed
+- show distilled layer on startup, if layer is present in startup layers
+
 ## [2.1.0] - 2024-10-15
 ### Added
 - custom choropleth legend labels
