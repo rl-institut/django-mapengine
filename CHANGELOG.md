@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased] - 2024-XX-XX
+## [2.2.0] - 2024-10-17
 ### Added
 - Custom layers and sources (e.g. WMS)
 
