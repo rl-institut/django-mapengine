@@ -60,7 +60,7 @@ class MapEngineMixin(ContextMixin):
         store = {
             "debugMode": settings.MAP_ENGINE_DEBUG,
             "popups": {popup.layer_id: popup.as_dict() for popup in settings.MAP_ENGINE_POPUPS},
-            "regions": settings.MAP_ENGINE_REGIONS,
+            "hover_layers": settings.MAP_ENGINE_HOVER_LAYERS,
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "cluster_layers": [cluster.layer_id for cluster in settings.MAP_ENGINE_API_CLUSTERS],
             "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
