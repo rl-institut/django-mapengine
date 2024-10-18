@@ -115,7 +115,7 @@ class MapEngineConf(AppConf):
     X_OFFSET = 1  # Defines how many tiles to the right are added at first level
     Y_OFFSET = 1  # Defines how many tiles to the bottom are added at first level
 
-    REGIONS = getattr(settings, "MAP_ENGINE_REGIONS", [])
+    HOVER_LAYERS = getattr(settings, "MAP_HOVER_LAYERS", [])
 
     # pylint:disable=R0903
     class Meta:
