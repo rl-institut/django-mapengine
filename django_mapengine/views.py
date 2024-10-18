@@ -66,7 +66,6 @@ class MapEngineMixin(ContextMixin):
             "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
             "layer_switch_class": settings.MAP_ENGINE_LAYER_SWITCH_CLASS,
             "basemap": "default",
-            "fly_to_clicked_feature": True,
         }
 
         context["mapengine_store_cold_init"] = store
