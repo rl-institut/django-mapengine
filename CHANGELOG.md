@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [2.2.1] - 2024-10-18
 ### Changed
 - hovering layers can be defined regardless of region layer
 
