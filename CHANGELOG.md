@@ -6,6 +6,13 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- remove fly-to-feature
+
+## Fixed
+- failing fly-to-feature as region layers are removed
+
 ## [2.2.1] - 2024-10-18
 ### Changed
 - hovering layers can be defined regardless of region layer
