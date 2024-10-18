@@ -13,6 +13,12 @@ Here is a template for new release sections
 
 ### Fixed
 
+## [2.2.2] - 2024-10-18
+### Changed
+- remove fly-to-feature
+
+## Fixed
+- failing fly-to-feature as region layers are removed
 
 ## [2.2.1] - 2024-10-18
 ### Changed
