@@ -69,7 +69,7 @@ function loadLegend(msg, choroplethName){
   } else {
     const step_size = parseFloat(values[1]) - parseFloat(values[0]);
     for (let i = 0; i < values.length; i++) {
-      const nextValue = i === values.length - 1 ? parseFloat(values[i]) + step_size : values[i + 1];
+      const nextValue = i === values.length - 1 ? Math.round(parseFloat(values[i]) + step_size) : values[i + 1];
       valueRanges.push(`${values[i]} - ${nextValue}`);
     }
   }
