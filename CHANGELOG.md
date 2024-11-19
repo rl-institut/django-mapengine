@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [2.2.3] - 2024-11-19
 ### Changed
 - default choropleth legend entries to 6 (instead of 5)
 
