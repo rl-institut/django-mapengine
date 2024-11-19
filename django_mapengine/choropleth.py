@@ -9,7 +9,7 @@ from . import colorbrewer
 
 MAX_COLORBREWER_STEPS = 9
 
-DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 5}
+DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 6}
 
 
 class ChoroplethError(Exception):
@@ -141,7 +141,7 @@ class Choropleth:
             raise IndexError(error_msg)
         colors = colorbrewer.sequential["multihue"][choropleth_config["color_palette"]][len(steps) - 1]
         fill_color = [
-            "interpolate",
+            "interpolate-hcl",
             ["linear"],
             ["feature-state", name],
         ]
