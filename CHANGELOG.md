@@ -9,6 +9,7 @@ Here is a template for new release sections
 ## [Unreleased]
 ### Fixed
 - columns in choropleth legend
+- round last legend value
 
 ## [2.2.3] - 2024-11-19
 ### Changed
