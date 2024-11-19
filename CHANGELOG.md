@@ -10,6 +10,9 @@ Here is a template for new release sections
 ### Changed
 - default choropleth legend entries to 6 (instead of 5)
 
+### Fixed
+- removed legacy fly-to parameter in cold store
+
 ## [2.2.2] - 2024-10-18
 ### Changed
 - remove fly-to-feature
