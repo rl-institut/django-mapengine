@@ -29,13 +29,13 @@ class ModelLayer:
 
     def __post_init__(self):
         self.minzoom = self.minzoom if self.minzoom is not None else settings.MAP_ENGINE_MIN_ZOOM
-        self.maxzoom = self.maxzoom if self.maxzoom is not None else settings.MAP_ENGINE_MAX_ZOOM
+        self.maxzoom = self.maxzoom if self.maxzoom is not None else settings.MAP_ENGINE_MAX_ZOOM + 1
         if self.minzoom < settings.MAP_ENGINE_MIN_ZOOM:
             raise ValueError(
                 f"Error in ModelLayer '{self.id}': "
                 f"Minimal zoom cannot be less than MAP_ENGINE_MIN_ZOOM={settings.MAP_ENGINE_MIN_ZOOM}."
             )
-        if self.maxzoom > settings.MAP_ENGINE_MAX_ZOOM:
+        if self.maxzoom > settings.MAP_ENGINE_MAX_ZOOM + 1:
             raise ValueError(
                 f"Error in ModelLayer '{self.id}': "
                 f"Maximal zoom cannot be more than MAP_ENGINE_MAX_ZOOM={settings.MAP_ENGINE_MAX_ZOOM}."
@@ -91,7 +91,8 @@ class StaticModelLayer(ModelLayer):
             Maximal zoom
         """
         return min(
-            settings.MAP_ENGINE_MAX_ZOOM if not distill else settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1, self.maxzoom
+            settings.MAP_ENGINE_MAX_ZOOM + 1 if not distill else settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1,
+            self.maxzoom,
         )
 
     def get_style(self):

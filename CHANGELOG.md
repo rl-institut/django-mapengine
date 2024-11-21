@@ -8,6 +8,7 @@ Here is a template for new release sections
 
 ## [2.2.5] - 2024-11-21
 ### Fixed
+- glitch due to layers max zoom
 - hover layers for distilled MVTs
 
 ## [2.2.4] - 2024-11-19
