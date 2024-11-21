@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- popups for choropleths of distilled layers
+
 ## [2.2.5] - 2024-11-21
 ### Fixed
 - glitch due to layers max zoom
