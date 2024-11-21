@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- hover layers for distilled MVTs
+
 ## [2.2.4] - 2024-11-19
 ### Fixed
 - columns in choropleth legend
