@@ -153,6 +153,9 @@ class Choropleth:
         dict
             holding choropleth values needed in map setups
         """
+        layers = self.layers
+        if settings.MAP_ENGINE_USE_DISTILLED_MVTS:
+            layers += [f"{layer}_distilled" for layer in self.layers]
         data = {
             "title": self.title,
             "unit": self.unit,

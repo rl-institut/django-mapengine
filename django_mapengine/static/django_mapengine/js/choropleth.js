@@ -7,13 +7,14 @@ PubSub.subscribe(mapEvent.CHOROPLETH_SELECTED, activateChoropleth);
 
 function activateChoropleth(msg, choroplethName) {
   if (!(choroplethName in map_store.cold.choropleths)) {
-    throw new ReferenceError(`Choropleth '${choroplethName}' unknown.`)
+    throw new ReferenceError(`Choropleth '${choroplethName}' unknown.`);
   }
   for (const layerID of map_store.cold.choropleths[choroplethName].layers) {
+    const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
     if (!(layerID in map_store.cold.storedChoroplethPaintProperties[choroplethName])) {
       $.ajax({
         type: "GET",
-        url: `choropleth/${choroplethName}/${layerID}`,
+        url: `choropleth/${choroplethName}/${layerIDCleaned}`,
         data: map_store.cold.state,
         async: false,
         dataType: 'json',
@@ -36,11 +37,12 @@ function activateChoropleth(msg, choroplethName) {
 }
 
 function updateChoroplethFeatureStates(choroplethName, layerID, featureStateValues) {
+  const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
   for (var featureID in featureStateValues) {
     let choroplethFeatureState = map.getFeatureState(
       {
         source: layerID,
-        sourceLayer: layerID,
+        sourceLayer: layerIDCleaned,
         id: featureID,
       }
     );
@@ -48,7 +50,7 @@ function updateChoroplethFeatureStates(choroplethName, layerID, featureStateValu
     map.setFeatureState(
       {
         source: layerID,
-        sourceLayer: layerID,
+        sourceLayer: layerIDCleaned,
         id: featureID,
       },
       choroplethFeatureState
