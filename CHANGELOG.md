@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- choropleth error due to duplicate layer entries after refresh
+
 ## [2.2.6] - 2024-11-21
 ### Fixed
 - popups for choropleths of distilled layers
