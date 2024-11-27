@@ -159,7 +159,7 @@ class Choropleth:
         data = {
             "title": self.title,
             "unit": self.unit,
-            "layers": self.layers,
+            "layers": layers,
             "useFeatureState": self.use_feature_state,
         }
         if self.labels is not None:
