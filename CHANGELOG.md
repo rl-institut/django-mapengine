@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [2.2.8] - 2024-11-27
 ### Fixed
 - hover glitch when leaving layer
 - choropleths not showing in distilled mode
