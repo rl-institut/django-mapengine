@@ -52,7 +52,7 @@ function activate_hovering() {
       if (map_store.cold.hoveredIds[hover_layer] >= 0) {
         map.setFeatureState({
           source: layer.source,
-          sourceLayer: layer.source,
+          sourceLayer: layer.sourceLayer,
           id: map_store.cold.hoveredIds[hover_layer]
         }, {
           hover: false
