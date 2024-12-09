@@ -184,7 +184,7 @@ class Popup:
         dict
             holding popup values needed in map setups
         """
-        choropleths = self.choropleths
+        choropleths = list(self.choropleths)
         if self.choropleths and settings.MAP_ENGINE_USE_DISTILLED_MVTS:
             choropleths += [f"{layer}_distilled" for layer in self.choropleths]
         return {
