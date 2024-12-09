@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fix
+- popups for distilled layers if choropleth is None
+
 ## [2.2.9] - 2024-12-09
 ### Fix
 - distilled layers in popups increasing indefinitely
