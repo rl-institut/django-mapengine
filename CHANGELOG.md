@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Added
+- Basic MVTManager in managers.py
+
 ## [2.2.10] - 2024-12-09
 ### Fix
 - popups for distilled layers if choropleth is None
