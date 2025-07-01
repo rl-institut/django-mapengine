@@ -74,7 +74,7 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    ```python
    MIDDLEWARE = [
        "django.middleware.security.SecurityMiddleware",
-       "django_mapengine.django_mapengine.middleware.MapEngineMiddleware",
+       "django_mapengine.middleware.MapEngineMiddleware",
        "whitenoise.middleware.WhiteNoiseMiddleware",
        ...
    ]
