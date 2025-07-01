@@ -67,10 +67,6 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
    ]
 
    MAP_ENGINE_STYLES_FOLDER = "digiplan/static/config/"
-   MAP_ENGINE_ZOOM_LEVELS = {
-      "municipality": core.Zoom(8, 12),
-   }
-
    MAP_ENGINE_POPUPS = ["results"]
    ```
 
