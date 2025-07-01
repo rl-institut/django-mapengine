@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [2.3.0] - 2025-07-01
 ### Added
 - Basic MVTManager in managers.py
 
