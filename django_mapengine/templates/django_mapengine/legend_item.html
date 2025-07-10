@@ -19,7 +19,7 @@
       {% endif %}
     </div>
     <label class="mapengine-legend-switch">
-      <input type="checkbox" class="mapengine-legend-switch-input mapengine-layer" data-layer-name="{{ item.layer_name }}"/>
+      <input type="checkbox" class="mapengine-legend-switch-input mapengine-layer" data-layer-name="{{ item.layer_name }}" {% if item.checked %}checked{% endif %}/>
       <div class="mapengine-legend-switch-track"></div>
       <div class="mapengine-legend-switch-thumb"></div>
     </label>

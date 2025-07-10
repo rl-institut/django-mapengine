@@ -32,21 +32,7 @@ MAP_ENGINE_LAYERS = [
 ]
 ```
 
-To add the layer to your legend, add the following to your legend definition:
-```python
-legend.LegendLayer(
-    _("Flurstücke"),
-    _(
-        "Flurstücke Brandenburg<br>"
-        "© GeoBasis-DE/LGB, dl-de/by-2-0<br><br>"
-        "<i>Diese Ebene wird erst bei hohen Zoomstufen eingeblendet.</i>",
-    ),
-    layer_id="bb_flurstuecke",
-),
-```
-
-You will also need a style definition for the legend in your layer style json
-file (defined in the variable ``), e.g.
+You will also need a style definition for the layer in your layer-style JSON file, e.g.
 ```json
 {
     "bb_flurstuecke": {
@@ -63,14 +49,3 @@ On WMS see also:
 - [How to add WMS layer in MapLibre](https://maplibre.org/maplibre-gl-js/docs/examples/wms/)
 - [WMS reference](https://docs.geoserver.org/stable/en/user/services/wms/reference.html)
 - [OGC WMS standard](https://www.ogc.org/standard/wms/)
-
-## Toggling layers
-In your django project you can create inputs which get connected automatically connected to a layer in order to switch this layer on and off.
-To do so, you have to create an `input` of `type` "checkbox" with an `id` which is related to layer ID you want to trigger:
-
-```html
-<input id="wind" type="checkbox">
-```
-
-Triggering (changing) this input will toggle all layers starting with "wind".
-This guarantees that also clustered layers (in this example "wind", "wind_cluster" and "wind_cluster_count") are triggered.
