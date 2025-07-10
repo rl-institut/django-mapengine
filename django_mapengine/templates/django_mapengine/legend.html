@@ -13,22 +13,24 @@
 <!-- 2) the legend panel itself -->
 <div id="mapengine-legend">
   <div class="mapengine-legend-content">
-    <button id="mapengine-legend-close-btn" aria-label="Close map legend">
-      <!-- Heroicons -->
-      <svg xmlns="http://www.w3.org/2000/svg"
-           fill="none"
-           viewBox="0 0 24 24"
-           stroke-width="1.5"
-           stroke="currentColor"
-           height="24"
-           width="24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-      </svg>
-    </button>
     {% for category, items in mapengine_legend.items %}
       <div class="mapengine-legend-category">
         <div class="mapengine-legend-header">
           <h2>{{ category}}</h2>
+          {% if forloop.first %}
+            <button id="mapengine-legend-close-btn" aria-label="Close map legend">
+              <!-- Heroicons -->
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke-width="1.5"
+                   stroke="currentColor"
+                   height="24"
+                   width="24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          {% endif %}
         </div>
         <div class="mapengine-legend-items">
           {% for item in items %}
