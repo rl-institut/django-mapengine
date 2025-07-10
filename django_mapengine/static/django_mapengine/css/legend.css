@@ -1,5 +1,5 @@
 /* — open‐button (the little circle) — */
-#open-btn {
+#mapengine-legend-open-btn {
   position: absolute;
   top: 5rem;
   right: 1rem;
@@ -18,7 +18,7 @@
 }
 
 /* — legend panel — */
-#legend {
+#mapengine-legend {
   position: absolute;
   top: 5rem;
   right: 1rem;
@@ -32,83 +32,83 @@
   z-index: 20;
 }
 
-.legend-content {
+.mapengine-legend-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem; /* = 6 × 0.25rem */
 }
 
-.legend-header {
+.mapengine-legend-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
 }
-.legend-header h2 {
+.mapengine-legend-header h2 {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
   color: #1e293b; /* slate-800 */
 }
-#close-btn {
+#mapengine-legend-close-btn {
   background: none;
   border: none;
   padding: 0;
   color: #6b7280; /* slate-500 */
   cursor: pointer;
 }
-#close-btn:hover {
+#mapengine-legend-close-btn:hover {
   color: #334155; /* slate-700 */
 }
 
-.items {
+.mapengine-legend-items {
   display: flex;
   flex-direction: column;
   gap: 0.5rem; /* = 2 × 0.25rem */
 }
 
-.legend-item {
+.mapengine-legend-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.item-left {
+.mapengine-legend-item-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   min-width: 0;
 }
-.circle,
-.square {
+.mapengine-legend-circle,
+.mapengine-legend-square {
   flex-shrink: 0;
   width: 0.75rem;  /* = 3 × 0.25rem */
   height: 0.75rem;
   display: inline-block;
 }
-.circle { border-radius: 50%; }
-.square { border-radius: 0.125rem; }
+.mapengine-legend-circle { border-radius: 50%; }
+.mapengine-legend-square { border-radius: 0.125rem; }
 
-.item-label {
+.mapengine-legend-item-label {
   font-size: 0.875rem; /* text-sm */
   color: #475569;      /* slate-700 */
   white-space: nowrap;
 }
 
-.item-right {
+.mapengine-legend-item-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 /* — tooltip — */
-.tooltip-container {
+.mapengine-legend-tooltip-container {
   position: relative;
   display: flex;
   padding-left: 0.5rem;
 }
-.info-icon {
+.mapengine-legend-info-icon {
   width: 1.25rem;  /* = 5 × 0.25rem */
   height: 1.25rem;
   stroke: currentColor;
@@ -117,10 +117,10 @@
   color: #6b7280;
   cursor: pointer;
 }
-.info-icon:hover {
+.mapengine-legend-info-icon:hover {
   color: #374151;
 }
-.tooltip {
+.mapengine-legend-tooltip {
   pointer-events: none;
   position: absolute;
   bottom: 100%;
@@ -136,18 +136,18 @@
   white-space: nowrap;
   transition: opacity 0.2s;
 }
-.tooltip-container:hover .tooltip {
+.mapengine-legend-tooltip-container:hover .mapengine-legend-tooltip {
   opacity: 1;
 }
 
 /* — switch (toggle) — */
-.switch {
+.mapengine-legend-switch {
   position: relative;
   display: inline-block;
   width: 2.25rem; /* = 9 × 0.25rem */
   height: 1.25rem;/* = 5 × 0.25rem */
 }
-.switch-input {
+.mapengine-legend-switch-input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -155,17 +155,17 @@
   top: 0;
   left: 0;
 }
-.switch-track {
+.mapengine-legend-switch-track {
   width: 100%;
   height: 100%;
   background: #e5e7eb;  /* gray-200 */
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
-.switch-input:checked + .switch-track {
+.mapengine-legend-switch-input:checked + .mapengine-legend-switch-track {
   background: #1d4ed8;  /* blue-700 */
 }
-.switch-thumb {
+.mapengine-legend-switch-thumb {
   position: absolute;
   top: 2px;
   left: 2px;
@@ -175,6 +175,6 @@
   border-radius: 9999px;
   transition: transform 0.2s;
 }
-.switch-input:checked + .switch-track + .switch-thumb {
+.mapengine-legend-switch-input:checked + .mapengine-legend-switch-track + .mapengine-legend-switch-thumb {
   transform: translateX(1rem);
 }

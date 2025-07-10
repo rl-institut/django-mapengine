@@ -68,7 +68,6 @@ class MapEngineMixin(ContextMixin):
             "result_views": {},  # Placeholder for already downloaded results (used in results.js)
             "cluster_layers": [cluster.layer_id for cluster in settings.MAP_ENGINE_API_CLUSTERS],
             "choropleths": {choropleth.name: choropleth.as_dict() for choropleth in settings.MAP_ENGINE_CHOROPLETHS},
-            "layer_switch_class": settings.MAP_ENGINE_LAYER_SWITCH_CLASS,
             "basemap": "default",
         }
 

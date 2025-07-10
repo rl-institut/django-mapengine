@@ -1,30 +1,8 @@
-// Variables
-
-const layerSwitches = Array.from(document.getElementsByClassName(map_store.cold.layer_switch_class));
-
-// Event Handler
-
-map.on("load", function () {
-  layerSwitches.map(layerSwitch => {
-    if (layerSwitch.type !== "checkbox") {
-      console.warn(
-        `Layer switch with id "${layerSwitch.id}" is not a checkbox 
-        and cannot be connected to map layers automatically.`
-      );
-    } else {
-      layerSwitch.addEventListener("change", () => {
-        PubSub.publish(mapEvent.MAP_LAYER_SWITCH_CLICK, layerSwitch);
-      });
-    }
-  });
-});
-
 
 // Subscriptions
 
 PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_basemap_layers);
 PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_layers);
-PubSub.subscribe(mapEvent.MAP_LAYER_SWITCH_CLICK, toggleLayer);
 
 
 // Subscriber Functions
@@ -93,21 +71,4 @@ function turn_on_layer(layer_id) {
     throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
   }
   map.setLayoutProperty(layer_id, "visibility", "visible");
-}
-
-function toggleLayer(msg, layerSwitch) {
-  if (layerSwitch.checked) {
-    turn_on_layer(layerSwitch.id);
-    if (map_store.cold.cluster_layers.includes(layerSwitch.id)) {
-      turn_on_layer(`${layerSwitch.id}_cluster`);
-      turn_on_layer(`${layerSwitch.id}_cluster_count`);
-    }
-  } else {
-    turn_off_layer(layerSwitch.id);
-    if (map_store.cold.cluster_layers.includes(layerSwitch.id)) {
-      turn_off_layer(`${layerSwitch.id}_cluster`);
-      turn_off_layer(`${layerSwitch.id}_cluster_count`);
-    }
-  }
-  return logMessage(msg);
 }
