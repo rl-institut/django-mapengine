@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [3.0.0] - 2025-07-10
 ### Changed
 - more flexible support for a map legend
 
