@@ -5,13 +5,13 @@ const openBtn  = document.getElementById('mapengine-legend-open-btn');
 const closeBtn = document.getElementById('mapengine-legend-close-btn');
 
 closeBtn.addEventListener('click', () => {
-  legend.classList.add('hidden');
-  openBtn .classList.remove('hidden');
+  legend.hidden = true;
+  openBtn.hidden = false;
 });
 
 openBtn.addEventListener('click', () => {
-  legend.classList.remove('hidden');
-  openBtn .classList.add('hidden');
+  legend.hidden = false;
+  openBtn.hidden = true;
 });
 
 PubSub.subscribe(mapEvent.MAP_LAYER_SWITCH_CLICK, toggleLayer);

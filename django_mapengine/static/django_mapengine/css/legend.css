@@ -30,6 +30,7 @@
     0 4px  6px  -4px rgba(0,0,0,0.1);
   padding: 1rem;
   z-index: 20;
+  overflow: auto;
 }
 
 .mapengine-legend-content {
