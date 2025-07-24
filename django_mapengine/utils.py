@@ -24,7 +24,7 @@ def get_color(layer_id: str) -> Union[str, dict]:
         if color is not found in layer style
     """
     style = get_layer_style(layer_id)
-    for color_key in ("fill-color", "line-color", "circle-color"):
+    for color_key in ("fill-color", "line-color", "circle-color", "icon-color"):
         try:
             return style["paint"][color_key]
         except KeyError:
