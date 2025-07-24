@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- duplicate loading of legend.js
+
 ## [3.0.2] - 2025-07-24
 ### Fixed
 - closing/opening legend without tailwind CSS
