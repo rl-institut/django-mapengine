@@ -1,5 +1,7 @@
 """Module to hold legend support"""
 
+import json
+import pathlib
 from dataclasses import dataclass
 from typing import Optional, Union
 
@@ -60,6 +62,20 @@ class Legend:
     def from_layer_names(cls, title: str, layer_names: list[str]):
         """Create legend items from layer names."""
         return cls({title: layer_names})
+
+    @classmethod
+    def from_json(cls, json_file: Union[pathlib.Path, str]):
+        """Create legend from JSON file."""
+        if isinstance(json_file, str):
+            json_file = pathlib.Path(json_file)
+        with json_file.open("r", encoding="utf-8") as file:
+            json_data = json.load(file)
+        return cls(
+            {
+                category: [LegendItem(**item) if isinstance(item, dict) else item for item in items]
+                for category, items in json_data.items()
+            }
+        )
 
     def items(self):
         """Return legend items grouped by categories."""
