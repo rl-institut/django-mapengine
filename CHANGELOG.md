@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [3.1.0] - 2025-07-28
 ### Added
 - possibility to create legend from JSON file
 
