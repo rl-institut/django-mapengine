@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- legend tooltip wordwrap and width
+
 ## [3.2.0] - 2025-09-26
 ### Added
 - support for HTML in legend tooltips
