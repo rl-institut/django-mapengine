@@ -34,7 +34,7 @@
         </div>
         <div class="mapengine-legend-items">
           {% for item in items %}
-            {% include "django_mapengine/legend_item.html" with item=item %}
+            {% include "django_mapengine/legend_item.html" with item=item html_in_tooltips=mapengine_legend.html_in_tooltips %}
           {% endfor %}
         </div>
       </div>

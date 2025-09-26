@@ -46,25 +46,26 @@ class LegendItem:
 class Legend:
     """Define a legend."""
 
-    def __init__(self, categories: dict[str, list[Union[LegendItem, str]]]):
+    def __init__(self, categories: dict[str, list[Union[LegendItem, str]]], html_in_tooltips: bool = False):
         """Initialize a legend with multiple categories and items."""
         self.categories = {
             category: [item if isinstance(item, LegendItem) else LegendItem(item) for item in items]
             for category, items in categories.items()
         }
+        self.html_in_tooltips = html_in_tooltips
 
     @classmethod
-    def from_items(cls, title: str, items: list[Union[LegendItem, str]]):
+    def from_items(cls, title: str, items: list[Union[LegendItem, str]], **kwargs):
         """Initialize legend from items."""
-        return cls({title: [item if isinstance(item, LegendItem) else LegendItem(item) for item in items]})
+        return cls({title: [item if isinstance(item, LegendItem) else LegendItem(item) for item in items]}, **kwargs)
 
     @classmethod
-    def from_layer_names(cls, title: str, layer_names: list[str]):
+    def from_layer_names(cls, title: str, layer_names: list[str], **kwargs):
         """Create legend items from layer names."""
-        return cls({title: layer_names})
+        return cls({title: layer_names}, **kwargs)
 
     @classmethod
-    def from_json(cls, json_file: Union[pathlib.Path, str]):
+    def from_json(cls, json_file: Union[pathlib.Path, str], **kwargs):
         """Create legend from JSON file."""
         if isinstance(json_file, str):
             json_file = pathlib.Path(json_file)
@@ -74,7 +75,8 @@ class Legend:
             {
                 category: [LegendItem(**item) if isinstance(item, dict) else item for item in items]
                 for category, items in json_data.items()
-            }
+            },
+            **kwargs,
         )
 
     def items(self):
