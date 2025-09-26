@@ -125,8 +125,7 @@
   pointer-events: none;
   position: absolute;
   bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 80%;
   margin-bottom: 0.5rem;
   padding: 0.25rem 0.5rem;
   background: #374151;
