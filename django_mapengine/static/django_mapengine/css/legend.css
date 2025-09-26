@@ -133,7 +133,9 @@
   font-size: 0.75rem;
   border-radius: 0.25rem;
   opacity: 0;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 500px;
+  min-width: 300px;
   transition: opacity 0.2s;
 }
 .mapengine-legend-tooltip-container:hover .mapengine-legend-tooltip {
