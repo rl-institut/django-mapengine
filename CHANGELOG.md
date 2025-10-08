@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [unreleased]
+### Changed
+- Removed dependency on djangorestframework-mvt
+
 ## [3.2.1] - 2025-09-26
 ### Fixed
 - legend tooltip wordwrap and width

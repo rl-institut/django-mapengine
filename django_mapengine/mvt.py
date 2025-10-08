@@ -7,7 +7,9 @@ from django.db import connection
 from django.db.models import QuerySet
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from rest_framework_mvt.views import BaseMVTView
+from rest_framework.views import APIView
+
+from django_mapengine.renderers import BinaryRenderer
 
 
 @dataclass
@@ -27,10 +29,18 @@ class MVTResponse(Response):
         return retval
 
 
-class MVTView(BaseMVTView):
-    """Use MVTView in urls.py to create MVTs from models"""
+class MVTView(APIView):
+    """
+    Use MVTView in urls.py to create MVTs from models
+
+    Schema for GET query:
+    title: required, TMS coordinates of the requested tile. The format should be tile=z/x/y
+    limit: optional, Number of results to return per page.
+    offset: optional, The initial index from which to return the results.
+    """
 
     layers: List[MVTSourceLayer] = []
+    renderer_classes = (BinaryRenderer,)
 
     def get(self, request, *args, **kwargs):
         params = request.GET.dict()
