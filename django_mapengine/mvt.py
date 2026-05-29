@@ -5,9 +5,58 @@ from typing import List
 
 from django.db import connection
 from django.db.models import QuerySet
+
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from rest_framework_mvt.views import BaseMVTView
+from rest_framework.renderers import BaseRenderer
+
+from rest_framework.schemas.openapi import AutoSchema
+
+
+class MVTSchema(AutoSchema):
+    """OpenAPI schema for MVT endpoints documenting the tile, limit, and offset query parameters."""
+
+    def get_operation(self, path, method):
+        """Add MVT-specific query parameters to the generated OpenAPI operation."""
+        operation = super().get_operation(path, method)
+        operation.setdefault("parameters", []).extend(
+            [
+                {
+                    "name": "tile",
+                    "in": "query",
+                    "required": True,
+                    "schema": {"type": "string"},
+                    "description": "TMS coordinates of the requested tile. The format should be tile=z/x/y",
+                },
+                {
+                    "name": "limit",
+                    "in": "query",
+                    "required": False,
+                    "schema": {"type": "string"},
+                    "description": "Number of results to return per page.",
+                },
+                {
+                    "name": "offset",
+                    "in": "query",
+                    "required": False,
+                    "schema": {"type": "string"},
+                    "description": "The initial index from which to return the results.",
+                },
+            ]
+        )
+        return operation
+
+
+class BinaryRenderer(BaseRenderer):
+    media_type = "application/*"
+    format = "binary"
+    charset = None
+    render_style = "binary"
+
+    # pylint: disable=no-self-use,unused-argument
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return data
 
 
 @dataclass
@@ -27,9 +76,13 @@ class MVTResponse(Response):
         return retval
 
 
-class MVTView(BaseMVTView):
+class MVTView(APIView):
     """Use MVTView in urls.py to create MVTs from models"""
 
+    model = None
+    geom_col = None
+    renderer_classes = (BinaryRenderer,)
+    schema = MVTSchema()
     layers: List[MVTSourceLayer] = []
 
     def get(self, request, *args, **kwargs):
