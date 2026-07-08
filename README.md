@@ -21,9 +21,9 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
         'django_mapengine',
    ]
    ```
-2. Install maplibre-gl, pubsub-js and (unfortunately - this shall be removed in the future) jquery dependency by:
+2. Install maplibre-gl and pubsub-js dependencies by:
    ```shell
-   npm install maplibre-gl pubsub-js jquery
+   npm install maplibre-gl pubsub-js
    ```
    and copy JS and CSS to your static folder.
 
@@ -100,7 +100,6 @@ Maplibre must be installed (i.e. via npm) and provided as JS framework
      {% compress js %}
        <script src="{% static 'vendors/maplibre/js/maplibre-gl.js' %}"></script>
        <script src="{% static 'vendors/pubsub/js/pubsub.js' %}"></script>
-       <script src="{% static 'vendors/jquery/js/jquery.min.js' %}"></script>
      {% endcompress %}
    {% endblock javascript %}
 

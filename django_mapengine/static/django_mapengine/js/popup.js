@@ -48,7 +48,7 @@ function add_popup(layerID) {
     /*
       Check if popup already exists
     */
-    if ($('.mapboxgl-popup').length > 0) {
+    if (document.querySelector('.mapboxgl-popup') !== null) {
       return;
     }
     if (!checkPop(layerID)) return;
@@ -69,12 +69,10 @@ function add_popup(layerID) {
        lookup = map_store.cold.currentChoropleth;
     }
 
-    $.ajax({
-      type: "GET",
-      url: `/popup/${lookup}/${featureID}?lang=en`,
-      data: map_store.cold.state,
-      dataType: 'json',
-      success: function (data) {
+    const params = new URLSearchParams(map_store.cold.state);
+    fetch(`/popup/${lookup}/${featureID}?lang=en&${params}`)
+      .then((response) => response.json())
+      .then((data) => {
         const popup = document.createElement('div');
         const {html} = data;
         popup.innerHTML = html;
@@ -88,11 +86,6 @@ function add_popup(layerID) {
           // createChart function must be defined in project app (not in mapengine)
           createChart("js-popup__chart", data.chart);
         }
-      }
-    });
+      });
   });
 }
-
-$(document).ready(function () {
-  $('#js-intro-modal').modal('show');
-});
