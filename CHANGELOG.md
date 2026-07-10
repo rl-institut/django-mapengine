@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- added djangorestframework-gis dependency
+
 ## [5.0.0] - 2026-07-10
 ### Changed
 - use uv lock instead of poetry lock
