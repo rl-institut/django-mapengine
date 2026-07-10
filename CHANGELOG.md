@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- Decoding of MVT query
+
 ## [5.0.1] - 2026-07-10
 ### Fixed
 - added djangorestframework-gis dependency

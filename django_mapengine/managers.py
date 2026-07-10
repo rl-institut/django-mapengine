@@ -107,7 +107,7 @@ class MVTManager(models.Manager):
         except FieldError as error:
             raise ValidationError(str(error)) from error
         with connection.cursor() as cursor:
-            return cursor.mogrify(sql, params)
+            return cursor.mogrify(sql, params).decode("utf-8")
 
     def _get_non_geom_columns(self) -> list[str]:
         """
