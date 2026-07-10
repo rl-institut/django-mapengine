@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Fixed
+- legend items for distilled layer names
+
 ## [5.0.2] - 2026-07-10
 ### Fixed
 - Decoding of MVT query

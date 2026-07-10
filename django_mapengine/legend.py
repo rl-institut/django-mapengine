@@ -23,21 +23,22 @@ class LegendItem:
 
     def __post_init__(self):
         """Set color from the layer name if not set."""
+        layer_name_pure = self.layer_name.removesuffix("_distilled")
         if self.color is None:
             # Get color from layer styles
-            self.color = utils.get_color(self.layer_name)
+            self.color = utils.get_color(layer_name_pure)
         if self.title is None:
             # Set up a title from layer name
-            self.title = " ".join(map(lambda x: x.capitalize(), self.layer_name.split("_")))
+            self.title = " ".join(map(lambda x: x.capitalize(), layer_name_pure.split("_")))
         if self.shape is None:
             # Check if layer is cluster or not
-            if self.layer_name in [cluster.layer_id for cluster in settings.MAP_ENGINE_API_CLUSTERS]:
+            if layer_name_pure in [cluster.layer_id for cluster in settings.MAP_ENGINE_API_CLUSTERS]:
                 self.shape = "circle"
             else:
                 self.shape = "square"
         if self.checked is None:
             # Check if the layer is in startup layers
-            if self.layer_name in settings.MAP_ENGINE_LAYERS_AT_STARTUP:
+            if layer_name_pure in settings.MAP_ENGINE_LAYERS_AT_STARTUP:
                 self.checked = True
             else:
                 self.checked = False
