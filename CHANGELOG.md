@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- use uv lock instead of poetry lock
+
 ## [4.1.0] - 2026-07-08
 ### Changed
 - removed dependency for jquery
