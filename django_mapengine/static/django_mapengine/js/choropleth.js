@@ -5,27 +5,21 @@ PubSub.subscribe(mapEvent.MAP_LAYERS_LOADED, initDefaultChoropleths);
 PubSub.subscribe(mapEvent.CHOROPLETH_SELECTED, activateChoropleth);
 
 
-function activateChoropleth(msg, choroplethName) {
+async function activateChoropleth(msg, choroplethName) {
   if (!(choroplethName in map_store.cold.choropleths)) {
     throw new ReferenceError(`Choropleth '${choroplethName}' unknown.`);
   }
   for (const layerID of map_store.cold.choropleths[choroplethName].layers) {
     const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
     if (!(layerID in map_store.cold.storedChoroplethPaintProperties[choroplethName])) {
-      $.ajax({
-        type: "GET",
-        url: `choropleth/${choroplethName}/${layerIDCleaned}`,
-        data: map_store.cold.state,
-        async: false,
-        dataType: 'json',
-        success: function (choroplethData) {
-          if (map_store.cold.choropleths[choroplethName].useFeatureState) {
-            updateChoroplethFeatureStates(choroplethName, layerID, choroplethData.values);
-          }
-          map_store.cold.storedChoroplethPaintProperties[choroplethName][layerID] = choroplethData.paintProperties;
-          setPaintProperties(layerID, choroplethData.paintProperties);
-        }
-      });
+      const params = new URLSearchParams(map_store.cold.state);
+      const response = await fetch(`choropleth/${choroplethName}/${layerIDCleaned}?${params}`);
+      const choroplethData = await response.json();
+      if (map_store.cold.choropleths[choroplethName].useFeatureState) {
+        updateChoroplethFeatureStates(choroplethName, layerID, choroplethData.values);
+      }
+      map_store.cold.storedChoroplethPaintProperties[choroplethName][layerID] = choroplethData.paintProperties;
+      setPaintProperties(layerID, choroplethData.paintProperties);
     } else {
       setPaintProperties(layerID, map_store.cold.storedChoroplethPaintProperties[choroplethName][layerID]);
     }
