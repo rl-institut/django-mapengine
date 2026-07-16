@@ -1,6 +1,6 @@
 [project]
 name = "django-mapengine"
-version = "5.0.4"
+version = "5.1.0"
 description = "Map engine for maplibre in django"
 authors = [
     {name = "Hendrik Huyskens", email = "hendrik.huyskens@rl-institut.de"}
