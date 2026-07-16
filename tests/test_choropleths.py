@@ -2,12 +2,33 @@
 
 import pathlib
 
+import pytest
+
 from django_mapengine import choropleth
 
 TEST_FOLDER = pathlib.Path(__file__).parent
 TEST_CHOROPLETH_STYLES_FILE = TEST_FOLDER / "test_data" / "styles" / "choropleths.json"
 
 CHOROPLETHS = choropleth.Choropleth(TEST_CHOROPLETH_STYLES_FILE)
+
+
+@pytest.mark.parametrize(
+    ("min_value", "max_value", "expected"),
+    [
+        (5, 65, (0, 100)),
+        (85, 105, (80, 120)),
+        (50, 405, (0, 500)),
+        (3, 10, (0, 10)),
+        (5, 11, (0, 20)),
+        (0.1, 5, (0, 5)),
+        (0.01, 0.1, (0, 0.1)),
+        (42, 42, (0, 50)),
+        (0, 0, (0, 1)),
+    ],
+)
+def test_calculate_nice_bounds(min_value: float, max_value: float, expected: tuple[float, float]) -> None:
+    """Test nice-number bound calculation for dynamic choropleth values."""
+    assert CHOROPLETHS._Choropleth__calculate_nice_bounds(min_value, max_value) == expected  # noqa: SLF001
 
 
 def test_choropleths_with_values() -> None:

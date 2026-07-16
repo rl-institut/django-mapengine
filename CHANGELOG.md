@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- Improved the choropleth value range
+
 ## [5.0.4] - 2026-07-16
 ### Fixed
 - removed jquery dependency for usage of choropleths

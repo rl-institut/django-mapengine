@@ -11,6 +11,8 @@ MAX_COLORBREWER_STEPS = 9
 
 DEFAULT_CHOROPLETH_CONFIG = {"color_palette": "YlGnBu", "num_colors": 6}
 
+DEFAULT_ZERO_ANCHOR_RATIO = 0.6
+
 
 class ChoroplethError(Exception):
     """Raised if something is wrong with choropleth values or parameters."""
@@ -19,19 +21,28 @@ class ChoroplethError(Exception):
 class Choropleth:
     """Class to define load choropleth config and define colors for static and dynamic choropleths."""
 
-    def __init__(self, choropleth_styles_file: Union[str, pathlib.Path]) -> None:
+    def __init__(
+        self,
+        choropleth_styles_file: Union[str, pathlib.Path],
+        zero_anchor_ratio: float = DEFAULT_ZERO_ANCHOR_RATIO,
+    ) -> None:
         """Initialize choropleth.
 
         Parameters
         ----------
         choropleth_styles_file: str
             Name or path to choropleth style file
+        zero_anchor_ratio: float
+            If `min_value / max_value` of the dynamic values is below this ratio, the lower bound
+            of the color range is anchored at zero instead of being rounded to a nice number near
+            the actual minimum.
         """
         if pathlib.Path(choropleth_styles_file).exists():
             with pathlib.Path(choropleth_styles_file).open("r", encoding="utf-8") as cs_file:
                 self.choropleths = json.load(cs_file)
         else:
             self.choropleths = {}
+        self.zero_anchor_ratio = zero_anchor_ratio
 
     def get_config(self, name: str) -> dict:
         """
@@ -95,8 +106,7 @@ class Choropleth:
             if min(values) < 0 or max(values) <= 0:
                 error_msg = "the given values are not valid or out of range"
                 raise ChoroplethError(error_msg)
-            min_value = self.__calculate_lower_limit(min(values))
-            max_value = self.__calculate_upper_limit(max(values))
+            min_value, max_value = self.__calculate_nice_bounds(min(values), max(values))
             if choropleth_config["num_colors"]:
                 num = choropleth_config["num_colors"]
             else:
@@ -153,64 +163,62 @@ class Choropleth:
 
     @staticmethod
     def __calculate_step_size(min_value: float, max_value: float, num: int) -> float:
-        """
-        Calculate step size
-
-        Algorithm tries to find nice step sizes instead of simply dividing range by number of steps.
-        """
+        """Calculate step size by dividing the (already nice) value range into equal bins."""
         return (max_value - min_value) / num
 
-    @staticmethod
-    def __calculate_lower_limit(number: float) -> int:
-        """
-        Calculate a significant number as lower limit for choropleth coloring
+    def __calculate_nice_bounds(self, min_value: float, max_value: float) -> tuple[float, float]:
+        """Calculate a nice-looking lower and upper bound around the given values.
+
+        The upper bound is always rounded up to a nice number (1, 2, 5 or 10 times a power of
+        ten) covering the value range. The lower bound is anchored at zero unless the values are
+        clustered far enough from zero (see `zero_anchor_ratio`), in which case it is rounded down
+        to a nice number instead.
 
         Parameters
         ----------
-        number: float
-            find lower limit for this number
+        min_value: float
+            Smallest value to cover
+        max_value: float
+            Largest value to cover
 
         Returns
         -------
-        int
-            rounded down value by meaningful amount
-
-        Raises
-        ------
-        ValueError
-            if lower limit cannot be found
+        tuple[float, float]
+            Nice lower and upper bound
         """
-        if number == 0:
-            return int(number)
-        if number < 1:
-            return int((number * 10) / 10)
-        if number >= 1:
-            digits = int(math.log10(number))
-            return int(number / 10**digits) * 10**digits
-        raise ValueError(f"Cannot find lower limit for {number=}")
+        if min_value == max_value:
+            step = self.__calculate_nice_step(min_value if min_value > 0 else 1.0)
+            lower = math.floor(min_value / step) * step
+            return lower, lower + step
+
+        step = self.__calculate_nice_step(max_value - min_value)
+        upper = math.ceil(max_value / step) * step
+        if max_value == 0 or min_value / max_value < self.zero_anchor_ratio:
+            return 0.0, upper
+        return math.floor(min_value / step) * step, upper
 
     @staticmethod
-    def __calculate_upper_limit(number: float) -> int:
-        """Calculate a significant number as upper limit for choropleth coloring.
+    def __calculate_nice_step(value: float) -> float:
+        """Calculate a nice step size (1, 2, 5 or 10 times a power of ten) covering the value.
 
         Parameters
         ----------
-        number: float
-            find upper limit for this number
+        value: float
+            Value the step size must cover
 
         Returns
         -------
-        int
-            rounded up value by meaningful amount, depending on the size of number
-
-        Raises
-        ------
-        ValueError
-            if upper limit cannot be found
+        float
+            Nice step size
         """
-        if number <= 1:
-            return math.ceil((number * 10) / 10)
-        if number > 1:
-            digits = int(math.log10(number))
-            return math.ceil(number / 10**digits) * 10**digits
-        raise ValueError(f"Cannot find upper limit for {number=}")
+        exponent = math.floor(math.log10(value))
+        fraction = value / 10**exponent
+        if fraction <= 1:
+            nice_fraction = 1
+        elif fraction <= 2:
+            nice_fraction = 2
+        elif fraction <= 5:
+            nice_fraction = 5
+        else:
+            nice_fraction = 10
+        return nice_fraction * 10**exponent
