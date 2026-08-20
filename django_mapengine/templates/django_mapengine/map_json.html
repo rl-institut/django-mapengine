@@ -1,9 +1,8 @@
 
-{{ mapengine_setup|json_script:"mapengine_setup" }}
-{{ mapengine_sources|json_script:"mapengine_sources" }}
-{{ mapengine_basemap_layers|json_script:"mapengine_basemap_layers" }}
-{{ mapengine_layers|json_script:"mapengine_layers" }}
-{{ mapengine_images|json_script:"mapengine_images" }}
-{{ mapengine_popups|json_script:"mapengine_popups" }}
-{{ mapengine_layers_at_startup|json_script:"mapengine_layers_at_startup" }}
-{{ mapengine_store_cold_init|json_script:"mapengine_store_cold_init" }}
+{{ mapengine_setup|json_script:mapengine_setup_id }}
+{{ mapengine_sources|json_script:mapengine_sources_id }}
+{{ mapengine_basemap_layers|json_script:mapengine_basemap_layers_id }}
+{{ mapengine_layers|json_script:mapengine_layers_id }}
+{{ mapengine_images|json_script:mapengine_images_id }}
+{{ mapengine_layers_at_startup|json_script:mapengine_layers_at_startup_id }}
+{{ mapengine_store_cold_init|json_script:mapengine_store_cold_init_id }}

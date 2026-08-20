@@ -1,21 +1,33 @@
 
-const toggleBasemapButton = document.getElementById("basemaps-control");
-toggleBasemapButton.onclick = toggleBasemapControl;
+function setupBasemapEvents(mapName) {
+  const toggleBasemapButton = document.getElementById(`basemaps-control-${mapName}`);
+  const basemapControl = document.getElementById(`basemaps-${mapName}`);
+  if (!toggleBasemapButton || !basemapControl) {
+    // This map has no basemap switcher rendered on the page.
+    return;
+  }
 
-const basemapButtons = document.getElementById("basemaps").querySelectorAll("button");
-const basemaps = Array.from(basemapButtons).map(function (basemapButton) {return basemapButton.id.slice("basemaps__".length);});
+  const prefix = "basemaps__";
+  const suffix = `-${mapName}`;
+  const basemapButtons = basemapControl.querySelectorAll("button");
+  const basemaps = Array.from(basemapButtons).map(
+    (basemapButton) => basemapButton.id.slice(prefix.length, -suffix.length)
+  );
 
-for (const basemapButton of basemapButtons) {
-  let basemap_layer = basemapButton.id.slice("basemaps__".length);
-  basemapButton.addEventListener("click", () => {
-    toggleBasemap(basemap_layer);
-  });
+  toggleBasemapButton.onclick = () => toggleBasemapControl(mapName);
+
+  for (const basemapButton of basemapButtons) {
+    const basemap_layer = basemapButton.id.slice(prefix.length, -suffix.length);
+    basemapButton.addEventListener("click", () => {
+      toggleBasemap(mapName, basemaps, basemap_layer);
+    });
+  }
 }
 
-function toggleBasemap(basemap) {
-  map_store.cold.basemap = basemap;
+function toggleBasemap(mapName, basemaps, basemap) {
+  const {map, store} = MapEngine.maps[mapName];
+  store.cold.basemap = basemap;
 
-  const legend = document.getElementById("legend");
   for (const bm of basemaps) {
     if (bm !== "default") {
       map.setLayoutProperty(bm, "visibility", "none");
@@ -23,20 +35,23 @@ function toggleBasemap(basemap) {
   }
   if (basemap !== "default") {
     map.setLayoutProperty(basemap, "visibility", "visible");
-  }
-  else {
-    legend.hidden = true;
+  } else {
+    const legendElement = document.getElementById(`mapengine-legend-${mapName}`);
+    if (legendElement) {
+      legendElement.hidden = true;
+    }
   }
 }
 
-function toggleBasemapControl() {
-  const basemapControl = document.getElementById("basemaps");
+function toggleBasemapControl(mapName) {
+  const basemapControl = document.getElementById(`basemaps-${mapName}`);
 
   if (basemapControl.style.display !== "none") {
     basemapControl.style.display = "none";
   }
   else {
     basemapControl.style.display = "flex";
-    document.getElementById(`basemaps__${map_store.cold.basemap}`).focus();
+    const store = MapEngine.maps[mapName].store;
+    document.getElementById(`basemaps__${store.cold.basemap}-${mapName}`).focus();
   }
 }

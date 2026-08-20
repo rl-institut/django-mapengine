@@ -1,4 +1,4 @@
-<button id="mapengine-legend-open-btn" class="hidden" aria-label="Open map legend">
+<button id="mapengine-legend-open-btn-{{ mapengine_legend.map_name }}" class="hidden" aria-label="Open map legend">
   <!-- Heroicons -->
   <svg xmlns="http://www.w3.org/2000/svg"
        fill="none"
@@ -11,14 +11,14 @@
   </svg>
 </button>
 <!-- 2) the legend panel itself -->
-<div id="mapengine-legend">
+<div id="mapengine-legend-{{ mapengine_legend.map_name }}" class="mapengine-legend" data-map-name="{{ mapengine_legend.map_name }}">
   <div class="mapengine-legend-content">
     {% for category, items in mapengine_legend.items %}
       <div class="mapengine-legend-category">
         <div class="mapengine-legend-header">
           <h2>{{ category}}</h2>
           {% if forloop.first %}
-            <button id="mapengine-legend-close-btn" aria-label="Close map legend">
+            <button id="mapengine-legend-close-btn-{{ mapengine_legend.map_name }}" aria-label="Close map legend">
               <!-- Heroicons -->
               <svg xmlns="http://www.w3.org/2000/svg"
                    fill="none"

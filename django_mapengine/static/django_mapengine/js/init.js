@@ -1,13 +1,28 @@
 
-const map_store = initMapStore();
-const map = initMap();
+window.MapEngine = window.MapEngine || {maps: {}};
+
+MapEngine.init = function (mapName) {
+    const store = initMapStore(mapName);
+    const map = initMap(mapName, store);
+    MapEngine.maps[mapName] = {map: map, store: store};
+
+    setupMapEvents(mapName, map);
+    setupLayerEvents(mapName, map, store);
+    setupHoverEvents(mapName, map, store);
+    setupPopupEvents(mapName, map, store);
+    setupChoroplethEvents(mapName, map, store);
+    setupLegendEvents(mapName);
+    setupBasemapEvents(mapName);
+
+    return MapEngine.maps[mapName];
+};
 
 
-function initMap() {
-    const setup = JSON.parse(document.getElementById("mapengine_setup").textContent);
+function initMap(mapName, store) {
+    const setup = JSON.parse(document.getElementById(`mapengine_setup_${mapName}`).textContent);
     const map = new maplibregl.Map(setup);
 
-    if (map_store.cold.debugMode) {
+    if (store.cold.debugMode) {
         map.showTileBoundaries = true;
     }
 
@@ -21,8 +36,8 @@ function initMap() {
 }
 
 
-function initMapStore() {
-    const storeColdInit = JSON.parse(document.getElementById("mapengine_store_cold_init").textContent);
+function initMapStore(mapName) {
+    const storeColdInit = JSON.parse(document.getElementById(`mapengine_store_cold_init_${mapName}`).textContent);
     storeColdInit.state = {};
     storeColdInit.storedChoroplethPaintProperties = {"default": {}};
     for (const choroplethName in storeColdInit.choropleths) {

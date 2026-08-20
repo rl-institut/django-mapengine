@@ -42,7 +42,14 @@ class ModelLayer:
             )
 
     def get_source_layer(self) -> str:
-        """By default, layer ID is used as source layer."""
+        """
+        By default, layer ID is used as source layer.
+
+        Returns
+        -------
+        str
+            Source layer name.
+        """
         return self.source_layer if self.source_layer else self.id
 
 
@@ -67,9 +74,11 @@ class StaticModelLayer(ModelLayer):
             Minimal zoom
         """
         return max(
-            settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
-            if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS
-            else settings.MAP_ENGINE_MIN_ZOOM,
+            (
+                settings.MAP_ENGINE_MAX_DISTILLED_ZOOM + 1
+                if not distill and settings.MAP_ENGINE_USE_DISTILLED_MVTS
+                else settings.MAP_ENGINE_MIN_ZOOM
+            ),
             self.minzoom,
         )
 
@@ -96,7 +105,14 @@ class StaticModelLayer(ModelLayer):
         )
 
     def get_style(self):
-        """Return style from style name if set, otherwise use ID to get style."""
+        """
+        Return style from style name if set, otherwise use ID to get style.
+
+        Returns
+        -------
+        dict
+            Layer style.
+        """
         if self.style:
             return get_layer_style(self.style)
         return get_layer_style(self.id)
@@ -163,7 +179,14 @@ class ClusterModelLayer(ModelLayer):
 
 
 def get_basemap_layers() -> Iterable[BasemapLayer]:
-    """Return basemap layers"""
+    """
+    Return basemap layers.
+
+    Yields
+    ------
+    BasemapLayer
+        Basemap layer for each configured basemap.
+    """
     for basemap in settings.MAP_ENGINE_BASEMAPS:
         yield BasemapLayer(id=basemap.layer_id, source=basemap.layer_id, type=basemap.type)
 
@@ -243,9 +266,39 @@ def get_layer_by_id(layer_id: str) -> setup.ModelAPI:
     raise KeyError(f"Layer {layer_id=} not found.")
 
 
-def get_all_layers() -> List[MapLayer]:
+_DERIVED_LAYER_ID_SUFFIXES = ("_distilled", "_cluster_count", "_cluster")
+
+
+def _base_layer_id(layer_id: str) -> str:
+    """
+    Return the base layer ID a derived (distilled/cluster) layer belongs to.
+
+    Parameters
+    ----------
+    layer_id : str
+        Layer ID, possibly suffixed with '_distilled'/'_cluster'/'_cluster_count'.
+
+    Returns
+    -------
+    str
+        Base layer ID with any such suffix removed.
+    """
+    for suffix in _DERIVED_LAYER_ID_SUFFIXES:
+        if layer_id.endswith(suffix):
+            return layer_id[: -len(suffix)]
+    return layer_id
+
+
+def get_all_layers(map_config: Optional["setup.MapConfig"] = None) -> List[MapLayer]:
     """
     Return region, static and cluster layers as list
+
+    Parameters
+    ----------
+    map_config : Optional[setup.MapConfig]
+        If given and its 'layers' is not None, the result is filtered down to only the
+        layers listed there (plus their derived distilled/cluster layers). If omitted
+        (or 'layers' is None), all configured layers are returned.
 
     Returns
     -------
@@ -259,6 +312,9 @@ def get_all_layers() -> List[MapLayer]:
         layers.extend(static_layer.get_map_layers())
     for cluster_layer in get_cluster_layers():
         layers.extend(cluster_layer.get_map_layers())
+    if map_config is not None and map_config.layers is not None:
+        allowed_ids = set(map_config.layers)
+        layers = [layer for layer in layers if _base_layer_id(layer.id) in allowed_ids]
     return layers
 
 

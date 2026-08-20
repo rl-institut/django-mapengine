@@ -1,7 +1,8 @@
 // Global Helper Functions
 
-function logMessage(msg) {
-  if (map_store.cold.debugMode) {
+function logMessage(mapName, msg) {
+  const store = MapEngine.maps[mapName].store;
+  if (store.cold.debugMode) {
     let caller = logMessage.caller;
     if (typeof caller === "function") {
       caller = caller.toString().substr("function ".length);
