@@ -1,52 +1,58 @@
 
-const layerSwitches = document.querySelectorAll('.mapengine-layer');
-const legend   = document.getElementById('mapengine-legend');
-const openBtn  = document.getElementById('mapengine-legend-open-btn');
-const closeBtn = document.getElementById('mapengine-legend-close-btn');
+function setupLegendEvents(mapName) {
+  const legendElement = document.getElementById(`mapengine-legend-${mapName}`);
+  const openBtn = document.getElementById(`mapengine-legend-open-btn-${mapName}`);
+  const closeBtn = document.getElementById(`mapengine-legend-close-btn-${mapName}`);
+  if (!legendElement || !openBtn || !closeBtn) {
+    // This map has no legend rendered on the page.
+    return;
+  }
 
-closeBtn.addEventListener('click', () => {
-  legend.hidden = true;
-  openBtn.hidden = false;
-});
+  closeBtn.addEventListener('click', () => {
+    legendElement.hidden = true;
+    openBtn.hidden = false;
+  });
 
-openBtn.addEventListener('click', () => {
-  legend.hidden = false;
-  openBtn.hidden = true;
-});
+  openBtn.addEventListener('click', () => {
+    legendElement.hidden = false;
+    openBtn.hidden = true;
+  });
 
-PubSub.subscribe(mapEvent.MAP_LAYER_SWITCH_CLICK, toggleLayer);
-
-// Event Handler
-
-map.on("load", function () {
+  const layerSwitches = legendElement.querySelectorAll('.mapengine-layer');
   layerSwitches.forEach(layerSwitch => {
     if (layerSwitch.type !== "checkbox") {
       console.warn(
-        `Layer switch with id "${layerSwitch.id}" is not a checkbox 
+        `Layer switch with id "${layerSwitch.id}" is not a checkbox
         and cannot be connected to map layers automatically.`
       );
     } else {
       layerSwitch.addEventListener("change", () => {
-        PubSub.publish(mapEvent.MAP_LAYER_SWITCH_CLICK, layerSwitch);
+        PubSub.publish(mapEventTopic(mapName, mapEvent.MAP_LAYER_SWITCH_CLICK), layerSwitch);
       });
     }
   });
-});
 
-function toggleLayer(msg, layerSwitch) {
+  PubSub.subscribe(
+    mapEventTopic(mapName, mapEvent.MAP_LAYER_SWITCH_CLICK),
+    (msg, layerSwitch) => toggleLayer(mapName, msg, layerSwitch)
+  );
+}
+
+function toggleLayer(mapName, msg, layerSwitch) {
+  const store = MapEngine.maps[mapName].store;
   const layerName = layerSwitch.getAttribute('data-layer-name');
   if (layerSwitch.checked) {
-    turn_on_layer(layerName);
-    if (map_store.cold.cluster_layers.includes(layerName)) {
-      turn_on_layer(`${layerName}_cluster`);
-      turn_on_layer(`${layerName}_cluster_count`);
+    turn_on_layer(mapName, layerName);
+    if (store.cold.cluster_layers.includes(layerName)) {
+      turn_on_layer(mapName, `${layerName}_cluster`);
+      turn_on_layer(mapName, `${layerName}_cluster_count`);
     }
   } else {
-    turn_off_layer(layerName);
-    if (map_store.cold.cluster_layers.includes(layerName)) {
-      turn_off_layer(`${layerName}_cluster`);
-      turn_off_layer(`${layerName}_cluster_count`);
+    turn_off_layer(mapName, layerName);
+    if (store.cold.cluster_layers.includes(layerName)) {
+      turn_off_layer(mapName, `${layerName}_cluster`);
+      turn_off_layer(mapName, `${layerName}_cluster_count`);
     }
   }
-  return logMessage(msg);
+  return logMessage(mapName, msg);
 }

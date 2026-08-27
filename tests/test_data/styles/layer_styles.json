@@ -1,1 +1,50 @@
-{}
+{
+  "municipality": {
+    "paint": {
+      "fill-color": "#cccccc"
+    },
+    "type": "fill"
+  },
+  "municipalitylabel": {
+    "layout": {
+      "text-field": "{name}"
+    },
+    "type": "symbol"
+  },
+  "pvroof": {
+    "paint": {
+      "circle-color": "#ff0000"
+    },
+    "type": "circle"
+  },
+  "pvroof_cluster": {
+    "paint": {
+      "circle-color": "#ff0000"
+    },
+    "type": "circle"
+  },
+  "pvroof_cluster_count": {
+    "layout": {
+      "text-field": "{point_count}"
+    },
+    "type": "symbol"
+  },
+  "wind": {
+    "paint": {
+      "circle-color": "#0000ff"
+    },
+    "type": "circle"
+  },
+  "wind_cluster": {
+    "paint": {
+      "circle-color": "#0000ff"
+    },
+    "type": "circle"
+  },
+  "wind_cluster_count": {
+    "layout": {
+      "text-field": "{point_count}"
+    },
+    "type": "symbol"
+  }
+}

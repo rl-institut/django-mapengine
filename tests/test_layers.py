@@ -1,6 +1,6 @@
 """Tests for testing layers module"""
 
-from django_mapengine import layers
+from django_mapengine import layers, setup
 
 
 def test_cluster_layers_from_settings():
@@ -41,3 +41,19 @@ def test_static_layers_from_settings():
     assert static_layers[1].id == "pvroof"
     assert issubclass(static_layers[1].model, models.PVRoof)
     assert static_layers[1].source == "static"
+
+
+def test_get_all_layers_without_map_config_returns_everything():
+    """No map_config (or one with layers=None) means no filtering."""
+    all_layer_ids = {layer.id for layer in layers.get_all_layers()}
+
+    assert {"wind", "pvroof", "wind_cluster", "pvroof_cluster"} <= all_layer_ids
+
+
+def test_get_all_layers_filters_by_map_config_layers():
+    """Only the map's own layers (and their derived distilled/cluster layers) are returned."""
+    map_config = setup.MapConfig(name="overview", center=[0, 0], zoom=1, layers=["pvroof"])
+
+    layer_ids = {layer.id for layer in layers.get_all_layers(map_config)}
+
+    assert layer_ids == {"pvroof", "pvroof_cluster", "pvroof_cluster_count"}

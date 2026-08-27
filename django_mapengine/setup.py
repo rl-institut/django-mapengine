@@ -1,4 +1,5 @@
 """Setup module is used in settings of django projects to set up mapengine"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -30,7 +31,14 @@ class MaptilerBasemap:
     format: str = "jpg"
 
     def as_dict(self):
-        """Return maptilerBasemap as dict"""
+        """
+        Return maptilerBasemap as dict.
+
+        Returns
+        -------
+        dict
+            Basemap fields as a plain dict.
+        """
         return {
             "layer_id": self.layer_id,
             "source_id": self.source_id,
@@ -296,3 +304,55 @@ class MapSource:
         else:
             raise TypeError(f"Unsupported source type '{self.type}'.")
         return source
+
+
+# pylint:disable=R0902
+@dataclass
+class MapConfig:
+    """
+    Configuration for a single map.
+
+    A Django project can define multiple maps (see 'MAP_ENGINE_MAPS' setting), each with its own
+    viewport, layers, choropleths and popups. Sources, layer/style definitions and basemaps stay
+    global and are shared by all maps.
+    """
+
+    name: str
+    center: List[float]
+    zoom: float
+    min_zoom: Optional[int] = None
+    max_zoom: Optional[int] = None
+    max_bounds: Optional[List[List[float]]] = None
+    basemap: str = "default"
+    layers: Optional[List[str]] = None
+    layers_at_startup: List[str] = field(default_factory=list)
+    hover_layers: List[str] = field(default_factory=list)
+    choropleths: List[Choropleth] = field(default_factory=list)
+    popups: List[Popup] = field(default_factory=list)
+
+    def get_setup(self) -> dict:
+        """
+        Build maplibre map setup dict (container, style, center, zoom, bounds) for this map.
+
+        Returns
+        -------
+        dict
+            to be used as maplibre.Map constructor options.
+        """
+        min_zoom = self.min_zoom if self.min_zoom is not None else settings.MAP_ENGINE_MIN_ZOOM
+        max_zoom = self.max_zoom if self.max_zoom is not None else settings.MAP_ENGINE_MAX_ZOOM
+        max_bounds = self.max_bounds if self.max_bounds is not None else settings.MAP_ENGINE_MAX_BOUNDS
+        map_setup = {
+            "container": f"map-{self.name}",
+            "style": (
+                f"https://api.maptiler.com/maps/{settings.MAP_ENGINE_TILING_SERVICE_STYLE_ID}/"
+                f"style.json?key={settings.MAP_ENGINE_TILING_SERVICE_TOKEN}"
+            ),
+            "center": self.center,
+            "zoom": self.zoom,
+            "minZoom": min_zoom,
+            "maxZoom": max_zoom,
+        }
+        if max_bounds:
+            map_setup["maxBounds"] = max_bounds
+        return map_setup

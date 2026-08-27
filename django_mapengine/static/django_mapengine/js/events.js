@@ -10,6 +10,12 @@ const mapEvent = {
 };
 
 
+function mapEventTopic(mapName, event) {
+  // Namespace an event per map, so independent maps on the same page don't cross-trigger.
+  return `${mapName}:${event}`;
+}
+
+
 function subscribeToEvents(eventsList, subscriberFunction) {
   Array.from(eventsList).forEach(event => {
     PubSub.subscribe(event, subscriberFunction);

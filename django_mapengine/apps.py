@@ -94,6 +94,12 @@ class MapEngineConf(AppConf):
 
     SOURCES = []
     LAYERS = []
+    REGIONS = []
+
+    # MAPS
+    # If empty, a single "default" map is synthesized from the flat MAP_ENGINE_* settings above
+    # (see django_mapengine.maps.get_map_config). Set this to configure multiple maps explicitly.
+    MAPS: Dict[str, setup.MapConfig] = {}
 
     # LAYERS
     LAYERS_AT_STARTUP: List[str] = []

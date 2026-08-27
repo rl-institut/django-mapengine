@@ -2,7 +2,9 @@
 let popupClicked = false;
 const POPUP_DOUBLE_CLICK_TIMEOUT = 300;
 
-PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_popups);
+function setupPopupEvents(mapName, map, store) {
+  PubSub.subscribe(mapEventTopic(mapName, mapEvent.MAP_SOURCES_LOADED), () => add_popups(map, store));
+}
 
 
 function createCoordinates(event) {
@@ -20,25 +22,25 @@ function createListByName(name, series) {
   return list;
 }
 
-function checkPop(layerID) {
+function checkPop(store, layerID) {
   // Check if layer allows popups
-  if (!(layerID in map_store.cold.popups)) return false;
+  if (!(layerID in store.cold.popups)) return false;
   // Always return true if layer allows popups per default
-  if (map_store.cold.popups[layerID].atDefaultLayer) return true;
+  if (store.cold.popups[layerID].atDefaultLayer) return true;
 
   // Otherwise only possible popup comes from choropleth - check it
-  if (map_store.cold.currentChoropleth === null) return false;
-  if (map_store.cold.popups[layerID].choropleths === null) return false;
-  return map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth);
+  if (store.cold.currentChoropleth === null) return false;
+  if (store.cold.popups[layerID].choropleths === null) return false;
+  return store.cold.popups[layerID].choropleths.includes(store.cold.currentChoropleth);
 }
 
-function add_popups() {
-  for (const popup in map_store.cold.popups) {
-    add_popup(popup);
+function add_popups(map, store) {
+  for (const popup in store.cold.popups) {
+    add_popup(map, store, popup);
   }
 }
 
-function add_popup(layerID) {
+function add_popup(map, store, layerID) {
   map.on("click", layerID, function (event) {
     if (popupClicked) return;
     popupClicked = true;
@@ -51,7 +53,7 @@ function add_popup(layerID) {
     if (document.querySelector('.mapboxgl-popup') !== null) {
       return;
     }
-    if (!checkPop(layerID)) return;
+    if (!checkPop(store, layerID)) return;
     /*
       Construct Coordinates From Event
     */
@@ -62,14 +64,14 @@ function add_popup(layerID) {
     // Check if choropleth of current layer is clicked
     let lookup = layerID;
     if (
-        (map_store.cold.currentChoropleth !== null) &&
-        (map_store.cold.popups[layerID].choropleths !== null) &&
-        map_store.cold.popups[layerID].choropleths.includes(map_store.cold.currentChoropleth)
+        (store.cold.currentChoropleth !== null) &&
+        (store.cold.popups[layerID].choropleths !== null) &&
+        store.cold.popups[layerID].choropleths.includes(store.cold.currentChoropleth)
     ) {
-       lookup = map_store.cold.currentChoropleth;
+       lookup = store.cold.currentChoropleth;
     }
 
-    const params = new URLSearchParams(map_store.cold.state);
+    const params = new URLSearchParams(store.cold.state);
     fetch(`/popup/${lookup}/${featureID}?lang=en&${params}`)
       .then((response) => response.json())
       .then((data) => {

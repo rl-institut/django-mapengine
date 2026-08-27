@@ -1,23 +1,23 @@
 
-// Subscriptions
-
-PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_basemap_layers);
-PubSub.subscribe(mapEvent.MAP_SOURCES_LOADED, add_layers);
+function setupLayerEvents(mapName, map, store) {
+  PubSub.subscribe(mapEventTopic(mapName, mapEvent.MAP_SOURCES_LOADED), (msg) => add_basemap_layers(mapName, map, msg));
+  PubSub.subscribe(mapEventTopic(mapName, mapEvent.MAP_SOURCES_LOADED), (msg) => add_layers(mapName, map, store, msg));
+}
 
 
 // Subscriber Functions
 
-function add_basemap_layers(msg) {
+function add_basemap_layers(mapName, map, msg) {
     const layers = map.getStyle().layers;
     // Find the index of the first symbol layer in the map style
     let beforeLayer;
     for (let i = 0; i < layers.length; i++) {
         if (layers[i].type === "symbol") {
-            firstSymbolId = layers[i].id;
+            beforeLayer = layers[i].id;
             break;
         }
     }
-    const basemap_layers = JSON.parse(document.getElementById("mapengine_basemap_layers").textContent);
+    const basemap_layers = JSON.parse(document.getElementById(`mapengine_basemap_layers_${mapName}`).textContent);
     for (const basemap_layer of basemap_layers) {
         map.addLayer(
             {
@@ -29,13 +29,13 @@ function add_basemap_layers(msg) {
         );
         map.setLayoutProperty(basemap_layer.layer_id, "visibility", "none");
     }
-    return logMessage(msg);
+    return logMessage(mapName, msg);
 }
 
-function add_layers(msg)
+function add_layers(mapName, map, store, msg)
 {
-  const layers = JSON.parse(document.getElementById("mapengine_layers").textContent);
-  const layers_at_startup = JSON.parse(document.getElementById("mapengine_layers_at_startup").textContent);
+  const layers = JSON.parse(document.getElementById(`mapengine_layers_${mapName}`).textContent);
+  const layers_at_startup = JSON.parse(document.getElementById(`mapengine_layers_at_startup_${mapName}`).textContent);
   for (const layer of layers) {
     map.addLayer(layer);
     const isStartupLayer = layers_at_startup.some(startup_layer => layer.id === startup_layer);
@@ -45,30 +45,32 @@ function add_layers(msg)
       map.setLayoutProperty(layer.id, "visibility", "none");
     }
 
-    if (map_store.cold.debug) {
+    if (store.cold.debugMode) {
       map.on("click", layer.id, function (e) {
         console.log(`${layer.id}:`, e.features[0].properties.name, e.features[0]);
       });
     }
   }
-  PubSub.publish(mapEvent.MAP_LAYERS_LOADED);
-  return logMessage(msg);
+  PubSub.publish(mapEventTopic(mapName, mapEvent.MAP_LAYERS_LOADED));
+  return logMessage(mapName, msg);
 }
 
 // Helper Functions
 
-function turn_off_layer(layer_id) {
+function turn_off_layer(mapName, layer_id) {
+  const map = MapEngine.maps[mapName].map;
   const layerExists = map.getStyle().layers.some(layer => layer.id === layer_id);
   if (!layerExists) {
-    throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
+    throw new Error(`There are no layers starting with '${layer_id}' registered in map '${mapName}'.`);
   }
   map.setLayoutProperty(layer_id, "visibility", "none");
 }
 
-function turn_on_layer(layer_id) {
+function turn_on_layer(mapName, layer_id) {
+  const map = MapEngine.maps[mapName].map;
   const layerExists = map.getStyle().layers.some(layer => layer.id === layer_id);
   if (!layerExists) {
-    throw new Error(`There are no layers starting with '${layer_id}' registered in map.`);
+    throw new Error(`There are no layers starting with '${layer_id}' registered in map '${mapName}'.`);
   }
   map.setLayoutProperty(layer_id, "visibility", "visible");
 }

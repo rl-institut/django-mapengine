@@ -6,6 +6,30 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- **Breaking:** Added support for multiple maps per project. Sources, layer/style definitions,
+  basemaps and images stay global; center, zoom, bounds, layers-shown, hover layers, choropleths
+  and popups are now configured per map via `MAP_ENGINE_MAPS` (a name -> `setup.MapConfig` dict).
+  Without `MAP_ENGINE_MAPS`, the flat `MAP_ENGINE_*` settings still work and are synthesized into
+  a single `"default"` map — but the frontend integration has changed:
+  - `views.MapEngineMixin` is removed. Templates must render each map with
+    `{% mapengine_map "name" %}` (from the new `mapengine_tags` template tag library) instead of
+    relying on the mixin's context and the old fixed-id `map_json.html`/`map_js.html`/
+    `map_basemaps.html` includes directly — the tag renders all of these itself.
+  - All DOM ids and JSON `<script>` ids are now suffixed by map name (`map-default`,
+    `mapengine_setup_default`, ...); the map container is no longer a fixed `#map`.
+  - JS no longer exposes global `map`/`map_store`. Use `MapEngine.maps["name"].map` /
+    `.store` instead. PubSub map events are namespaced: publish/subscribe to
+    `mapEventTopic("name", mapEvent.X")` rather than `mapEvent.X` directly.
+  - `Legend`/`LegendItem` take an optional `map_name` (default `"default"`); each map's legend
+    is a separate panel (`#mapengine-legend-<name>`), and `deactivateChoropleth`/JS layer-toggle
+    helpers now take `mapName` as their first argument.
+  - Choropleth/popup fetch endpoints (`choropleth/<name>/<layer>`, `/popup/<name>/<id>`) are
+    **not** namespaced by map name — they're implemented by the host project, not this library.
+    If two maps define choropleths/popups with the same name but different underlying data,
+    the host project's views must disambiguate (e.g. by including `map_name` as a query param).
+
 ## [5.1.0] - 2026-07-16
 ### Changed
 - Improved the choropleth value range

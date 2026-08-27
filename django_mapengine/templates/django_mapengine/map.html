@@ -1,0 +1,9 @@
+<div id="map-{{ map_name }}" class="mapengine-map" data-map-name="{{ map_name }}"></div>
+{% include "django_mapengine/map_json.html" %}
+{% include "django_mapengine/map_basemaps.html" %}
+{% if include_scripts %}
+  {% include "django_mapengine/map_js.html" %}
+{% endif %}
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () { MapEngine.init("{{ map_name|escapejs }}"); });
+</script>

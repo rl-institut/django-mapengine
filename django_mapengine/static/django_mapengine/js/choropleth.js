@@ -1,35 +1,44 @@
 
 const defaultPaintProperties = ["fill-color", "fill-opacity"];
 
-PubSub.subscribe(mapEvent.MAP_LAYERS_LOADED, initDefaultChoropleths);
-PubSub.subscribe(mapEvent.CHOROPLETH_SELECTED, activateChoropleth);
-
-
-async function activateChoropleth(msg, choroplethName) {
-  if (!(choroplethName in map_store.cold.choropleths)) {
-    throw new ReferenceError(`Choropleth '${choroplethName}' unknown.`);
-  }
-  for (const layerID of map_store.cold.choropleths[choroplethName].layers) {
-    const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
-    if (!(layerID in map_store.cold.storedChoroplethPaintProperties[choroplethName])) {
-      const params = new URLSearchParams(map_store.cold.state);
-      const response = await fetch(`choropleth/${choroplethName}/${layerIDCleaned}?${params}`);
-      const choroplethData = await response.json();
-      if (map_store.cold.choropleths[choroplethName].useFeatureState) {
-        updateChoroplethFeatureStates(choroplethName, layerID, choroplethData.values);
-      }
-      map_store.cold.storedChoroplethPaintProperties[choroplethName][layerID] = choroplethData.paintProperties;
-      setPaintProperties(layerID, choroplethData.paintProperties);
-    } else {
-      setPaintProperties(layerID, map_store.cold.storedChoroplethPaintProperties[choroplethName][layerID]);
-    }
-  }
-  map_store.cold.currentChoropleth = choroplethName;
-  PubSub.publish(mapEvent.CHOROPLETH_UPDATED, choroplethName);
-  return logMessage(msg);
+function setupChoroplethEvents(mapName, map, store) {
+  PubSub.subscribe(mapEventTopic(mapName, mapEvent.MAP_LAYERS_LOADED), () => initDefaultChoropleths(map, store));
+  PubSub.subscribe(
+    mapEventTopic(mapName, mapEvent.CHOROPLETH_SELECTED),
+    (msg, choroplethName) => activateChoropleth(mapName, map, store, msg, choroplethName)
+  );
 }
 
-function updateChoroplethFeatureStates(choroplethName, layerID, featureStateValues) {
+
+async function activateChoropleth(mapName, map, store, msg, choroplethName) {
+  if (!(choroplethName in store.cold.choropleths)) {
+    throw new ReferenceError(`Choropleth '${choroplethName}' unknown.`);
+  }
+  for (const layerID of store.cold.choropleths[choroplethName].layers) {
+    const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
+    if (!(layerID in store.cold.storedChoroplethPaintProperties[choroplethName])) {
+      const params = new URLSearchParams(store.cold.state);
+      const response = await fetch(`choropleth/${choroplethName}/${layerIDCleaned}?${params}`);
+      const choroplethData = await response.json();
+      if (store.cold.choropleths[choroplethName].useFeatureState) {
+        updateChoroplethFeatureStates(map, choroplethName, layerID, choroplethData.values);
+      }
+      store.cold.storedChoroplethPaintProperties[choroplethName][layerID] = choroplethData.paintProperties;
+      setPaintProperties(map, layerID, choroplethData.paintProperties);
+    } else {
+      setPaintProperties(map, layerID, store.cold.storedChoroplethPaintProperties[choroplethName][layerID]);
+    }
+  }
+  store.cold.currentChoropleth = choroplethName;
+  PubSub.publish(mapEventTopic(mapName, mapEvent.CHOROPLETH_UPDATED), choroplethName);
+  const legendElement = document.getElementById(`mapengine-legend-${mapName}`);
+  if (legendElement) {
+    legendElement.style.visibility = "visible";
+  }
+  return logMessage(mapName, msg);
+}
+
+function updateChoroplethFeatureStates(map, choroplethName, layerID, featureStateValues) {
   const layerIDCleaned = layerID.endsWith("_distilled") ? layerID.slice(0, -10) : layerID;
   for (var featureID in featureStateValues) {
     let choroplethFeatureState = map.getFeatureState(
@@ -51,32 +60,37 @@ function updateChoroplethFeatureStates(choroplethName, layerID, featureStateValu
   }
 }
 
-function initDefaultChoropleths() {
-  for (const choropleth in map_store.cold.choropleths) {
-    for (const layerID of map_store.cold.choropleths[choropleth].layers) {
-      if (layerID in map_store.cold.storedChoroplethPaintProperties["default"]) continue;
-      map_store.cold.storedChoroplethPaintProperties["default"][layerID] = getPaintProperties(layerID);
+function initDefaultChoropleths(map, store) {
+  for (const choropleth in store.cold.choropleths) {
+    for (const layerID of store.cold.choropleths[choropleth].layers) {
+      if (layerID in store.cold.storedChoroplethPaintProperties["default"]) continue;
+      store.cold.storedChoroplethPaintProperties["default"][layerID] = getPaintProperties(map, layerID);
     }
   }
 }
 
-function deactivateChoropleth() {
-  for (const choropleth in map_store.cold.choropleths) {
-    for (const layerID of map_store.cold.choropleths[choropleth].layers) {
-      setPaintProperties(layerID, map_store.cold.storedChoroplethPaintProperties["default"][layerID]);
+function deactivateChoropleth(mapName) {
+  const {map, store} = MapEngine.maps[mapName];
+  for (const choropleth in store.cold.choropleths) {
+    for (const layerID of store.cold.choropleths[choropleth].layers) {
+      setPaintProperties(map, layerID, store.cold.storedChoroplethPaintProperties["default"][layerID]);
     }
   }
-  map_store.cold.currentChoropleth = null;
+  store.cold.currentChoropleth = null;
+  const legendElement = document.getElementById(`mapengine-legend-${mapName}`);
+  if (legendElement) {
+    legendElement.style.visibility = "hidden";
+  }
 }
 
-function setPaintProperties(layerID, paintProperties) {
+function setPaintProperties(map, layerID, paintProperties) {
   for (const property in paintProperties) {
     if (!(defaultPaintProperties.includes(property))) continue;
     map.setPaintProperty(layerID, property, paintProperties[property]);
   }
 }
 
-function getPaintProperties(layerID) {
+function getPaintProperties(map, layerID) {
   let paintProperties = {};
   for (const property of defaultPaintProperties) {
     paintProperties[property] = map.getPaintProperty(layerID, property);
