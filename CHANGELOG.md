@@ -6,7 +6,7 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
-## [Unreleased]
+## [6.1.0] - 2026-09-02
 ### Changed
 - Refactored basemap activation
 
