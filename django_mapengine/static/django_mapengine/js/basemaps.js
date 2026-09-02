@@ -1,4 +1,6 @@
 
+const basemapsByMap = new Map();
+
 function setupBasemapEvents(mapName) {
   const toggleBasemapButton = document.getElementById(`basemaps-control-${mapName}`);
   const basemapControl = document.getElementById(`basemaps-${mapName}`);
@@ -13,22 +15,23 @@ function setupBasemapEvents(mapName) {
   const basemaps = Array.from(basemapButtons).map(
     (basemapButton) => basemapButton.id.slice(prefix.length, -suffix.length)
   );
+  basemapsByMap.set(mapName, basemaps);
 
   toggleBasemapButton.onclick = () => toggleBasemapControl(mapName);
 
   for (const basemapButton of basemapButtons) {
     const basemap_layer = basemapButton.id.slice(prefix.length, -suffix.length);
     basemapButton.addEventListener("click", () => {
-      toggleBasemap(mapName, basemaps, basemap_layer);
+      activateBasemap(mapName, basemap_layer);
     });
   }
 }
 
-function toggleBasemap(mapName, basemaps, basemap) {
+function activateBasemap(mapName, basemap) {
   const {map, store} = MapEngine.maps[mapName];
   store.cold.basemap = basemap;
 
-  for (const bm of basemaps) {
+  for (const bm of basemapsByMap.get(mapName)) {
     if (bm !== "default") {
       map.setLayoutProperty(bm, "visibility", "none");
     }

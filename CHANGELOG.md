@@ -6,6 +6,10 @@ and the versioning aim to respect [Semantic Versioning](http://semver.org/spec/v
 
 Here is a template for new release sections
 
+## [Unreleased]
+### Changed
+- Refactored basemap activation
+
 ## [6.0.0] - 2026-08-27
 ### Changed
 - **Breaking:** Added support for multiple maps per project. Sources, layer/style definitions,
